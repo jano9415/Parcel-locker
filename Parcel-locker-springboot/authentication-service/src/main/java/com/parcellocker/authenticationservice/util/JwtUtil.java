@@ -11,9 +11,11 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
+    //Jwt token titkosítása. A titkosítás az applicaton.properties-ben található
     @Value("${jwt.secret}")
     private String jwtSecret;
 
+    //Mennyi ideig érvényes a token. Ez is az applicaton.properties-ben található
     @Value("${jwt.token.validity}")
     private long tokenValidity;
 
@@ -27,6 +29,7 @@ public class JwtUtil {
         return null;
     }
 
+    //Token generálása
     public String generateToken(String id) {
         Claims claims = Jwts.claims().setSubject(id);
         long nowMillis = System.currentTimeMillis();
@@ -36,6 +39,7 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
     }
 
+    //Token validálása
     public void validateToken(final String token) throws JwtTokenMalformedException, JwtTokenMissingException {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);

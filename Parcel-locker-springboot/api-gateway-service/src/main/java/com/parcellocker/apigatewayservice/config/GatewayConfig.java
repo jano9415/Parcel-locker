@@ -13,6 +13,9 @@ public class GatewayConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    //Routing
+    //A bejövő kérés útvonala alapján elirányítom a kérést az adott service-hez
+    //Például, ha bejön az, hogy /auth/**(bármi), akkor azt az authentication-service-ben keresse
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes().route("authentication-service", r -> r.path("/auth/**")

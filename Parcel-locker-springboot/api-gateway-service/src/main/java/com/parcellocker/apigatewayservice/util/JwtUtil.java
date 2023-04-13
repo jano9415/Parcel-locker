@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtUtil {
 
+    //Jwt token titkosítás. A titkosítás az application.properties-ben található
     @Value("${jwt.secret}")
     private String jwtSecret;
 
@@ -22,6 +23,7 @@ public class JwtUtil {
         return null;
     }
 
+    //Jwt token validációja
     public void validateToken(final String token) throws JwtTokenMalformedException, JwtTokenMissingException {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);

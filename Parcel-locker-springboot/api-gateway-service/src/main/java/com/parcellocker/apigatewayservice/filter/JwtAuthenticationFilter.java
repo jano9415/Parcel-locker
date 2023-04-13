@@ -29,14 +29,18 @@ public class JwtAuthenticationFilter implements GatewayFilter {
 
         ServerHttpRequest request = (ServerHttpRequest) exchange.getRequest();
 
-        final List<String> apiEndpoints = List.of("/register",
+        //Ezekhez az végpontokhoz nem szükséges autentikáció. Ezeket bárki elérheti
+        final List<String> apiEndpoints = List.of("/signup",
                 "/login",
                 "/notification");
 
         Predicate<ServerHttpRequest> isApiSecured = r -> apiEndpoints.stream()
                 .noneMatch(uri -> r.getURI().getPath().contains(uri));
 
+        //A kérés header része tartalmazza a jwt tokent az alábbi formába
+        //Key -> Authorization         Value -> jwt token
         if (isApiSecured.test(request)) {
+            //Jwt token nélküli kérések
             if (!request.getHeaders().containsKey("Authorization")) {
                 ServerHttpResponse response = exchange.getResponse();
                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
@@ -44,12 +48,13 @@ public class JwtAuthenticationFilter implements GatewayFilter {
                 return response.setComplete();
             }
 
+            //Jwt token lekérése a kérés header részéből
             final String token = request.getHeaders().getOrEmpty("Authorization").get(0);
 
+            //Token validációja
             try {
                 jwtUtil.validateToken(token);
             } catch (JwtTokenMalformedException | JwtTokenMissingException e) {
-                // e.printStackTrace();
 
                 ServerHttpResponse response = exchange.getResponse();
                 response.setStatusCode(HttpStatus.BAD_REQUEST);
