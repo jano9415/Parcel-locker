@@ -6,8 +6,10 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Configuration
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class GatewayConfig {
 
     @Autowired
@@ -17,6 +19,7 @@ public class GatewayConfig {
     //A bejövő kérés útvonala alapján elirányítom a kérést az adott service-hez
     //Például, ha bejön az, hogy /auth/**(bármi), akkor azt az authentication-service-ben keresse
     @Bean
+    @CrossOrigin(origins = "*", maxAge = 3600)
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes().route("authentication-service", r -> r.path("/auth/**")
                         .filters(f -> f.filter(jwtAuthenticationFilter))
@@ -33,4 +36,5 @@ public class GatewayConfig {
 
 
     }
+
 }

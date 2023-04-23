@@ -4,6 +4,7 @@ import com.parcellocker.apigatewayservice.exception.JwtTokenMalformedException;
 import com.parcellocker.apigatewayservice.exception.JwtTokenMissingException;
 import com.parcellocker.apigatewayservice.util.JwtUtil;
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -27,12 +29,19 @@ public class JwtAuthenticationFilter implements GatewayFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
+
+
         ServerHttpRequest request = (ServerHttpRequest) exchange.getRequest();
+
+
 
         //Ezekhez az végpontokhoz nem szükséges autentikáció. Ezeket bárki elérheti
         final List<String> apiEndpoints = List.of("/signup",
                 "/login",
-                "/notification");
+                "/notification",
+                "/testauth",
+                "/testpost",
+                "/courierlogin");
 
         Predicate<ServerHttpRequest> isApiSecured = r -> apiEndpoints.stream()
                 .noneMatch(uri -> r.getURI().getPath().contains(uri));

@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1831
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Parcel_locker_arduino", "Parcel_locker_arduino.vcxproj", "{C5F80730-F44F-4478-BDAE-6634EFC2CA88}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DumpInfo", "..\libraries\MFRC522\examples\DumpInfo\DumpInfo.vcxproj", "{AAB35389-2DE5-43A8-BDDC-6F21FBD9D0FC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReadNUID", "..\libraries\MFRC522\examples\ReadNUID\ReadNUID.vcxproj", "{4D49D587-2A4A-4641-B1FD-2E86DA81D27D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RFID", "..\RFID\RFID.vcxproj", "{2FA09814-EEC2-4BB1-8490-3D65A8480ED9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RFID_belepteto_szervoval", "..\RFID_belepteto_szervoval\RFID_belepteto_szervoval.vcxproj", "{5A02DBB3-C82C-4BA4-8AA2-F87D75420562}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.ActiveCfg = Debug|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Debug|x86.Build.0 = Debug|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.ActiveCfg = Release|Win32
+		{C5F80730-F44F-4478-BDAE-6634EFC2CA88}.Release|x86.Build.0 = Release|Win32
+		{AAB35389-2DE5-43A8-BDDC-6F21FBD9D0FC}.Debug|x86.ActiveCfg = Debug|Win32
+		{AAB35389-2DE5-43A8-BDDC-6F21FBD9D0FC}.Debug|x86.Build.0 = Debug|Win32
+		{AAB35389-2DE5-43A8-BDDC-6F21FBD9D0FC}.Release|x86.ActiveCfg = Release|Win32
+		{AAB35389-2DE5-43A8-BDDC-6F21FBD9D0FC}.Release|x86.Build.0 = Release|Win32
+		{4D49D587-2A4A-4641-B1FD-2E86DA81D27D}.Debug|x86.ActiveCfg = Debug|Win32
+		{4D49D587-2A4A-4641-B1FD-2E86DA81D27D}.Debug|x86.Build.0 = Debug|Win32
+		{4D49D587-2A4A-4641-B1FD-2E86DA81D27D}.Release|x86.ActiveCfg = Release|Win32
+		{4D49D587-2A4A-4641-B1FD-2E86DA81D27D}.Release|x86.Build.0 = Release|Win32
+		{2FA09814-EEC2-4BB1-8490-3D65A8480ED9}.Debug|x86.ActiveCfg = Debug|Win32
+		{2FA09814-EEC2-4BB1-8490-3D65A8480ED9}.Debug|x86.Build.0 = Debug|Win32
+		{2FA09814-EEC2-4BB1-8490-3D65A8480ED9}.Release|x86.ActiveCfg = Release|Win32
+		{2FA09814-EEC2-4BB1-8490-3D65A8480ED9}.Release|x86.Build.0 = Release|Win32
+		{5A02DBB3-C82C-4BA4-8AA2-F87D75420562}.Debug|x86.ActiveCfg = Debug|Win32
+		{5A02DBB3-C82C-4BA4-8AA2-F87D75420562}.Debug|x86.Build.0 = Debug|Win32
+		{5A02DBB3-C82C-4BA4-8AA2-F87D75420562}.Release|x86.ActiveCfg = Release|Win32
+		{5A02DBB3-C82C-4BA4-8AA2-F87D75420562}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FAA9E674-4E1A-400F-95F4-925048A1E0B0}
+	EndGlobalSection
+EndGlobal
