@@ -11,39 +11,22 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-//@CrossOrigin(origins = "*", maxAge = 3600)
-@CrossOrigin
 public class AuthController {
 
     @Autowired
     private UserServiceImpl userService;
 
-    //Bejelentkezés, ideiglenes
-    //Jwt token generálása
-    @GetMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String emailAddress, @RequestParam String password) {
-
-        return userService.logIn(emailAddress, password);
-    }
 
     //Bejelentkezés
     //Jwt token generálása
-    @PostMapping("/loginpost")
-    public ResponseEntity<?> loginPost(@RequestBody LogInRequest logInRequest) {
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LogInRequest logInRequest) {
         return userService.logIn(logInRequest);
     }
 
-    //Regisztráció, ideiglenes
-    @GetMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestParam String emailAddress, @RequestParam String password,
-                                    @RequestParam String firstName, @RequestParam String lastName) {
-
-        return userService.signUp(emailAddress, password, firstName, lastName);
-    }
-
     //Regisztráció
-    @PostMapping("/signuppost")
-    public ResponseEntity<?> signUpPost(@RequestBody SignUpRequest signUpRequest) {
+    @PostMapping("/signup")
+    public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest) {
 
         return userService.signUp(signUpRequest);
     }
@@ -62,25 +45,10 @@ public class AuthController {
         return ResponseEntity.ok("A post is működik.");
     }
 
-    //Futár bejelentkezés ideiglenes
-    @GetMapping("/courierlogin")
+    //Futár bejelentkezés
+    @PostMapping("/courierlogin")
     public ResponseEntity<?> courierLogin(@RequestParam String uniqueCourierId){
         return userService.courierLogin(uniqueCourierId);
     }
-    //Futár bejelentkezés
-    @PostMapping("/courierloginpost")
-    public ResponseEntity<?> courierLoginPost(@RequestParam String uniqueCourierId){
-        return userService.courierLogin(uniqueCourierId);
-    }
-    //Futár bejelentkezés
-    @PutMapping("/courierloginput")
-    public ResponseEntity<?> courierLoginPut(@RequestParam String uniqueCourierId){
-        return userService.courierLogin(uniqueCourierId);
-    }
 
-    //Futár bejelentkezés
-    @PatchMapping("/courierloginpatch")
-    public ResponseEntity<?> courierLoginPatch(@RequestParam String uniqueCourierId){
-        return userService.courierLogin(uniqueCourierId);
-    }
 }

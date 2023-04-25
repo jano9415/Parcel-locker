@@ -17,6 +17,8 @@ const LoginCourierComponent = () => {
 
 
 
+    //Soros port olvasása
+    //A 10 karakteres rfid kártya uid-t bájtonként olvasom be. Ezekből a karakterekből csinálok egy string-et
     const serialRead = async () => {
         let uId = ""
         let counter = 0;

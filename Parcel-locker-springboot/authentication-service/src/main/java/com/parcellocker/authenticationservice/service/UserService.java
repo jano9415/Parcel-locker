@@ -37,9 +37,4 @@ public interface UserService {
     //Futár bejelentkezés
     ResponseEntity<?> courierLogin(String uniqueCourierId);
 
-    //Bejelentkezés ideiglenes
-    ResponseEntity<?> logIn(String emailAddress, String password);
-
-    //Regisztráció, ideiglenes
-    ResponseEntity<?> signUp(String emailAddress, String password, String firstName, String lastName);
 }
