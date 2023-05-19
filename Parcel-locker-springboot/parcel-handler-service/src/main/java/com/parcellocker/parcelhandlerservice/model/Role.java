@@ -1,7 +1,7 @@
 package com.parcellocker.parcelhandlerservice.model;
 
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,11 +17,24 @@ import java.util.Set;
 //Még nem tudom, kell-e
 public class Role {
 
+    @Id
+    @GeneratedValue
     private Long id;
 
+    @Column(nullable = false)
     private String roleName;
 
+    /*Még nem tudom, hogy kell-e
+    //User_roles kapcsolótábla
+    //A User osztály a birtokos
+    //Kapcsolat a Role és a User között
+    @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 
+    //Courier_roles kapcsolótábla
+    //A Courier osztály a birtokos
+    //Kapcsolat a Role és a Courier között
+    @ManyToMany(mappedBy = "roles")
     private Set<Courier> couriers;
+     */
 }
