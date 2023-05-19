@@ -3,9 +3,7 @@ package com.parcellocker.authenticationservice.controller;
 import com.parcellocker.authenticationservice.payload.request.LogInRequest;
 import com.parcellocker.authenticationservice.payload.request.SignUpRequest;
 import com.parcellocker.authenticationservice.service.serviceimpl.UserServiceImpl;
-import com.parcellocker.authenticationservice.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,24 +29,17 @@ public class AuthController {
         return userService.signUp(signUpRequest);
     }
 
-    //Teszt
-    @GetMapping("/testauth")
-    public ResponseEntity<?> testAuth(){
-        return ResponseEntity.ok("Ez működik!");
-
-    }
-
-    //Teszt post
-    @PostMapping("/testpost")
-    public ResponseEntity<?> testPost(){
-        System.out.println("A post is működik");
-        return ResponseEntity.ok("A post is működik.");
-    }
-
     //Futár bejelentkezés
     @PostMapping("/courierlogin")
     public ResponseEntity<?> courierLogin(@RequestParam String uniqueCourierId){
         return userService.courierLogin(uniqueCourierId);
     }
+
+    //Regisztráció aktiválása
+    @GetMapping("/activation/{signUpActivationCode}")
+    public ResponseEntity<?> signUpActivation(@PathVariable String signUpActivationCode) {
+        return userService.signUpActivation(signUpActivationCode);
+    }
+
 
 }

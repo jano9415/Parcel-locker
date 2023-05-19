@@ -4,14 +4,13 @@ import lombok.Data;
 
 import java.util.Set;
 
+//Ezt az objektumot küldöm a parcel-handler service-nek
 @Data
-public class SignUpRequest {
+public class ParcelHandlerServiceUserDTO {
 
     private String emailAddress;
 
     private Set<String> roles;
-
-    private String password;
 
     private String firstName;
 
@@ -26,4 +25,5 @@ public class SignUpRequest {
     private String street;
 
     private String phoneNumber;
+
 }

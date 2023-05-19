@@ -1,23 +1,22 @@
 package com.parcellocker.authenticationservice.service.serviceimpl;
 
+import com.parcellocker.authenticationservice.kafka.Producer;
 import com.parcellocker.authenticationservice.model.Role;
 import com.parcellocker.authenticationservice.model.User;
 import com.parcellocker.authenticationservice.payload.request.LogInRequest;
+import com.parcellocker.authenticationservice.payload.request.ParcelHandlerServiceUserDTO;
 import com.parcellocker.authenticationservice.payload.request.SignUpRequest;
 import com.parcellocker.authenticationservice.payload.response.LoginResponse;
+import com.parcellocker.authenticationservice.payload.response.SignUpActivationDTO;
 import com.parcellocker.authenticationservice.repository.UserRepository;
 import com.parcellocker.authenticationservice.service.UserService;
 import com.parcellocker.authenticationservice.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -36,6 +35,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private Producer producer;
+
     //Keresés id szerint
     @Override
     public User findById(Long id) {
@@ -43,6 +45,8 @@ public class UserServiceImpl implements UserService {
     }
 
     //Regisztráció. Új felhasználó hozzáadása
+    //DTO objektum küldése apache kafkának
+    //DTO objektum küldése a parcel handler service-nek
     @Override
     public ResponseEntity<?> signUp(SignUpRequest signUpRequest) {
 
@@ -53,10 +57,42 @@ public class UserServiceImpl implements UserService {
 
         //Új felhasználó létrehozása
         User user = new User();
-        user.setLastName(signUpRequest.getLastName());
-        user.setFirstName(signUpRequest.getFirstName());
+        user.setEnable(false);
         user.setEmailAddress(signUpRequest.getEmailAddress());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+
+        //Regisztrációhoz szükséges kód generálása
+        user.setActivationCode(generateRandomStringForActivationCode());
+
+        //Új ParcelHandlerServiceUserDTO objektum létrehozása
+        //Ezt az objektumot küldöm a parcel handler service-nek
+        ParcelHandlerServiceUserDTO parcelHandlerUser = new ParcelHandlerServiceUserDTO();
+        parcelHandlerUser.setFirstName(signUpRequest.getFirstName());
+        parcelHandlerUser.setLastName(signUpRequest.getLastName());
+        parcelHandlerUser.setRoles(signUpRequest.getRoles());
+        parcelHandlerUser.setEmailAddress(signUpRequest.getEmailAddress());
+        parcelHandlerUser.setPostCode(signUpRequest.getPostCode());
+        parcelHandlerUser.setCounty(signUpRequest.getCounty());
+        parcelHandlerUser.setCity(signUpRequest.getCity());
+        parcelHandlerUser.setStreet(signUpRequest.getStreet());
+        parcelHandlerUser.setPhoneNumber(signUpRequest.getPhoneNumber());
+
+
+
+        //SignUpActivationDTO objektum létrehozása majd küldése az apache kafka topicnak
+        //A topic neve: "signup_email_topic"
+        //Regisztráció megerősítéséhez szükséges kód küldése email-ben
+        SignUpActivationDTO signUpActivationDTO = new SignUpActivationDTO();
+        signUpActivationDTO.setFirstName(signUpRequest.getFirstName());
+        signUpActivationDTO.setLastName(signUpRequest.getLastName());
+        signUpActivationDTO.setActivationCode(user.getActivationCode());
+        signUpActivationDTO.setEmailAddress(signUpRequest.getEmailAddress());
+
+        producer.sendActivationCodeForSignUp(signUpActivationDTO);
+
+        //ParcelHandlerServiceUserDTO objektum küldése a parcel-handler service-nek
+        //Ez a user objektum máshogy néz ki, mint az authentication-service user objektuma
+        //...........................................................................................................
 
         Set<String> strRoles = signUpRequest.getRoles();
         Set<Role> roles = new HashSet<>();
@@ -101,7 +137,7 @@ public class UserServiceImpl implements UserService {
 
     //Bejelentkezés
     //Sikeres bejelentkezés esetén visszatérés egy LoginResponse objektummal
-    //A LoginResponse objektum tartalmazza: - user id, token típusa, token, vezetéknév, keresztnév, email cím, szerepkörök
+    //A LoginResponse objektum tartalmazza: - user id, token típusa, token, email cím, szerepkörök
     @Override
     public ResponseEntity<?> logIn(LogInRequest logInRequest) {
 
@@ -115,11 +151,13 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.badRequest().body("Hibás jelszó");
         }
 
+        if(user.isEnable() == false){
+            return ResponseEntity.badRequest().body("Aktiváld a felhasználói fiókodat");
+        }
+
         String token = jwtUtil.generateToken(logInRequest.getEmailAddress());
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setUserId(user.getId());
-        loginResponse.setFirstName(user.getFirstName());
-        loginResponse.setLastName(user.getLastName());
         loginResponse.setEmailAddress(user.getEmailAddress());
         loginResponse.setToken(token);
 
@@ -174,8 +212,8 @@ public class UserServiceImpl implements UserService {
         String token = jwtUtil.generateToken(uniqueCourierId);
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setUserId(user.getId());
-        loginResponse.setFirstName(user.getFirstName());
-        loginResponse.setLastName(user.getLastName());
+        //loginResponse.setFirstName(user.getFirstName());
+        //loginResponse.setLastName(user.getLastName());
         loginResponse.setEmailAddress(user.getEmailAddress());
         loginResponse.setToken(token);
 
@@ -184,6 +222,60 @@ public class UserServiceImpl implements UserService {
         loginResponse.setRoles(roles);
 
         return ResponseEntity.ok(loginResponse);
+    }
+
+    //Regisztráció aktiválása
+    //Keresés aktivációs kód szerint
+    //Aktivációs kód null-ra állítása
+    //Enable mező true-ra állítása
+    @Override
+    public ResponseEntity<?> signUpActivation(String signUpActivationCode) {
+        User user = findByActivationCode(signUpActivationCode);
+
+        if(user == null){
+            return ResponseEntity.badRequest().body("Sikertelen regisztráció aktiválás");
+        }
+
+        user.setActivationCode(null);
+        user.setEnable(true);
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Felhasználói fiók sikeresen aktiválva");
+
+    }
+
+    //Keresés aktivációs kód szerint
+    @Override
+    public User findByActivationCode(String activationCode) {
+        return userRepository.findByActivationCode(activationCode);
+    }
+
+    //Random string generálása a regisztrációhoz szükséges aktivációs kód számára
+    public String generateRandomStringForActivationCode() {
+        String upperAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerAlphabet = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+
+        String alphaNumeric = upperAlphabet + lowerAlphabet + numbers;
+
+        StringBuilder sb = new StringBuilder();
+
+        Random random = new Random();
+
+        int length = 8;
+
+        for(int i = 0; i < length; i++) {
+
+            int index = random.nextInt(alphaNumeric.length());
+
+            char randomChar = alphaNumeric.charAt(index);
+
+            sb.append(randomChar);
+        }
+
+        String randomString = sb.toString();
+
+        return randomString;
     }
 
 }

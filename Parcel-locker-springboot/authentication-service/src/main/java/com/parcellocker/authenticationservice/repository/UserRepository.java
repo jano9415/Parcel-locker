@@ -23,5 +23,8 @@ public interface UserRepository extends MongoRepository<User, Long> {
     //Keresés jelszó szerint
     User findByPassword(String password);
 
+    //Keresés aktivációs kód szerint
+    User findByActivationCode(String activationCode);
+
 
 }

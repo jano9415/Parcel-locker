@@ -36,12 +36,11 @@ public class JwtAuthenticationFilter implements GatewayFilter {
 
 
         //Ezekhez az végpontokhoz nem szükséges autentikáció. Ezeket bárki elérheti
-        final List<String> apiEndpoints = List.of("/signup",
-                "/login",
-                "/notification",
-                "/testauth",
-                "/testpost",
-                "/courierlogin");
+        final List<String> apiEndpoints = List.of("/auth/signup",
+                "/auth/activation",
+                "/auth/login",
+                "/notification/test1",
+                "/auth/courierlogin");
 
         Predicate<ServerHttpRequest> isApiSecured = r -> apiEndpoints.stream()
                 .noneMatch(uri -> r.getURI().getPath().contains(uri));

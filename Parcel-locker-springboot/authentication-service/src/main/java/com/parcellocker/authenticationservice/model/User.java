@@ -21,9 +21,9 @@ public class User {
 
     private String password;
 
-    private String firstName;
+    private String activationCode;
 
-    private String lastName;
+    private boolean enable;
 
     private Set<Role> roles = new HashSet<Role>();
 

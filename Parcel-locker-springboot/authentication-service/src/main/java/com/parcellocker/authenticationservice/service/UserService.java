@@ -37,4 +37,9 @@ public interface UserService {
     //Futár bejelentkezés
     ResponseEntity<?> courierLogin(String uniqueCourierId);
 
+    //Regisztráció aktiválása
+    ResponseEntity<?> signUpActivation(String activationCode);
+
+    //Keresés aktivációs kód szerint
+    User findByActivationCode(String activationCode);
 }
