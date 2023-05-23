@@ -3,9 +3,7 @@ package com.parcellocker.authenticationservice.service.serviceimpl;
 import com.parcellocker.authenticationservice.kafka.Producer;
 import com.parcellocker.authenticationservice.model.Role;
 import com.parcellocker.authenticationservice.model.User;
-import com.parcellocker.authenticationservice.payload.request.LogInRequest;
-import com.parcellocker.authenticationservice.payload.request.ParcelHandlerServiceUserDTO;
-import com.parcellocker.authenticationservice.payload.request.SignUpRequest;
+import com.parcellocker.authenticationservice.payload.request.*;
 import com.parcellocker.authenticationservice.payload.response.LoginResponse;
 import com.parcellocker.authenticationservice.payload.response.SignUpActivationDTO;
 import com.parcellocker.authenticationservice.repository.UserRepository;
@@ -15,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,6 +37,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private Producer producer;
+
+    @Autowired
+    private WebClient.Builder webClientBuilder;
 
     //Keresés id szerint
     @Override
@@ -69,12 +72,7 @@ public class UserServiceImpl implements UserService {
         ParcelHandlerServiceUserDTO parcelHandlerUser = new ParcelHandlerServiceUserDTO();
         parcelHandlerUser.setFirstName(signUpRequest.getFirstName());
         parcelHandlerUser.setLastName(signUpRequest.getLastName());
-        parcelHandlerUser.setRoles(signUpRequest.getRoles());
         parcelHandlerUser.setEmailAddress(signUpRequest.getEmailAddress());
-        parcelHandlerUser.setPostCode(signUpRequest.getPostCode());
-        parcelHandlerUser.setCounty(signUpRequest.getCounty());
-        parcelHandlerUser.setCity(signUpRequest.getCity());
-        parcelHandlerUser.setStreet(signUpRequest.getStreet());
         parcelHandlerUser.setPhoneNumber(signUpRequest.getPhoneNumber());
 
 
@@ -92,41 +90,24 @@ public class UserServiceImpl implements UserService {
 
         //ParcelHandlerServiceUserDTO objektum küldése a parcel-handler service-nek
         //Ez a user objektum máshogy néz ki, mint az authentication-service user objektuma
-        //...........................................................................................................
+        //Szinkron kommunikáció. "/parcelhandler/user/createuser" végpont meghívása a parcel handler service-ben.
+        webClientBuilder.build().post()
+                //Végpont. Elég csak a service nevét megadni. A disovery service meg fogja találni
+                .uri("http://parcel-handler-service/parcelhandler/user/createuser")
+                //Objektum, amit body-ban küldök és objektum típusa
+                .body(Mono.just(parcelHandlerUser), ParcelHandlerServiceUserDTO.class)
+                .retrieve()
+                //Visszatérési (response) objektum típusa
+                .bodyToMono(String.class)
+                .block();
 
-        Set<String> strRoles = signUpRequest.getRoles();
-        Set<Role> roles = new HashSet<>();
 
         //Felhasználó szerepköreinek beállítása
-        //Ha nem érkezik a klienstől szerepkör, akkor automatikusan az új felhasználó user szerepkört kap
-        //Admin és courier szerepkör érkezhet a kérésben, mert ők nem tudnak regisztrálni, hanem
-        //az admin adja hozzá őket
-        if (strRoles == null) {
-            Role userRole = roleService.findByRoleName("user")
-                    .orElseThrow(() -> new RuntimeException("User szerepkör nem található"));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        Role adminRole = roleService.findByRoleName("admin")
-                                .orElseThrow(() -> new RuntimeException("Admin szerepkör nem található"));
-                        roles.add(adminRole);
+        Set<Role> roles = new HashSet<>();
 
-                        break;
-                    case "courier":
-                        Role modRole = roleService.findByRoleName("courier")
-                                .orElseThrow(() -> new RuntimeException("Futár szerepkör nem található"));
-                        roles.add(modRole);
-
-                        break;
-                    default:
-                        Role userRole = roleService.findByRoleName("user")
-                                .orElseThrow(() -> new RuntimeException("User szerepkör nem található"));
-                        roles.add(userRole);
-                }
-            });
-        }
+        Role userRole = roleService.findByRoleName("user")
+                .orElseThrow(() -> new RuntimeException("User szerepkör nem található"));
+        roles.add(userRole);
 
         user.setRoles(roles);
         userRepository.save(user);
@@ -212,8 +193,6 @@ public class UserServiceImpl implements UserService {
         String token = jwtUtil.generateToken(uniqueCourierId);
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setUserId(user.getId());
-        //loginResponse.setFirstName(user.getFirstName());
-        //loginResponse.setLastName(user.getLastName());
         loginResponse.setEmailAddress(user.getEmailAddress());
         loginResponse.setToken(token);
 
@@ -248,6 +227,49 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByActivationCode(String activationCode) {
         return userRepository.findByActivationCode(activationCode);
+    }
+
+    //Új futár létrehozása
+    @Override
+    public ResponseEntity<?> createCourier(CreateCourierDTO courierDTO) {
+
+        //A megadott email cím már létezik
+        if(existsByEmailAddress(courierDTO.getUniqueCourierId())){
+            return ResponseEntity.badRequest().body("Ez az email cím már regisztrálva van!");
+        }
+
+        //Új futár létrehozása
+        User user = new User();
+        user.setEnable(true);
+        user.setEmailAddress(courierDTO.getUniqueCourierId());
+
+        //Futár küldése a parcel handler service-nek
+        //Ugyan azt az objektumot küldöm el, ami a kérés body részében jön
+        //Az az objektum tartalmaz mindent, amire szükség van. És mivel nincs benne jelszó, nem kell új DTO objektumot létrehozni
+        webClientBuilder.build().post()
+                .uri("http://parcel-handler-service/parcelhandler/courier/createcourier")
+                .body(Mono.just(courierDTO), CreateCourierDTO.class)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+
+        //Futár szerepköreinek beállítása
+        Set<Role> roles = new HashSet<>();
+
+        Role courierRole = roleService.findByRoleName("courier")
+                .orElseThrow(() -> new RuntimeException("Futár szerepkör nem található"));
+        roles.add(courierRole);
+
+        user.setRoles(roles);
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Új futár sikeresen hozzáadva");
+    }
+
+    //Új admin létrehozása
+    @Override
+    public ResponseEntity<?> createAdmin(CreateAdminDTO adminDTO) {
+        return null;
     }
 
     //Random string generálása a regisztrációhoz szükséges aktivációs kód számára

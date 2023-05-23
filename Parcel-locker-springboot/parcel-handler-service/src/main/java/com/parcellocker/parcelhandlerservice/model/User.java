@@ -42,18 +42,19 @@ public class User {
     @Column(nullable = false)
     private String lastName;
 
+    /*
     //Kapcsolat a User és az Address között
     //Ez az osztály a birtokos
     @ManyToOne
     private Address address;
+     */
 
     @Column(nullable = false)
     private String phoneNumber;
 
-    /*Opcionális adatok
+    //Opcionális adatok
     //Kapcsolat a Parcel és a User között
     //A Parcel osztály a birtokos
     @OneToMany(mappedBy = "user")
     private Set<Parcel> parcels = new HashSet<>();
-     */
 }

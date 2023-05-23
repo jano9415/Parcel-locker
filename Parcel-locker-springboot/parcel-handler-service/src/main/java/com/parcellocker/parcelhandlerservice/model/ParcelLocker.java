@@ -39,13 +39,13 @@ public class ParcelLocker {
     @OneToMany(mappedBy = "parcelLocker")
     private Set<Parcel> parcels = new HashSet<>();
 
-    /*Opcionális adatok.
+    //Opcionális adatok.
     //Kapcsolat a Parcel és a Parcel locker között
     //A Parcel osztály a birtokos
     @OneToMany(mappedBy = "shippingFrom")
     private Set<Parcel> parcelsFrom = new HashSet<>();
-     */
 
+    //Opcionális adatok
     //Kapcsolat a Parcel és a Parcel locker között
     //A Parcel osztály a birtokos
     @OneToMany(mappedBy = "shippingTo")

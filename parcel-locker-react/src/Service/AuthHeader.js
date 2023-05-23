@@ -4,7 +4,7 @@ export default function authHeader () {
 
     //Visszatérés a bejelentkezett felhasználó jwt tokenével.
     if (user && user.token) {
-      return { Authorization: 'Bearer ' + user.accessToken };
+      return { Authorization: user.token };
     } else {
       return {};
     }

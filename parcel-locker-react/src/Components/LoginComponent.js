@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import AuthService from '../Service/AuthService';
 
 const LoginComponent = () => {
@@ -8,11 +8,15 @@ const LoginComponent = () => {
     let navigate = useNavigate();
 
     const form = useRef();
+    const { signUpActivationCode } = useParams();
 
     const [emailAddress, setEmailAddress] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
+    const [signUpActivationMessage, setSignUpActivationMessage] = useState("");
+    const [signUpActivationErrorMessage, setSignUpActivationErrorMessage] = useState("");
+
 
     //Email cím kiolvasása az input mezőből
     const onChangeEmailAddress = (e) => {
@@ -33,7 +37,7 @@ const LoginComponent = () => {
         setMessage("");
         setLoading(true);
 
-        
+
         AuthService.logIn(emailAddress, password).then(
             () => {
                 navigate("/");
@@ -48,9 +52,52 @@ const LoginComponent = () => {
 
             }
         )
-        
+    }
+
+    useEffect(() => {
+
+        //Regisztráció aktiválása
+        if (signUpActivationCode) {
+            AuthService.signUpActivation(signUpActivationCode).then(
+                (response) => {
+                    setSignUpActivationMessage(response.data)
+
+                },
+                (error) => {
+                    setSignUpActivationErrorMessage(error.response.data)
+
+                }
+            )
+
+        }
+
+    }, []);
+
+    //Sikeres vagy sikertelen regisztráció aktiválása üzenet
+    const showSignUpActivationMessage = () => {
+
+        if (signUpActivationMessage) {
+            return (
+                <div className="form-group">
+                    <div className="alert alert-success" role="alert">
+                        {signUpActivationMessage}
+                    </div>
+                </div>
+            )
+        }
+
+        if (signUpActivationErrorMessage) {
+            return (
+                <div className="form-group">
+                    <div className="alert alert-danger" role="alert">
+                        {signUpActivationErrorMessage}
+                    </div>
+                </div>
+            )
+        }
 
     }
+
 
 
     return (
@@ -100,6 +147,7 @@ const LoginComponent = () => {
                                 </div>
                             </div>
                         )}
+                        {showSignUpActivationMessage()}
                     </form>
                 </div>
             </div>

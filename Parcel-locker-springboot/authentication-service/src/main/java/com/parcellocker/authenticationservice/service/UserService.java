@@ -1,6 +1,8 @@
 package com.parcellocker.authenticationservice.service;
 
 import com.parcellocker.authenticationservice.model.User;
+import com.parcellocker.authenticationservice.payload.request.CreateAdminDTO;
+import com.parcellocker.authenticationservice.payload.request.CreateCourierDTO;
 import com.parcellocker.authenticationservice.payload.request.LogInRequest;
 import com.parcellocker.authenticationservice.payload.request.SignUpRequest;
 import org.springframework.http.ResponseEntity;
@@ -42,4 +44,10 @@ public interface UserService {
 
     //Keresés aktivációs kód szerint
     User findByActivationCode(String activationCode);
+
+    //Új futár létrehozása
+    ResponseEntity<?> createCourier(CreateCourierDTO courierDTO);
+
+    //Új admin létrehozása
+    ResponseEntity<?> createAdmin(CreateAdminDTO adminDTO);
 }

@@ -15,16 +15,24 @@ public class EmailService {
     //Regisztrációs kód küldése email-ben
     public void sendActivationCodeForSignUp(SignUpActivationDTO signUpActivationDTO) {
 
-        SimpleMailMessage message = new SimpleMailMessage();
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
 
-        message.setFrom("${spring.mail.username}");
-        message.setTo(signUpActivationDTO.getEmailAddress());
-        message.setSubject("Regisztráció aktiválása");
-        message.setText("Kedves " + signUpActivationDTO.getLastName() + " " + signUpActivationDTO.getFirstName() + "\n\n"
-                + "Köszönjük hogy regisztrált a Swiftpost csomagküldő rendszerben.\n"
-                + "A regisztráció véglegesítéséhez kattintson az alábbi linkre.\n"
-                + "http://192.168.0.13:3000/login/" + signUpActivationDTO.getActivationCode()
-                + "");
-        javaMailSender.send(message);
+            message.setFrom("${spring.mail.username}");
+            message.setTo(signUpActivationDTO.getEmailAddress());
+            message.setSubject("Regisztráció aktiválása");
+            message.setText("Kedves " + signUpActivationDTO.getLastName() + " " + signUpActivationDTO.getFirstName() + "\n\n"
+                    + "Köszönjük hogy regisztrált a Swiftpost csomagküldő rendszerben.\n"
+                    + "A regisztráció véglegesítéséhez kattintson az alábbi linkre.\n"
+                    + "http://192.168.0.13:3000/login/" + signUpActivationDTO.getActivationCode()
+                    + "");
+            javaMailSender.send(message);
+
+        }
+        catch (Exception e){
+
+        }
+
+
     }
 }

@@ -1,5 +1,7 @@
 package com.parcellocker.authenticationservice.controller;
 
+import com.parcellocker.authenticationservice.payload.request.CreateAdminDTO;
+import com.parcellocker.authenticationservice.payload.request.CreateCourierDTO;
 import com.parcellocker.authenticationservice.payload.request.LogInRequest;
 import com.parcellocker.authenticationservice.payload.request.SignUpRequest;
 import com.parcellocker.authenticationservice.service.serviceimpl.UserServiceImpl;
@@ -39,6 +41,18 @@ public class AuthController {
     @GetMapping("/activation/{signUpActivationCode}")
     public ResponseEntity<?> signUpActivation(@PathVariable String signUpActivationCode) {
         return userService.signUpActivation(signUpActivationCode);
+    }
+
+    //Új futár létrehozása
+    @PostMapping("/createcourier")
+    public ResponseEntity<?> createCourier(@RequestBody CreateCourierDTO courierDTO){
+        return userService.createCourier(courierDTO);
+    }
+
+    //Új admin létrehozása
+    @PostMapping("/createadmin")
+    public ResponseEntity<?> createAdmin(@RequestBody CreateAdminDTO adminDTO){
+        return userService.createAdmin(adminDTO);
     }
 
 

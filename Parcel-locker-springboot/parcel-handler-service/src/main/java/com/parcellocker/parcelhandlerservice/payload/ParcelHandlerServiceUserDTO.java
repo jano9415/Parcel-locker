@@ -1,15 +1,13 @@
-package com.parcellocker.authenticationservice.payload.request;
+package com.parcellocker.parcelhandlerservice.payload;
 
 import lombok.Data;
 
 import java.util.Set;
 
 @Data
-public class SignUpRequest {
+public class ParcelHandlerServiceUserDTO {
 
     private String emailAddress;
-
-    private String password;
 
     private String firstName;
 

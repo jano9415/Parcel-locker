@@ -1,9 +1,23 @@
 package com.parcellocker.parcelhandlerservice.repository;
 
+import com.parcellocker.parcelhandlerservice.model.Address;
 import com.parcellocker.parcelhandlerservice.model.Role;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
+/*
 @Repository
 public interface RoleRepository extends CrudRepository<Role, Long> {
+
+    //Összes szerepkör keresése
+    @Override
+    List<Role> findAll();
+
+    //Keresés id alapján
+    @Override
+    Optional<Role> findById(Long id);
 }
+ */

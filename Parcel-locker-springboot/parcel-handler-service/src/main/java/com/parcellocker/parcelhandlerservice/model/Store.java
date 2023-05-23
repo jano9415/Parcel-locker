@@ -31,10 +31,9 @@ public class Store {
     @OneToMany(mappedBy = "store")
     private Set<Parcel> parcels = new HashSet<>();
 
-    /*Opcionális adatok
+    //Opcionális adatok
     //Kapcsolat a Parcel locker és a Store között
     //A Parcel locker osztály a birtokos
-    @OneToOne(mappedBy = "store")
+    @OneToMany(mappedBy = "store")
     private Set<ParcelLocker> parcelLockers = new HashSet<>();
-     */
 }

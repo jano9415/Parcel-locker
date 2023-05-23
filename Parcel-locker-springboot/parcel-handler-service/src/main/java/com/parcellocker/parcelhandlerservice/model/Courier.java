@@ -23,6 +23,12 @@ public class Courier {
     @Column(nullable = false, unique = true)
     private String uniqueCourierId;
 
+    @Column(nullable = false)
+    private  String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
     /*Még nem tudom, hogy kell-e
     //Courier_roles kapcsolótábla
     //Ez az osztály a birtokos

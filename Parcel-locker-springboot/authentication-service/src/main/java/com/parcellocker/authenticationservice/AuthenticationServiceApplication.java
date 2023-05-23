@@ -22,19 +22,16 @@ public class AuthenticationServiceApplication {
 		SpringApplication.run(AuthenticationServiceApplication.class, args);
 	}
 
+	/*
 	@Bean
 	public void pelda(){
-		//Role role = new Role();
-		//role.setRoleName("user");
+		Role role = new Role();
+		role.setRoleName("courier");
+		roleService.save(role);
+
+		//role.setRoleName("admin");
 		//roleService.save(role);
-
-		/*User user = new User();
-		user.setFirstName("László3");
-		user.setLastName("Kovács");
-		user.setPassword("jelszo123");
-		user.getRoles().add(role);
-		userService.signUp(user);*/
-
 	}
+	 */
 
 }

@@ -35,11 +35,10 @@ public class Box {
     @Column(nullable = false)
     private int boxNumber;
 
-    /*Opcionális adatok
+    //Opcionális adatok
     //Kapcsolat a Parcel és a Box között
     //Ez az osztály a birtokos
     @OneToMany(mappedBy = "box")
     private Set<Parcel> parcels = new HashSet<>();
-     */
 
 }

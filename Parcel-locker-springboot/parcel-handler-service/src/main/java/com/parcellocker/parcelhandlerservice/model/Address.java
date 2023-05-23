@@ -1,6 +1,6 @@
 package com.parcellocker.parcelhandlerservice.model;
 
-import jakarta.annotation.Nullable;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,19 +33,17 @@ public class Address {
     @Column(nullable = false)
     private String street;
 
-    /*Opcionális adatok
+    //Opcionális adatok
     //Kapcsolat a Parcel locker és az Address között
     //A Parcel locker osztály a birtokos
     @OneToOne(mappedBy = "location")
     private ParcelLocker parcelLocker;
-     */
 
-    /*Opcionális adatok
+    //Opcionális adatok
     //Kapcsolat a Store és az Address között
     //Az Address osztály a birtokos
     @OneToOne(mappedBy = "address")
     private Store store;
-     */
 
     /*Opcionális adatok
     //Kapcsolat a User és az Address között

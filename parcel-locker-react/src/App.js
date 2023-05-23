@@ -87,6 +87,7 @@ const App = () => {
           <Routes>
             <Route exact path='/' element={<HomeComponent />} />
             <Route path='/login' element={<LoginComponent />} />
+            <Route path='/login/:signUpActivationCode' element={<LoginComponent />} />
             <Route path='signup' element={<SignUpComponent />} />
             <Route path='logincourier' element={<LoginCourierComponent />} />
           </Routes>

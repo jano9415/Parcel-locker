@@ -30,7 +30,11 @@ public class GatewayConfig {
                 .route("statistics-service", r -> r.path("/statistics/**")
                         .filters(f -> f.filter(jwtAuthenticationFilter))
                         .uri("lb://statistics-service"))
+                .route("parcel-handler-service", r -> r.path("/parcelhandler/**")
+                        .filters(f -> f.filter(jwtAuthenticationFilter))
+                        .uri("lb://parcel-handler-service"))
                 .build();
+
 
 
     }

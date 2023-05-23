@@ -1,15 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import AuthService from '../Service/AuthService';
 import { Link, useNavigate } from 'react-router-dom';
+import PhoneInput from 'react-phone-input-2';
+import { TextField, Button, Typography, Box } from '@mui/material';
+
 
 const SignUpComponent = () => {
 
 
     const [emailAddress, setEmailAddress] = useState("")
     const [password, setPassword] = useState("")
+    const [passwordAgain, setPasswordAgain] = useState("")
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
-    const [message, setMessage] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("")
+
+    const [passwordMessage, setPasswordMessage] = useState("")
+    const [passwordErrorMessage, setPasswordErrorMessage] = useState("")
+    const [emailAddressErrorMessage, setEmailAddressErrorMessage] = useState("")
+    const [emailAlredyExistMessage, setEmailAlredyExistMessage] = useState("");
+
+    const [isPasswordValid, setIsPasswordValid] = useState(false)
+    const [isEmailValid, setIsEmailValid] = useState(false)
+    const [isEveryValid, setIsEveryValid] = useState(false)
+    const [everyInputMessage, setEveryInputMessage] = useState("")
+    const [sendButtonEnable, setSendButtonEnable] = useState(true)
+
 
     let navigate = useNavigate();
 
@@ -19,88 +35,169 @@ const SignUpComponent = () => {
 
     const signUp = (e) => {
         e.preventDefault();
-        AuthService.signUp(emailAddress, password, firstName, lastName).then((response) => {
-            navigate("/login");
-            window.location.reload();
 
-        },
-            (error) => {
-                const resMessage = error.response.data
+        formValidaton()
 
-                setMessage(resMessage)
-            })
+        if (isEveryValid) {
+            AuthService.signUp(emailAddress, password, firstName, lastName, phoneNumber).then((response) => {
+                navigate("/login");
+                window.location.reload();
+
+            },
+                (error) => {
+                    setEmailAlredyExistMessage(error.response.data)
+                })
+        }
+        else{
+            setEveryInputMessage("Minden mező kitöltése kötelező.")
+
+        }
+
+    }
+
+    //Jelszó validációja, a jelszónak erősnek kell lennie és a két jelszónak meg kell egyeznie
+    const passwordValidation = (e) => {
+        e.preventDefault();
+
+        // Validáció
+        const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+        if (!passwordPattern.test(password)) {
+            setIsPasswordValid(false)
+            setPasswordErrorMessage('A jelszónak legalább 8 karakterből kell állnia, tartalmaznia kell nagybetűt, kisbetűt, számot és speciális karaktert.');
+            setPasswordMessage("")
+            return;
+        }
+
+        if (password !== passwordAgain) {
+            setIsPasswordValid(false)
+            setPasswordErrorMessage('A két jelszó nem egyezik meg.');
+            setPasswordMessage("")
+            return;
+        }
+
+        // Sikeres ellenőrzés
+        setIsPasswordValid(true)
+        setPasswordErrorMessage("")
+        setPasswordMessage('A jelszó megfelelő.');
+    };
+
+    //Email formátum validációja. Az email-nek valósnak kell lennie
+    const emailAddressValidation = (e) => {
+        e.preventDefault()
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        //Email nem megfelelő formátumú
+        if (!emailRegex.test(emailAddress)) {
+            setIsEmailValid(false)
+            setEmailAddressErrorMessage('Nem valódi email cím.')
+            return
+
+        }
+
+        //Sikeres ellenőrzés
+        setIsEmailValid(true)
+        setEmailAddressErrorMessage("")
     }
 
 
 
+    const formValidaton = () => {
+
+        const isFirstNameValid = firstName.length > 0;
+        const isLastNameValid = lastName.length > 0;
+        const isPhoneNumberValid = phoneNumber.length > 0;
+
+        if (
+            isEmailValid &&
+            isPasswordValid &&
+            isFirstNameValid &&
+            isLastNameValid &&
+            isPhoneNumberValid
+        ) {
+            setIsEveryValid(true);
+            return true;
+        } else {
+            setIsEveryValid(false);
+            return false;
+        }
+    };
+
+    const showSendButton = () => {
+        formValidaton()
+        if(isEveryValid){
+            setSendButtonEnable(false)
+        }
+    }
 
     return (
-        <div>
-            <div className='container m-3'>
-                <div className='container'>
-                    <div className='card col-md-6 offset-md-3 offset-md-3'>
-                        <h3 className='text-center'>Új felhasználó hozzáadása</h3>
-                        <div className='card-body'>
-                            <form>
-                                <div className='form-group'>
-                                    <label className='form-label'>Email cím</label>
-                                    <input
-                                        type="text"
-                                        placeholder='Email cím'
-                                        name='partName'
-                                        className='form-control'
-                                        value={emailAddress}
-                                        onChange={(e) => setEmailAddress(e.target.value)} />
-                                </div>
-                                <div className='form-group'>
-                                    <label className='form-label'>Jelszó</label>
-                                    <input
-                                        type="password"
-                                        placeholder='Jelszó'
-                                        name='maxPieceInBox'
-                                        className='form-control'
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)} />
-                                </div>
-                                <div className='form-group'>
-                                    <label className='form-label'>Vezetéknév</label>
-                                    <input
-                                        type="text"
-                                        placeholder='Vezetéknév'
-                                        name='maxPieceInBox'
-                                        className='form-control'
-                                        value={lastName}
-                                        onChange={(e) => setLastName(e.target.value)} />
-                                </div>
-                                <div className='form-group'>
-                                    <label className='form-label'>Keresztnév</label>
-                                    <input
-                                        type="text"
-                                        placeholder='Keresztnév'
-                                        name='maxPieceInBox'
-                                        className='form-control'
-                                        value={firstName}
-                                        onChange={(e) => setFirstName(e.target.value)} />
-                                </div>
-                                <button className='btn btn-success m-2' onClick={(e) => signUp(e)}>Mentés</button>
-                                <Link to="/">
-                                    <button className='btn btn-danger'>Mégse</button>
-                                </Link>
-                                {message && (
-                                    <div className="form-group">
-                                        <div className="alert alert-danger" role="alert">
-                                            {message}
-                                        </div>
-                                    </div>
-                                )}
-                            </form>
-
-                        </div>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px' }}>
+            <Typography variant="h4" sx={{ marginBottom: '16px' }}>Regisztráció</Typography>
+            <TextField
+                type="email"
+                label="Email cím"
+                value={emailAddress}
+                onChange={(e) => setEmailAddress(e.target.value)}
+                onBlur={emailAddressValidation}
+                required
+                sx={{ marginBottom: '16px' }}
+            />
+            {emailAddressErrorMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{emailAddressErrorMessage}</Typography>}
+            <TextField
+                type="password"
+                label="Jelszó"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                sx={{ marginBottom: '16px' }}
+            />
+            <TextField
+                type="password"
+                label="Jelszó megerősítése"
+                value={passwordAgain}
+                onBlur={passwordValidation}
+                onChange={(e) => setPasswordAgain(e.target.value)}
+                required
+                sx={{ marginBottom: '16px' }}
+            />
+            {passwordErrorMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{passwordErrorMessage}</Typography>}
+            {passwordMessage && <Typography sx={{ color: 'green', marginBottom: '16px' }}>{passwordMessage}</Typography>}
+            <TextField
+                type="text"
+                label="Vezetéknév"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                sx={{ marginBottom: '16px' }}
+            />
+            <TextField
+                type="text"
+                label="Keresztnév"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                sx={{ marginBottom: '16px' }}
+            />
+            <PhoneInput
+                required
+                label="fsfd"
+                country={'hu'}
+                value={phoneNumber}
+                onChange={setPhoneNumber}
+                onBlur={showSendButton} />
+            <Button disabled={sendButtonEnable} variant="contained" onClick={(e) => signUp(e)}>Küldés</Button>
+            <Link to="/">
+                <button className='btn btn-danger'>Mégse</button>
+            </Link>
+            {everyInputMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{everyInputMessage}</Typography>}
+            {emailAlredyExistMessage && (
+                <div className="form-group">
+                    <div className="alert alert-danger" role="alert">
+                        {emailAlredyExistMessage}
                     </div>
                 </div>
-            </div>
-
-        </div>
+            )}
+        </Box>
     );
 }
 

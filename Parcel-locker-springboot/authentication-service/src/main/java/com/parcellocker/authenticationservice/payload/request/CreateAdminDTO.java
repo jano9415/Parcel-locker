@@ -5,15 +5,10 @@ import lombok.Data;
 import java.util.Set;
 
 @Data
-public class SignUpRequest {
+public class CreateAdminDTO {
 
     private String emailAddress;
 
     private String password;
 
-    private String firstName;
-
-    private String lastName;
-
-    private String phoneNumber;
 }
