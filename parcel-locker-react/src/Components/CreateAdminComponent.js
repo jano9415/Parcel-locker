@@ -5,15 +5,10 @@ import PhoneInput from 'react-phone-input-2';
 import { TextField, Button, Typography, Box } from '@mui/material';
 
 
-const SignUpComponent = () => {
-
-
+const CreateAdminComponent = () => {
     const [emailAddress, setEmailAddress] = useState("")
     const [password, setPassword] = useState("")
     const [passwordAgain, setPasswordAgain] = useState("")
-    const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
-    const [phoneNumber, setPhoneNumber] = useState("")
 
     const [passwordMessage, setPasswordMessage] = useState("")
     const [passwordErrorMessage, setPasswordErrorMessage] = useState("")
@@ -37,7 +32,7 @@ const SignUpComponent = () => {
         e.preventDefault();
 
         if (formValidaton()) {
-            AuthService.signUp(emailAddress, password, firstName, lastName, phoneNumber).then((response) => {
+            AuthService.createAdmin(emailAddress, password).then((response) => {
                 navigate("/login");
                 window.location.reload();
 
@@ -46,7 +41,7 @@ const SignUpComponent = () => {
                     setEmailAlredyExistMessage(error.response.data)
                 })
         }
-        else{
+        else {
             setEveryInputMessage("Minden mező kitöltése kötelező.")
 
         }
@@ -78,6 +73,7 @@ const SignUpComponent = () => {
         setIsPasswordValid(true)
         setPasswordErrorMessage("")
         setPasswordMessage('A jelszó megfelelő.');
+        showSendButton()
     };
 
     //Email formátum validációja. Az email-nek valósnak kell lennie
@@ -104,22 +100,16 @@ const SignUpComponent = () => {
     //Minden mező kitöltése kötelező
     const formValidaton = () => {
 
-        const isFirstNameNotEmpty = firstName.length > 0;
-        const isLastNameNotEmpty = lastName.length > 0;
-        const isPhoneNumberNotEmpty = phoneNumber.length > 0;
-        const isPasswordNotEmpty = password.length > 0;
-        const isPasswordAgainNotEmpty = passwordAgain.length > 0;
         const isEmailNotEmpty = emailAddress.length > 0;
+        const isPasswordNotEmpty = password.length > 0;
+
+
 
         if (
             isEmailValid &&
             isPasswordValid &&
-            isFirstNameNotEmpty &&
-            isLastNameNotEmpty &&
-            isPhoneNumberNotEmpty &&
-            isPasswordNotEmpty &&
-            isPasswordAgainNotEmpty &&
-            isEmailNotEmpty
+            isEmailNotEmpty &&
+            isPasswordNotEmpty
         ) {
             setIsEveryValid(true);
             return true;
@@ -131,21 +121,18 @@ const SignUpComponent = () => {
 
     //OnBlur esemény a telefonszám mezőre
     const showSendButton = () => {
-        if(formValidaton()){
-            setSendButtonEnable(false)
-        }
+        setSendButtonEnable(false)
     }
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px' }}>
-            <Typography variant="h4" sx={{ marginBottom: '16px' }}>Regisztráció</Typography>
+            <Typography variant="h4" sx={{ marginBottom: '16px' }}>Új admin hozzáadása</Typography>
             <TextField
                 type="email"
                 label="Email cím"
                 value={emailAddress}
                 onChange={(e) => setEmailAddress(e.target.value)}
                 onBlur={emailAddressValidation}
-                required
                 sx={{ marginBottom: '16px' }}
             />
             {emailAddressErrorMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{emailAddressErrorMessage}</Typography>}
@@ -154,7 +141,6 @@ const SignUpComponent = () => {
                 label="Jelszó"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
                 sx={{ marginBottom: '16px' }}
             />
             <TextField
@@ -163,37 +149,11 @@ const SignUpComponent = () => {
                 value={passwordAgain}
                 onBlur={passwordValidation}
                 onChange={(e) => setPasswordAgain(e.target.value)}
-                required
                 sx={{ marginBottom: '16px' }}
             />
             {passwordErrorMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{passwordErrorMessage}</Typography>}
             {passwordMessage && <Typography sx={{ color: 'green', marginBottom: '16px' }}>{passwordMessage}</Typography>}
-            <TextField
-                type="text"
-                label="Vezetéknév"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required
-                sx={{ marginBottom: '16px' }}
-            />
-            <TextField
-                type="text"
-                label="Keresztnév"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                sx={{ marginBottom: '16px' }}
-            />
-            <PhoneInput
-                required
-                label="fsfd"
-                country={'hu'}
-                value={phoneNumber}
-                onChange={setPhoneNumber}
-                onBlur={showSendButton} />
             <Button disabled={sendButtonEnable} variant="contained" onClick={(e) => signUp(e)}>Küldés</Button>
-            <Link to="/">
-                <button className='btn btn-danger'>Mégse</button>
-            </Link>
             {everyInputMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{everyInputMessage}</Typography>}
             {emailAlredyExistMessage && (
                 <div className="form-group">
@@ -206,4 +166,4 @@ const SignUpComponent = () => {
     );
 }
 
-export default SignUpComponent;
+export default CreateAdminComponent;

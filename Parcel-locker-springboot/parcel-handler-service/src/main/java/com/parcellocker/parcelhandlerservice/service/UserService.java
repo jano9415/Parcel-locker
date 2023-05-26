@@ -20,6 +20,6 @@ public interface UserService {
     void save(User user);
 
     //Új user hozzáadása az adatbázishoz. A user objektum az authentication service-től érkezik szinkron kommunikációval.
-    String createUser(ParcelHandlerServiceUserDTO user);
+    ResponseEntity<String> createUser(ParcelHandlerServiceUserDTO user);
 
 }

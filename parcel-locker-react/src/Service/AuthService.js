@@ -71,6 +71,24 @@ const logOut = () => {
   localStorage.removeItem("user");
 }
 
+//Új futár létrehozása
+const createCourier = (uniqueCourierId, firstName, lastName) => {
+  return axios.post(API_URL + "createcourier", {
+    uniqueCourierId,
+    firstName,
+    lastName,
+  },
+  {headers: authHeader()});
+};
+
+//Új admin létrehozása
+const createAdmin = (emailAddress, password) => {
+  return axios.post(API_URL + "createadmin", {
+    emailAddress,
+    password,
+  },
+  {headers: authHeader()});
+};
 
 
 const AuthService = {
@@ -79,7 +97,9 @@ const AuthService = {
   courierLogin,
   logOut,
   getCurrentUser,
-  signUpActivation
+  signUpActivation,
+  createCourier,
+  createAdmin
 
 
 };

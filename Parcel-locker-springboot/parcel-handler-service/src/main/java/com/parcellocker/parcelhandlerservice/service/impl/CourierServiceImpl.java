@@ -39,7 +39,7 @@ public class CourierServiceImpl implements CourierService {
 
         courier.setUniqueCourierId(courierDTO.getUniqueCourierId());
         courier.setFirstName(courierDTO.getFirstName());
-        courier.setLastName(courier.getLastName());
+        courier.setLastName(courierDTO.getLastName());
 
         save(courier);
 

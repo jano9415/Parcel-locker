@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
 
     //Új user hozzáadása az adatbázishoz. A user objektum az authentication service-től érkezik szinkron kommunikációval.
     @Override
-    public String createUser(ParcelHandlerServiceUserDTO user) {
+    public ResponseEntity<String> createUser(ParcelHandlerServiceUserDTO user) {
         User userForDB = new User();
 
         userForDB.setEmailAddress(user.getEmailAddress());
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 
         save(userForDB);
 
-        return "User hozzáadva az adatbázishoz";
+        return ResponseEntity.ok("User hozzáadva az adatbázishoz");
     }
 
 

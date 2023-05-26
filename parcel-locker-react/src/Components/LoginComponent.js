@@ -1,61 +1,58 @@
 import React, { useEffect, useState } from 'react';
-import { useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import AuthService from '../Service/AuthService';
+import { TextField, Button, Typography, Box } from '@mui/material';
 
 const LoginComponent = () => {
 
     let navigate = useNavigate();
 
-    const form = useRef();
     const { signUpActivationCode } = useParams();
 
     const [emailAddress, setEmailAddress] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [signUpActivationMessage, setSignUpActivationMessage] = useState("");
     const [signUpActivationErrorMessage, setSignUpActivationErrorMessage] = useState("");
 
 
-    //Email cím kiolvasása az input mezőből
-    const onChangeEmailAddress = (e) => {
-        const emailAddress = e.target.value;
-        setEmailAddress(emailAddress);
-    }
 
-    //Jelszó kiolvasása az input mezőből
-    const onChangePassword = (e) => {
-        const password = e.target.value;
-        setPassword(password);
-    };
+    const [isEveryValid, setIsEveryValid] = useState(false)
+    const [everyInputMessage, setEveryInputMessage] = useState("")
+
 
     //Bejelentkezés kezelése
-    const handleLogin = (e) => {
+    const logIn = (e) => {
         e.preventDefault();
 
-        setMessage("");
+        setErrorMessage("");
         setLoading(true);
 
 
-        AuthService.logIn(emailAddress, password).then(
-            () => {
-                navigate("/");
-                window.location.reload();
-            },
-            (error) => {
-                const resMessage = error.response.data
-                console.log(error)
+        if (formValidaton()) {
+            AuthService.logIn(emailAddress, password).then(
+                () => {
+                    navigate("/");
+                    window.location.reload();
+                },
+                (error) => {
+                    setLoading(false);
+                    setErrorMessage(error.response.data)
 
-                setLoading(false);
-                setMessage(resMessage)
+                }
+            )
 
-            }
-        )
+        }
+        else {
+            setLoading(false)
+            setEveryInputMessage("Minden mező kitöltése kötelező.")
+        }
+
+
     }
 
     useEffect(() => {
-
         //Regisztráció aktiválása
         if (signUpActivationCode) {
             AuthService.signUpActivation(signUpActivationCode).then(
@@ -68,9 +65,7 @@ const LoginComponent = () => {
 
                 }
             )
-
         }
-
     }, []);
 
     //Sikeres vagy sikertelen regisztráció aktiválása üzenet
@@ -95,62 +90,63 @@ const LoginComponent = () => {
                 </div>
             )
         }
-
     }
+
+    //Minden mező kitöltése kötelező
+    const formValidaton = () => {
+
+        const isEmailNotEmpty = emailAddress.length > 0;
+        const isPasswordNotEmpty = password.length > 0;
+
+        if (
+            isEmailNotEmpty &&
+            isPasswordNotEmpty
+        ) {
+            setIsEveryValid(true);
+            return true;
+        } else {
+            setIsEveryValid(false);
+            return false;
+        }
+    };
 
 
 
     return (
         <div>
-            <div className="card col-md-6 offset-md-3 offset-md-3 mt-2">
-                <div className="card card-container">
-                    <form onSubmit={handleLogin} ref={form}>
-                        <div className="form-group">
-                            <label className='form-label' htmlFor="username">Email cím</label>
-                            <input
-                                type="text"
-                                className="form-control mt-1"
-                                name="username"
-                                value={emailAddress}
-                                placeholder="Felhasználói név"
-                                required
-                                onChange={onChangeEmailAddress}
-                            />
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px' }}>
+                <Typography variant="h4" sx={{ marginBottom: '16px' }}>Bejelentkezés</Typography>
+                <TextField
+                    type="email"
+                    label="Email cím"
+                    value={emailAddress}
+                    onChange={(e) => setEmailAddress(e.target.value)}
+                    sx={{ marginBottom: '16px' }}
+                />
+                <TextField
+                    type="password"
+                    label="Jelszó"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    sx={{ marginBottom: '16px' }}
+                />
+                <Button variant="contained" onClick={(e) => logIn(e)}
+                    disabled={loading}>
+                    {loading && (
+                        <span className="spinner-border spinner-border-sm"></span>
+                    )}
+                    <span>Bejelentkezés</span>
+                </Button>
+                {everyInputMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{everyInputMessage}</Typography>}
+                {errorMessage && (
+                    <div className="form-group">
+                        <div className="alert alert-danger" role="alert">
+                            {errorMessage}
                         </div>
-
-                        <div className="form-group">
-                            <label htmlFor="password">Jelszó</label>
-                            <input
-                                type="password"
-                                className="form-control mt-1"
-                                name="password"
-                                value={password}
-                                placeholder="Jelszó"
-                                required
-                                onChange={onChangePassword}
-                            />
-                        </div>
-
-                        <div className="form-group m-2">
-                            <button className="btn btn-primary btn-block mt-2" disabled={loading}>
-                                {loading && (
-                                    <span className="spinner-border spinner-border-sm"></span>
-                                )}
-                                <span>Bejelentkezés</span>
-                            </button>
-                        </div>
-
-                        {message && (
-                            <div className="form-group">
-                                <div className="alert alert-danger" role="alert">
-                                    {message}
-                                </div>
-                            </div>
-                        )}
-                        {showSignUpActivationMessage()}
-                    </form>
-                </div>
-            </div>
+                    </div>
+                )}
+                {showSignUpActivationMessage()}
+            </Box>
         </div>
     );
 }

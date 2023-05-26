@@ -230,12 +230,13 @@ public class UserServiceImpl implements UserService {
     }
 
     //Új futár létrehozása
+    //Futár objektum küldése a parcel handler service-nek
     @Override
     public ResponseEntity<?> createCourier(CreateCourierDTO courierDTO) {
 
-        //A megadott email cím már létezik
+        //A megadott futár azonosító már létezik
         if(existsByEmailAddress(courierDTO.getUniqueCourierId())){
-            return ResponseEntity.badRequest().body("Ez az email cím már regisztrálva van!");
+            return ResponseEntity.badRequest().body("Ez a futár azonosító már regisztrálva van!");
         }
 
         //Új futár létrehozása
@@ -269,7 +270,29 @@ public class UserServiceImpl implements UserService {
     //Új admin létrehozása
     @Override
     public ResponseEntity<?> createAdmin(CreateAdminDTO adminDTO) {
-        return null;
+
+        //A megadott email cím már létezik
+        if(existsByEmailAddress(adminDTO.getEmailAddress())){
+            return ResponseEntity.badRequest().body("Ez az email cím már regisztrálva van!");
+        }
+
+        //Új admin létrehozása
+        User user = new User();
+        user.setEnable(true);
+        user.setEmailAddress(adminDTO.getEmailAddress());
+        user.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
+
+        //Admin szerepköreinek beállítása
+        Set<Role> roles = new HashSet<>();
+
+        Role adminRole = roleService.findByRoleName("admin")
+                .orElseThrow(() -> new RuntimeException("Admin szerepkör nem található"));
+        roles.add(adminRole);
+
+        user.setRoles(roles);
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Új admin sikeresen hozzáadva");
     }
 
     //Random string generálása a regisztrációhoz szükséges aktivációs kód számára

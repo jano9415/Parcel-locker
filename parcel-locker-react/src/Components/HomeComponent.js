@@ -1,27 +1,37 @@
-import React from 'react';
-import TestService from '../Service/TestService';
+import React, { useState } from 'react';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+
 
 
 const HomeComponent = () => {
 
-    const test = () => {
+    const [value, setValue] = React.useState('one');
 
-        TestService.test3().then((response) => {
-            console.log(response.data)
-        },
-        (error) => {
-            console.log(error)
-        }
-        )
+    const handleChange = (event, newValue) => {
+      setValue(newValue);
+    };
 
-    }
 
-    
+
+
     return (
-        <div>
-            <button onClick={test}>Próba gomb</button>
-            
-        </div>
+        <Box sx={{ width: '100%' }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="wrapped label tabs example"
+        >
+          <Tab
+            value="one"
+            label="New Arrivals in the Longest Text of Nonfiction that should appear in the next line"
+            wrapped
+          />
+          <Tab value="two" label="Item Two" />
+          <Tab value="three" label="Item Three" />
+        </Tabs>
+      </Box>
     );
 }
 

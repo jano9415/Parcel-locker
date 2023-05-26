@@ -16,7 +16,7 @@ public class UserController {
 
     //Új user hozzáadása az adatbázishoz. Az objektum az authentication service-ből jön
     @PostMapping("/createuser")
-    public String createUser(@RequestBody ParcelHandlerServiceUserDTO user){
+    public ResponseEntity<String> createUser(@RequestBody ParcelHandlerServiceUserDTO user){
         return userService.createUser(user);
 
     }
