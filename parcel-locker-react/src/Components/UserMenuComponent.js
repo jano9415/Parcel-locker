@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import { Link } from 'react-router-dom';
 
 const UserMenuComponent = () => {
 
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = useState(0);
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -14,9 +15,12 @@ const UserMenuComponent = () => {
     return (
         <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
             <Tabs value={value} onChange={handleChange} centered>
-                <Tab label="Item One" />
-                <Tab label="Item Two" />
-                <Tab label="Item Three" />
+
+                <Tab label={<Link to={"/logincourier"} className='nav-link'>Futár bejelentkezés</Link>} />
+                <Tab label={<Link to={"/"} className='nav-link'>Csomagküldés</Link>} />
+                <Tab label={<Link to={"/"} className='nav-link'>Csomagkövetés</Link>} />
+                <Tab label={<Link to={"/login"} className='nav-link'>Csomagautomaták</Link>} />
+
             </Tabs>
         </Box>
     );

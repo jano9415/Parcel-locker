@@ -1,38 +1,64 @@
 import React, { useState } from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
+import parcellockerimage from '../parcellockerimage.jpg'
+import parcellockerimage2 from '../parcellockerimage2.jpg'
+import parcellockerimage3 from '../parcellockerimage3.jpg'
+import { Slide } from 'react-slideshow-image';
+import 'react-slideshow-image/dist/styles.css'
 
 
 
 const HomeComponent = () => {
 
-    const [value, setValue] = React.useState('one');
+  const spanStyle = {
+    padding: '20px',
+    background: '#efefef',
+    color: '#000000'
+  }
+  
+  const divStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundSize: 'cover',
+    height: '400px'
+  }
+  const slideImages = [
+    {
+      url:parcellockerimage,
+      caption: 'Csomagfeladás',
+    },
+    {
+      url: parcellockerimage2,
+      caption: 'Csomagátvétel'
+    },
+    {
+      url: parcellockerimage3,
+      caption: 'Küldemény nyomon követése',
+    },
+  ];
 
-    const handleChange = (event, newValue) => {
-      setValue(newValue);
-    };
 
 
 
 
-    return (
-        <Box sx={{ width: '100%' }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          aria-label="wrapped label tabs example"
-        >
-          <Tab
-            value="one"
-            label="New Arrivals in the Longest Text of Nonfiction that should appear in the next line"
-            wrapped
-          />
-          <Tab value="two" label="Item Two" />
-          <Tab value="three" label="Item Three" />
-        </Tabs>
-      </Box>
-    );
+
+  return (
+    <div>
+
+      <div className="slide-container">
+        <Slide>
+         {slideImages.map((slideImage, index)=> (
+            <div key={index}>
+              <div style={{ ...divStyle, 'backgroundImage': `url(${slideImage.url})` }}>
+                <span style={spanStyle}>{slideImage.caption}</span>
+              </div>
+            </div>
+          ))} 
+        </Slide>
+      </div>
+
+    </div>
+  );
 }
 
 export default HomeComponent;
