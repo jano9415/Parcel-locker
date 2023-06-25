@@ -1,6 +1,5 @@
-function greet(){
-    
- }
+let uniqueCourierId;
+
 
  const serialRead = async () => {
     let uId = ""
@@ -37,12 +36,16 @@ function greet(){
                 break;
             }
         }
+        uniqueCourierId = uId;
+        return uId;
         
-        counter = 0
-        uId = ""
-        return uId
 
     } catch (error) {
         console.log("A serial nem elérhető!");
     }
 }
+
+const getUniqueCourierId = () => {
+    return uniqueCourierId;
+}
+

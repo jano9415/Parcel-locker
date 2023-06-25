@@ -17,6 +17,7 @@ import { ParcelPickingUpComponent } from './parcel-picking-up/parcel-picking-up.
 import { ParcelSendingWithcodeComponent } from './parcel-sending-withcode/parcel-sending-withcode.component';
 import { ParcelSendingWithoutcodeComponent } from './parcel-sending-withoutcode/parcel-sending-withoutcode.component';
 import { CourierLoginComponent } from './courier-login/courier-login.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { CourierLoginComponent } from './courier-login/courier-login.component';
     MatButtonModule,
     MatCardModule,
     MatMenuModule,
-    MatIconModule
+    MatIconModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
