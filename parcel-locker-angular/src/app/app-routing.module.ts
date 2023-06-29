@@ -5,6 +5,7 @@ import { ParcelSendingWithcodeComponent } from './parcel-sending-withcode/parcel
 import { ParcelSendingWithoutcodeComponent } from './parcel-sending-withoutcode/parcel-sending-withoutcode.component';
 import { ParcelPickingUpComponent } from './parcel-picking-up/parcel-picking-up.component';
 import { CourierLoginComponent } from './courier-login/courier-login.component';
+import { ChooseParcelLockerComponent } from './choose-parcel-locker/choose-parcel-locker.component';
 
 const routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -12,6 +13,7 @@ const routes: Routes = [
   {path: 'parcelsendingwithoutcode', component: ParcelSendingWithoutcodeComponent},
   {path: 'parcelpickingup', component: ParcelPickingUpComponent},
   {path: 'courierlogin', component: CourierLoginComponent},
+  {path: 'chooseparcellocker', component: ChooseParcelLockerComponent},
   {path: '', redirectTo: 'home', pathMatch: 'full'}
 ];
 

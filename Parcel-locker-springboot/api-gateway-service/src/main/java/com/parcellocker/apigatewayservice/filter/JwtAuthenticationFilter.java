@@ -40,7 +40,8 @@ public class JwtAuthenticationFilter implements GatewayFilter {
                 "/auth/activation",
                 "/auth/login",
                 "/notification/test1",
-                "/auth/courierlogin");
+                "/auth/courierlogin",
+                "/parcelhandler/parcellocker/getparcellockersforchoice");
 
         Predicate<ServerHttpRequest> isApiSecured = r -> apiEndpoints.stream()
                 .noneMatch(uri -> r.getURI().getPath().contains(uri));

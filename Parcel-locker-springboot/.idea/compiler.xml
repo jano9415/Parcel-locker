@@ -14,14 +14,6 @@
         <module name="notification-service" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="api-gateway-service" target="17" />
-      <module name="authentication-service" target="17" />
-      <module name="discovery-service" target="17" />
-      <module name="notification-service" target="17" />
-      <module name="parcel-handler-service" target="17" />
-      <module name="statistics-service" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

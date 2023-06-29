@@ -18,6 +18,13 @@ import { ParcelSendingWithcodeComponent } from './parcel-sending-withcode/parcel
 import { ParcelSendingWithoutcodeComponent } from './parcel-sending-withoutcode/parcel-sending-withoutcode.component';
 import { CourierLoginComponent } from './courier-login/courier-login.component';
 import { HttpClientModule } from '@angular/common/http';
+import { NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {ReactiveFormsModule} from '@angular/forms'
+import {MatRadioModule} from '@angular/material/radio';
 
 
 @NgModule({
@@ -42,7 +49,15 @@ import { HttpClientModule } from '@angular/common/http';
     MatCardModule,
     MatMenuModule,
     MatIconModule,
-    HttpClientModule
+    HttpClientModule,
+    NgFor,
+    FormsModule,
+    MatInputModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatRadioModule
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

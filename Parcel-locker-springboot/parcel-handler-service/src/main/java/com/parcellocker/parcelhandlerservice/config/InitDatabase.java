@@ -205,13 +205,9 @@ public class InitDatabase {
         address25.setPostCode(9700);
         address25.setStreet("Zöld mező utca 5");
         addressService.save(address25);
-
-
-
-
-
     }
      */
+
 
     //Rekeszek létrehozása
     /*
@@ -461,9 +457,7 @@ public class InitDatabase {
         box30.setMaxWidth(170);
         boxService.save(box30);
 
-
-
     }
-
      */
+
 }

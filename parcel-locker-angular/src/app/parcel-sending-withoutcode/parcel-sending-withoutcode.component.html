@@ -1,1 +1,35 @@
-<p>parcel-sending-withoutcode works!</p>
+<form [formGroup]="parcelSendingForm" (ngSubmit)="sendForm(parcelSendingForm)">
+    <div>
+
+    </div>
+    <div>
+        <mat-form-field>
+            <mat-label>Cél automata</mat-label>
+            <mat-select [(value)]="selectedParcelLockerId">
+                <mat-option *ngFor="let parcelLocker of parcelLockers" [value]="parcelLocker.id">
+                    {{parcelLocker.postCode + " " + parcelLocker.city + " " + parcelLocker.street}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field>
+            <mat-label>Név</mat-label>
+            <input matInput formControlName="receiverName">
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field>
+            <mat-label>Email cím</mat-label>
+            <input matInput formControlName="receiverEmailAddress">
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field>
+            <mat-label>Telefonszám</mat-label>
+            <input matInput formControlName="receiverPhoneNumber">
+        </mat-form-field>
+    </div>
+
+    <button mat-raised-button color="primary" type="submit">Küldés</button>
+</form>

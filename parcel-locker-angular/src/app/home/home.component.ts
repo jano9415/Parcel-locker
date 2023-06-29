@@ -10,12 +10,15 @@ import { Router } from '@angular/router';
 export class HomeComponent {
 
   constructor(private router: Router){
+    //window.location.reload();
 
   }
 
   ngOnInit(): void{
     
   }
+
+  
 
   //Route a csomag küldése kóddal oldalra
   parcelSendingWithCode(): void{

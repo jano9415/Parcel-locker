@@ -34,19 +34,26 @@ export class CourierLoginComponent {
 
     if (this.uniqueCourierId) {
       this.authService.courierLogin(this.uniqueCourierId).subscribe(data => {
-        
-        // Token mentése a cookie-ba
-        const token = data.token;
-        this.cookieService.set('token', token, 7); // Az 5 utolsó paraméter a lejárati idő (napokban)
 
-        const emailAddress = data.emailAddress;
-        this.cookieService.set("emailAddress", emailAddress);
+        const currentCourier = {
+          token: data.token,
+          tokenType: data.tokenType,
+          userId: data.userId,
+          emailAddress: data.emailAddress,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          roles: data.roles
+        }
 
-        // Token lekérése a cookie-ból
-        const storedToken = this.cookieService.get('token');
-        console.log('Stored token:', storedToken);
+        //Futár objektum szerializálása és mentés cookie-ban
+        const serializedCourier = JSON.stringify(currentCourier);
+        this.cookieService.set("currentCourier", serializedCourier);
 
-        console.log(this.cookieService.get("emailAddress"));
+        //Futár objektum kiolvasása cookie-ből és visszaalakítás
+        const deserializedCourier = JSON.parse(this.cookieService.get("currentCourier"));
+
+        this.router.navigateByUrl("/home");
+        //window.location.reload();
         
       })
     }

@@ -1,1 +1,12 @@
-<p>choose-parcel-locker works!</p>
+<h4>Automata kiválasztása</h4>
+<mat-form-field>
+    <mat-label>Automaták</mat-label>
+    <mat-select [(value)]="selectedParcelLockerId">
+        <mat-option *ngFor="let parcelLocker of parcelLockers" [value]="parcelLocker.id">
+            {{parcelLocker.postCode + " " + parcelLocker.city + " " + parcelLocker.street}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+<div>
+    <button (click)="sendSelectedParcelLocker()" mat-raised-button color="primary">Kiválasztás</button>
+</div>
