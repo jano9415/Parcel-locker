@@ -2,6 +2,7 @@ package com.parcellocker.parcelhandlerservice.service.impl;
 
 import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
 import com.parcellocker.parcelhandlerservice.payload.ParcelLockerDTO;
+import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.repository.ParcelLockerRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelLockerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,19 @@ public class ParcelLockerServiceImpl implements ParcelLockerService {
             parcelLockerDTOS.add(parcelLockerDTO);
         }
         return ResponseEntity.ok(parcelLockerDTOS);
+    }
+
+    //Csomag küldése feladási kód nélkül
+    @Override
+    public ResponseEntity<String> sendParcelWithoutCode(ParcelSendingWithoutCodeRequest request) {
+        System.out.println(request);
+        return ResponseEntity.ok("ok");
+    }
+
+    //Feladási automata tele van?
+    @Override
+    public ResponseEntity<String> isParcelLockerFull(Long id) {
+        return null;
     }
 
 }

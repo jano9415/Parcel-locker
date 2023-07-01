@@ -13,6 +13,7 @@ export class AuthService {
   constructor(private httpClient: HttpClient) { }
 
   courierLogin(uniqueCourierId: string): Observable<LoginResponse> {
+    //Paraméter összeállítása
     const parameters = new HttpParams()
       .append('uniqueCourierId', uniqueCourierId);
 

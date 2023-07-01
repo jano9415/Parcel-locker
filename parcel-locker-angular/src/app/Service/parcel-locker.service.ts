@@ -34,4 +34,9 @@ export class ParcelLockerService {
   getParcelLockersForChoice(): Observable<Array<ParcelLockerDTO>>{
     return this.httpClient.get<Array<ParcelLockerDTO>>(`${this.API_URL + "getparcellockersforchoice"}`);
   }
+
+  //Csomag küldése feladási kód nélkül
+  sendParcelWithoutCode(parcelSendingFormValues: Object): Observable<any>{
+    return this.httpClient.post<any>(`${this.API_URL + "sendparcelwithoutcode"}` , parcelSendingFormValues);
+  }
 }
