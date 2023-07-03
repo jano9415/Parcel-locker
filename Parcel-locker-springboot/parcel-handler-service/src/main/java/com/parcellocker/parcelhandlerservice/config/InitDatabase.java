@@ -221,6 +221,7 @@ public class InitDatabase {
         box1.setMaxLength(200);
         box1.setMaxWeight(5);
         box1.setMaxWidth(70);
+        box1.setSize("small");
         boxService.save(box1);
 
         Box box2 = new Box();
@@ -229,6 +230,7 @@ public class InitDatabase {
         box2.setMaxLength(200);
         box2.setMaxWeight(5);
         box2.setMaxWidth(70);
+        box2.setSize("small");
         boxService.save(box2);
 
         Box box3 = new Box();
@@ -237,6 +239,7 @@ public class InitDatabase {
         box3.setMaxLength(200);
         box3.setMaxWeight(5);
         box3.setMaxWidth(70);
+        box3.setSize("small");
         boxService.save(box3);
 
         Box box4 = new Box();
@@ -245,6 +248,7 @@ public class InitDatabase {
         box4.setMaxLength(200);
         box4.setMaxWeight(5);
         box4.setMaxWidth(70);
+        box4.setSize("small");
         boxService.save(box4);
 
         Box box5 = new Box();
@@ -253,6 +257,7 @@ public class InitDatabase {
         box5.setMaxLength(200);
         box5.setMaxWeight(5);
         box5.setMaxWidth(70);
+        box5.setSize("small");
         boxService.save(box5);
 
         Box box6 = new Box();
@@ -261,6 +266,7 @@ public class InitDatabase {
         box6.setMaxLength(200);
         box6.setMaxWeight(5);
         box6.setMaxWidth(70);
+        box6.setSize("small");
         boxService.save(box6);
 
         Box box7 = new Box();
@@ -269,6 +275,7 @@ public class InitDatabase {
         box7.setMaxLength(200);
         box7.setMaxWeight(5);
         box7.setMaxWidth(70);
+        box7.setSize("small");
         boxService.save(box7);
 
         Box box8 = new Box();
@@ -277,6 +284,7 @@ public class InitDatabase {
         box8.setMaxLength(200);
         box8.setMaxWeight(5);
         box8.setMaxWidth(70);
+        box8.setSize("small");
         boxService.save(box8);
 
         Box box9 = new Box();
@@ -285,6 +293,7 @@ public class InitDatabase {
         box9.setMaxLength(200);
         box9.setMaxWeight(5);
         box9.setMaxWidth(70);
+        box9.setSize("small");
         boxService.save(box9);
 
         Box box10 = new Box();
@@ -293,6 +302,7 @@ public class InitDatabase {
         box10.setMaxLength(200);
         box10.setMaxWeight(5);
         box10.setMaxWidth(70);
+        box10.setSize("small");
         boxService.save(box10);
 
         //200x120x100
@@ -302,6 +312,7 @@ public class InitDatabase {
         box11.setMaxLength(200);
         box11.setMaxWeight(5);
         box11.setMaxWidth(120);
+        box11.setSize("medium");
         boxService.save(box11);
 
         Box box12 = new Box();
@@ -310,6 +321,7 @@ public class InitDatabase {
         box12.setMaxLength(200);
         box12.setMaxWeight(5);
         box12.setMaxWidth(120);
+        box12.setSize("medium");
         boxService.save(box12);
 
         Box box13 = new Box();
@@ -318,6 +330,7 @@ public class InitDatabase {
         box13.setMaxLength(200);
         box13.setMaxWeight(5);
         box13.setMaxWidth(120);
+        box13.setSize("medium");
         boxService.save(box13);
 
         Box box14 = new Box();
@@ -326,6 +339,7 @@ public class InitDatabase {
         box14.setMaxLength(200);
         box14.setMaxWeight(5);
         box14.setMaxWidth(120);
+        box14.setSize("medium");
         boxService.save(box14);
 
         Box box15 = new Box();
@@ -334,6 +348,7 @@ public class InitDatabase {
         box15.setMaxLength(200);
         box15.setMaxWeight(5);
         box15.setMaxWidth(120);
+        box15.setSize("medium");
         boxService.save(box15);
 
         Box box16 = new Box();
@@ -342,6 +357,7 @@ public class InitDatabase {
         box16.setMaxLength(200);
         box16.setMaxWeight(5);
         box16.setMaxWidth(120);
+        box16.setSize("medium");
         boxService.save(box16);
 
         Box box17 = new Box();
@@ -350,6 +366,7 @@ public class InitDatabase {
         box17.setMaxLength(200);
         box17.setMaxWeight(5);
         box17.setMaxWidth(120);
+        box17.setSize("medium");
         boxService.save(box17);
 
         Box box18 = new Box();
@@ -358,6 +375,7 @@ public class InitDatabase {
         box18.setMaxLength(200);
         box18.setMaxWeight(5);
         box18.setMaxWidth(120);
+        box18.setSize("medium");
         boxService.save(box18);
 
         Box box19 = new Box();
@@ -366,6 +384,7 @@ public class InitDatabase {
         box19.setMaxLength(200);
         box19.setMaxWeight(5);
         box19.setMaxWidth(120);
+        box19.setSize("medium");
         boxService.save(box19);
 
         Box box20 = new Box();
@@ -374,6 +393,7 @@ public class InitDatabase {
         box20.setMaxLength(200);
         box20.setMaxWeight(5);
         box20.setMaxWidth(120);
+        box20.setSize("medium");
         boxService.save(box20);
 
         //200x170x150
@@ -383,6 +403,7 @@ public class InitDatabase {
         box21.setMaxLength(200);
         box21.setMaxWeight(5);
         box21.setMaxWidth(170);
+        box21.setSize("large");
         boxService.save(box21);
 
         Box box22 = new Box();
@@ -391,6 +412,7 @@ public class InitDatabase {
         box22.setMaxLength(200);
         box22.setMaxWeight(5);
         box22.setMaxWidth(170);
+        box22.setSize("large");
         boxService.save(box22);
 
         Box box23 = new Box();
@@ -399,6 +421,7 @@ public class InitDatabase {
         box23.setMaxLength(200);
         box23.setMaxWeight(5);
         box23.setMaxWidth(170);
+        box23.setSize("large");
         boxService.save(box23);
 
         Box box24 = new Box();
@@ -407,6 +430,7 @@ public class InitDatabase {
         box24.setMaxLength(200);
         box24.setMaxWeight(5);
         box24.setMaxWidth(170);
+        box24.setSize("large");
         boxService.save(box24);
 
         Box box25 = new Box();
@@ -415,6 +439,7 @@ public class InitDatabase {
         box25.setMaxLength(200);
         box25.setMaxWeight(5);
         box25.setMaxWidth(170);
+        box25.setSize("large");
         boxService.save(box25);
 
         Box box26 = new Box();
@@ -423,6 +448,7 @@ public class InitDatabase {
         box26.setMaxLength(200);
         box26.setMaxWeight(5);
         box26.setMaxWidth(170);
+        box26.setSize("large");
         boxService.save(box26);
 
         Box box27 = new Box();
@@ -431,6 +457,7 @@ public class InitDatabase {
         box27.setMaxLength(200);
         box27.setMaxWeight(5);
         box27.setMaxWidth(170);
+        box27.setSize("large");
         boxService.save(box27);
 
         Box box28 = new Box();
@@ -439,6 +466,7 @@ public class InitDatabase {
         box28.setMaxLength(200);
         box28.setMaxWeight(5);
         box28.setMaxWidth(170);
+        box28.setSize("large");
         boxService.save(box28);
 
         Box box29 = new Box();
@@ -447,6 +475,7 @@ public class InitDatabase {
         box29.setMaxLength(200);
         box29.setMaxWeight(5);
         box29.setMaxWidth(170);
+        box29.setSize("large");
         boxService.save(box29);
 
         Box box30 = new Box();
@@ -455,9 +484,11 @@ public class InitDatabase {
         box30.setMaxLength(200);
         box30.setMaxWeight(5);
         box30.setMaxWidth(170);
+        box30.setSize("large");
         boxService.save(box30);
 
     }
      */
+
 
 }

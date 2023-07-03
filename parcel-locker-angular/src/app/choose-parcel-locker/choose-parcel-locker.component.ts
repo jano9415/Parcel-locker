@@ -13,13 +13,13 @@ export class ChooseParcelLockerComponent {
 
   parcelLockers: Array<ParcelLockerDTO> = [];
 
-  selectedParcelLockerId: number = 0;
+  selectedParcelLocker: ParcelLockerDTO | null = null;
 
-  constructor(private parcelLockerService: ParcelLockerService){
+  constructor(private parcelLockerService: ParcelLockerService) {
 
   }
 
-  ngOnInit(): void{
+  ngOnInit(): void {
     //Automaták lekérése kiválasztásra
     this.parcelLockerService.getParcelLockersForChoice().subscribe(data => {
       this.parcelLockers = data;
@@ -28,9 +28,16 @@ export class ChooseParcelLockerComponent {
   }
 
   //Kiválasztott automata mentése local storage-ra
-  sendSelectedParcelLocker(): void{
-    
-   localStorage.setItem('selectedParcelLockerId', JSON.stringify(this.selectedParcelLockerId));
+  sendSelectedParcelLocker(): void {
+
+    localStorage.setItem('senderParcelLockerId', JSON.stringify(this.selectedParcelLocker?.id));
+
+    localStorage.setItem('senderParcelLockerPostCode', JSON.stringify(this.selectedParcelLocker?.postCode));
+
+    localStorage.setItem('senderParcelLockerCity', JSON.stringify(this.selectedParcelLocker?.city));
+
+    localStorage.setItem('senderParcelLockerStreet', JSON.stringify(this.selectedParcelLocker?.street));
+
   }
 
 }

@@ -1,8 +1,8 @@
 <h4>Automata kiválasztása</h4>
 <mat-form-field>
     <mat-label>Automaták</mat-label>
-    <mat-select [(value)]="selectedParcelLockerId">
-        <mat-option *ngFor="let parcelLocker of parcelLockers" [value]="parcelLocker.id">
+    <mat-select [(value)]="selectedParcelLocker">
+        <mat-option *ngFor="let parcelLocker of parcelLockers" [value]="parcelLocker">
             {{parcelLocker.postCode + " " + parcelLocker.city + " " + parcelLocker.street}}
         </mat-option>
     </mat-select>

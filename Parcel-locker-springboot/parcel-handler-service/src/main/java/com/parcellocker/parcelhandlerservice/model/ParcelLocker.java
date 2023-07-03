@@ -28,6 +28,15 @@ public class ParcelLocker {
     @Column(nullable = false)
     private int amountOfBoxes;
 
+    @Column(nullable = false)
+    private int amountOfSmallBoxes;
+
+    @Column(nullable = false)
+    private int amountOfMediumBoxes;
+
+    @Column(nullable = false)
+    private int amountOfLargeBoxes;
+
     //Kapcsolat a Parcel locker és a Store között
     //Ez az osztály a birtokos
     @ManyToOne

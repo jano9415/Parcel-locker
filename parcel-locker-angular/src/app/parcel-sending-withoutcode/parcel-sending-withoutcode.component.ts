@@ -44,7 +44,7 @@ export class ParcelSendingWithoutcodeComponent {
 
       ]],
       selectedParcelLockerId: [0, [
-        
+
       ]],
       senderName: ["", [
         Validators.required
@@ -61,18 +61,62 @@ export class ParcelSendingWithoutcodeComponent {
     //Form debug
     //this.parcelSendingForm.valueChanges.subscribe(console.log);
 
+
     //Automata tele van?
+    this.parcelLockerService.isParcelLockerFull().subscribe({
+      next: (response) => {
+        if (response.message === "full") {
+          this.parcelLockerFull = true;
+        }
+        if (response.message === "notfull") {
+          this.parcelLockerFull = false;
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log("Compelete");
+      }
+    })
 
     //Kicsi rekeszek tele vannak?
+    this.parcelLockerService.areSmallBoxesFull().subscribe({
+      next: (response) => {
+        if (response.message === "full") {
+          this.smallBoxesFull = true;
+          console.log("fdsssss");
+        }
+        if (response.message === "notfull") {
+          this.smallBoxesFull = false;
+        }
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log("Compelete");
+      }
+    })
+
 
     //Közepes rekeszek tele vannak?
 
     //Nagy rekeszek tele vannak?
 
     //Automaták lekérése kiválasztásra
-    this.parcelLockerService.getParcelLockersForChoice().subscribe(response => {
-      this.parcelLockers = response;
+    this.parcelLockerService.getParcelLockersForChoice().subscribe({
+      next: (response) => {
+        this.parcelLockers = response;
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log("Compelete");
+      }
     })
+
 
 
 
@@ -98,31 +142,31 @@ export class ParcelSendingWithoutcodeComponent {
   }
 
   //Form változó getterek
-  get getReceiverName(){
+  get getReceiverName() {
     return this.parcelSendingForm.get("receiverName");
   }
 
-  get getPrice(){
+  get getPrice() {
     return this.parcelSendingForm.get("price");
   }
 
-  get getSenderName(){
+  get getSenderName() {
     return this.parcelSendingForm.get("senderName");
   }
 
-  get getSenderEmailAddress(){
+  get getSenderEmailAddress() {
     return this.parcelSendingForm.get("senderEmailAddress");
   }
 
-  get getReceiverEmailAddress(){
+  get getReceiverEmailAddress() {
     return this.parcelSendingForm.get("receiverEmailAddress");
   }
 
-  get getReceiverPhoneNumber(){
+  get getReceiverPhoneNumber() {
     return this.parcelSendingForm.get("receiverPhoneNumber");
   }
 
-  get getSelectedParcelLockerId(){
+  get getSelectedParcelLockerId() {
     return this.parcelSendingForm.get("selectedParcelLockerId");
   }
 

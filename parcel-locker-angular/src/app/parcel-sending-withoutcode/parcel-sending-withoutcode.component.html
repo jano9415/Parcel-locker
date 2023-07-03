@@ -2,98 +2,6 @@
 <!--
     value: {{parcelSendingForm.value | json}}
     -->
-<!--
-<div *ngIf="parcelLockerFull == false" style="text-align: center;">
-    <form [formGroup]="parcelSendingForm" (ngSubmit)="sendForm(parcelSendingForm)">
-
-        <p>A csomag adatai</p>
-        <p>Méret</p>
-        <div class="mb-2">
-            <mat-radio-group formControlName="parcelSize" aria-label="Csomagméret kiválasztása">
-                <mat-radio-button value="small">Kicsi</mat-radio-button>
-                <mat-radio-button value="medium">Közepes</mat-radio-button>
-                <mat-radio-button value="big">Nagy</mat-radio-button>
-            </mat-radio-group>
-        </div>
-        <p>Ha a csomag már előre ki van fizetve, az árat hagyd üresen</p>
-        <div>
-            <mat-form-field>
-                <mat-label>Csomag ára</mat-label>
-                <input matInput formControlName="price">
-            </mat-form-field>
-            <mat-error *ngIf="getPrice && getPrice.invalid && getPrice.touched">Nullát, vagy nullánál nagyobb számot adj
-                meg</mat-error>
-        </div>
-        <p>Válaszd ki az érkezési automatát</p>
-        <div>
-            <mat-form-field>
-                <mat-label>Cél automata</mat-label>
-                <mat-select formControlName="selectedParcelLockerId" [(value)]="selectedParcelLockerId">
-                    <mat-option *ngFor="let parcelLocker of parcelLockers" [value]="parcelLocker.id">
-                        {{parcelLocker.postCode + " " + parcelLocker.city + " " + parcelLocker.street}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <p>A te adataid</p>
-        <div>
-            <mat-form-field>
-                <mat-label>Név</mat-label>
-                <input matInput formControlName="senderName">
-            </mat-form-field>
-            <mat-error *ngIf="getSenderName && getSenderName.invalid && getSenderName.touched">A mező kitöltése
-                kötelező</mat-error>
-        </div>
-        <div>
-            <mat-form-field>
-                <mat-label>Email cím</mat-label>
-                <input matInput formControlName="senderEmailAddress">
-            </mat-form-field>
-            <mat-error *ngIf="getSenderEmailAddress && getSenderEmailAddress.invalid && getSenderEmailAddress.touched">A
-                mező kitöltése kötelező és valódi email címet kell megadni</mat-error>
-        </div>
-        <p>Átvevő adatai</p>
-        <div>
-            <mat-form-field>
-                <mat-label>Név</mat-label>
-                <input matInput formControlName="receiverName">
-            </mat-form-field>
-            <mat-error *ngIf="getReceiverName && getReceiverName.invalid && getReceiverName.touched">A mező kitöltése
-                kötelező</mat-error>
-        </div>
-        <div>
-            <mat-form-field>
-                <mat-label>Email cím</mat-label>
-                <input matInput formControlName="receiverEmailAddress">
-            </mat-form-field>
-            <mat-error
-                *ngIf="getReceiverEmailAddress && getReceiverEmailAddress.invalid && getReceiverEmailAddress.touched">A
-                mező kitöltése kötelező</mat-error>
-        </div>
-        <div>
-            <mat-form-field>
-                <mat-label>Telefonszám</mat-label>
-                <input matInput formControlName="receiverPhoneNumber">
-            </mat-form-field>
-            <mat-error
-                *ngIf="getReceiverPhoneNumber && getReceiverPhoneNumber.invalid && getReceiverPhoneNumber.touched">A
-                mező kitöltése kötelező</mat-error>
-        </div>
-
-        <button mat-raised-button color="primary" type="submit" [disabled]="parcelSendingForm.invalid">Küldés</button>
-    </form>
-    <mat-error *ngIf="parcelSendingForm.invalid && parcelSendingForm.touched">Minden mező kitöltése kötelező</mat-error>
-
-</div>
-
-<div *ngIf="parcelLockerFull" style="text-align: center;">
-    <p>Ez az automata jelenleg tele van. Sajnos most nem tudsz csomagot feladni.</p>
-    <p>Az automatákat naponta kétszer ürítjük és töltjük. 8:30-kor és 14:00-kor.</p>
-</div>
--->
-
-
-
 
 <form *ngIf="parcelLockerFull == false" class="mt-5" style="text-align: center;" [formGroup]="parcelSendingForm" (ngSubmit)="sendForm(parcelSendingForm)">
     <div class="d-flex justify-content-center">
@@ -190,4 +98,7 @@
 <div *ngIf="parcelLockerFull" style="text-align: center;">
     <p>Ez az automata jelenleg tele van. Sajnos most nem tudsz csomagot feladni.</p>
     <p>Az automatákat naponta kétszer ürítjük és töltjük. 8:30-kor és 14:00-kor.</p>
+</div>
+<div *ngIf="smallBoxesFull" style="text-align: center;">
+    <p>Az automata kis rekeszei jelenleg tele vannak.</p>
 </div>

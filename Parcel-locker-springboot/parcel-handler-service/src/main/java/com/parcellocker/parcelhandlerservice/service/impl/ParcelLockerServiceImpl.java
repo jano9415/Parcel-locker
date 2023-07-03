@@ -1,8 +1,10 @@
 package com.parcellocker.parcelhandlerservice.service.impl;
 
+import com.parcellocker.parcelhandlerservice.model.Parcel;
 import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
 import com.parcellocker.parcelhandlerservice.payload.ParcelLockerDTO;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
+import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.repository.ParcelLockerRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelLockerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,15 +59,48 @@ public class ParcelLockerServiceImpl implements ParcelLockerService {
 
     //Csomag küldése feladási kód nélkül
     @Override
-    public ResponseEntity<String> sendParcelWithoutCode(ParcelSendingWithoutCodeRequest request) {
+    public ResponseEntity<String> sendParcelWithoutCode(ParcelSendingWithoutCodeRequest request, Long senderParcelLockerId) {
         System.out.println(request);
+        System.out.println(senderParcelLockerId);
         return ResponseEntity.ok("ok");
     }
 
     //Feladási automata tele van?
     @Override
-    public ResponseEntity<String> isParcelLockerFull(Long id) {
-        return null;
+    public ResponseEntity<StringResponse> isParcelLockerFull(Long id) {
+        ParcelLocker parcelLocker = findById(id);
+        StringResponse stringResponse = new StringResponse();
+
+        if(parcelLocker.getParcels().size() == parcelLocker.getAmountOfBoxes()){
+            stringResponse.setMessage("full");
+            return ResponseEntity.ok(stringResponse);
+        }
+        stringResponse.setMessage("notfull");
+        return ResponseEntity.ok(stringResponse);
+    }
+
+    //Kicsi rekeszek tele vannak?
+    @Override
+    public ResponseEntity<StringResponse> areSmallBoxesFull(Long senderParcelLockerId) {
+        ParcelLocker parcelLocker = findById(senderParcelLockerId);
+        StringResponse stringResponse = new StringResponse();
+        int counter = 0;
+
+        for(Parcel parcel : parcelLocker.getParcels()){
+            if(parcel.getBox().getSize().equals("small")){
+                counter++;
+            }
+        }
+
+        //Automata kis rekeszei tele vannak
+        if(counter == parcelLocker.getAmountOfSmallBoxes()){
+            stringResponse.setMessage("full");
+            return ResponseEntity.ok(stringResponse);
+        }
+
+        //Automata kis rekeszei nincsenek tele
+        stringResponse.setMessage("notfull");
+        return ResponseEntity.ok(stringResponse);
     }
 
 }

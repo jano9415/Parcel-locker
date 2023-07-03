@@ -33,6 +33,9 @@ public class Box {
     private int maxWeight;
 
     @Column(nullable = false)
+    private String size;
+
+    @Column(nullable = false)
     private int boxNumber;
 
     //Opcionális adatok

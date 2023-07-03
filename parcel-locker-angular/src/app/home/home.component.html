@@ -1,21 +1,25 @@
-<div style="display: flex; justify-content: center; align-items: center; height: 30vh;">
-    <mat-card>
-        <mat-card-actions>
-            <button style="width: 300px; height: 100px;" (click)="parcelPickingUp()" mat-raised-button
-                color="primary">Csomagátvétel</button>
-        </mat-card-actions>
-    </mat-card>
+<div class="d-flex justify-content-center pt-5">
+    <div>
+        <p>{{senderParcelLockerPostCode + ", " + senderParcelLockerCity + "  " + senderParcelLockerStreet}}</p>
+    </div>
 </div>
 
-<div style="display: flex; justify-content: center; align-items: center;">
-    <mat-card>
-        <mat-card-actions>
-            <button style="margin-right: 10px; width: 300px; height: 100px;" (click)="parcelSendingWithCode()"
-                mat-raised-button color="primary">Csomagfeladás átvételi
-                kóddal</button>
-            <button style="margin-right: 10px; width: 300px; height: 100px;" (click)="parcelSendingWithoutCode()"
-                mat-raised-button color="primary">Csomagfeladás átvételi kód
-                nélkül</button>
-        </mat-card-actions>
-    </mat-card>
+<div class="d-flex justify-content-center pt-5">
+    <div>
+        <button style="width: 300px; height: 100px;" (click)="parcelPickingUp()" mat-raised-button
+            color="primary">Csomagátvétel</button>
+    </div>
+</div>
+
+<div class="d-flex justify-content-around pt-5">
+    <div>
+        <button style="width: 300px; height: 100px;" (click)="parcelSendingWithCode()" mat-raised-button
+            color="primary">Csomagfeladás átvételi
+            kóddal</button>
+    </div>
+    <div>
+        <button style="width: 300px; height: 100px;" (click)="parcelSendingWithoutCode()"
+            mat-raised-button color="primary">Csomagfeladás átvételi kód
+            nélkül</button>
+    </div>
 </div>
