@@ -1,16 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ParcelLockerDTO } from '../Payload/parcel-locker-dto';
 import { CookieService } from 'ngx-cookie-service';
-import { StringResponse } from '../Payload/string-response';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ParcelLockerService {
+export class ParcelService {
 
-  private API_URL = "http://localhost:8080/parcelhandler/parcellocker/";
+  private API_URL = "http://localhost:8080/parcelhandler/parcel/";
 
   private senderParcelLockerId: string = "";
 
@@ -51,23 +49,9 @@ export class ParcelLockerService {
 
   //Kérések a szerver felé
 
-  //Csomag automaták lekérése kiválasztásra
-  getParcelLockersForChoice(): Observable<Array<ParcelLockerDTO>> {
-    return this.httpClient.get<Array<ParcelLockerDTO>>(`${this.API_URL + "getparcellockersforchoice"}`);
-  }
-
-  //Automata tele van?
-  isParcelLockerFull(): Observable<StringResponse> {
+  //Csomag küldése feladási kód nélkül
+  sendParcelWithoutCode(parcelSendingFormValues: Object): Observable<any> {
     this.getSenderParcelLockerId();
-    return this.httpClient.get<StringResponse>(`${this.API_URL + "isparcellockerfull"}/${this.senderParcelLockerId}`);
+    return this.httpClient.post<any>(`${this.API_URL + "sendparcelwithoutcode"}/${this.senderParcelLockerId}`, parcelSendingFormValues);
   }
-
-  //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
-  areBoxesFull(): Observable<Array<StringResponse>> {
-    this.getSenderParcelLockerId();
-    return this.httpClient.get<Array<StringResponse>>(`${this.API_URL + "areboxesfull"}/${this.senderParcelLockerId}`);
-
-  }
-
-
 }

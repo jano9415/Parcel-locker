@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ParcelLockerDTO } from '../Payload/parcel-locker-dto';
 import { ParcelLockerService } from '../Service/parcel-locker.service';
+import { ParcelService } from '../Service/parcel.service';
 
 @Component({
   selector: 'app-parcel-sending-withoutcode',
@@ -24,7 +25,8 @@ export class ParcelSendingWithoutcodeComponent {
 
   largeBoxesFull: boolean = false;
 
-  constructor(private formBuilder: FormBuilder, private parcelLockerService: ParcelLockerService) {
+  constructor(private formBuilder: FormBuilder, private parcelLockerService: ParcelLockerService,
+    private parcelService: ParcelService) {
   }
 
   ngOnInit(): void {
@@ -80,46 +82,56 @@ export class ParcelSendingWithoutcodeComponent {
       }
     })
 
-    //Kicsi rekeszek tele vannak?
-    this.parcelLockerService.areSmallBoxesFull().subscribe({
-      next: (response) => {
-        if (response.message === "full") {
-          this.smallBoxesFull = true;
-          console.log("fdsssss");
-        }
-        if (response.message === "notfull") {
-          this.smallBoxesFull = false;
-        }
-      },
-      error: (error) => {
-        console.log(error);
-      },
-      complete: () => {
-        console.log("Compelete");
-      }
-    })
-
-
-    //Közepes rekeszek tele vannak?
-
-    //Nagy rekeszek tele vannak?
-
+    //Ha az automata nincs tele, akkor ellenőrzöm a kis, közepes és nagy rekeszek telítettségét.
     //Automaták lekérése kiválasztásra
-    this.parcelLockerService.getParcelLockersForChoice().subscribe({
-      next: (response) => {
-        this.parcelLockers = response;
-      },
-      error: (error) => {
-        console.log(error);
-      },
-      complete: () => {
-        console.log("Compelete");
-      }
-    })
+    if (this.parcelLockerFull == false) {
 
+      this.parcelLockerService.areBoxesFull().subscribe({
+        next: (response) => {
+          //Kicsi rekeszek
+          if (response[0].message === "full") {
+            this.smallBoxesFull = true;
+          }
+          if (response[0].message === "notfull") {
+            this.smallBoxesFull = false;
+          }
+          //Közepes rekeszek
+          if (response[1].message === "full") {
+            this.mediumBoxesFull = true;
+          }
+          if (response[1].message === "notfull") {
+            this.mediumBoxesFull = false;
+          }
+          //Nagy rekeszek
+          if (response[2].message === "full") {
+            this.largeBoxesFull = true;
+          }
+          if (response[2].message === "notfull") {
+            this.largeBoxesFull = false;
+          }
+        },
+        error: (error) => {
+          console.log(error);
+        },
+        complete: () => {
+          console.log("Compelete");
+        }
+      })
 
+      //Automaták lekérése kiválasztásra
+      this.parcelLockerService.getParcelLockersForChoice().subscribe({
+        next: (response) => {
+          this.parcelLockers = response;
+        },
+        error: (error) => {
+          console.log(error);
+        },
+        complete: () => {
+          console.log("Compelete");
+        }
+      })
 
-
+    }
   }
 
   //Csomagfeladás feladási kód nélkül
@@ -127,9 +139,11 @@ export class ParcelSendingWithoutcodeComponent {
   sendForm(form: FormGroup) {
     const parcelSendingFormValues = this.parcelSendingForm.value;
 
-    this.parcelLockerService.sendParcelWithoutCode(parcelSendingFormValues).subscribe({
+    this.parcelService.sendParcelWithoutCode(parcelSendingFormValues).subscribe({
       next: (response) => {
         console.log(response);
+        //this.parcelSendingForm.reset();
+        alert("Vedd ki a csomagodat a " + response.boxNumber + " rekeszből.");
       },
       error: (error) => {
         console.log(error);

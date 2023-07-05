@@ -7,6 +7,7 @@ import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeReq
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ParcelLockerService {
@@ -23,12 +24,9 @@ public interface ParcelLockerService {
     //Csomag automaták lekérése. Ezekből lehet kiválasztani az angular alkalmazásban a feladási automatát.
     ResponseEntity<List<ParcelLockerDTO>> getParcelLockersForChoice();
 
-    //Csomag küldése feladási kód nélkül
-    ResponseEntity<String> sendParcelWithoutCode(ParcelSendingWithoutCodeRequest request, Long senderParcelLockerId);
-
     //Feladási automata tele van?
     ResponseEntity<StringResponse> isParcelLockerFull(Long id);
 
-    //Kicsi rekeszek tele vannak?
-    ResponseEntity<StringResponse> areSmallBoxesFull(Long senderParcelLockerId);
+    //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
+    ResponseEntity<List<StringResponse>> areBoxesFull(Long senderParcelLockerId);
 }

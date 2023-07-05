@@ -18,4 +18,7 @@ public interface BoxRepository extends CrudRepository<Box, Long> {
     //Keresés id alapján
     @Override
     Optional<Box> findById(Long id);
+
+    //Keresés méret alapján
+    List<Box> findBySize(String size);
 }

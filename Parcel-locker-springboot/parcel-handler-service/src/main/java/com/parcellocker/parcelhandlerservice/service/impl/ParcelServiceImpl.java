@@ -1,19 +1,34 @@
 package com.parcellocker.parcelhandlerservice.service.impl;
 
-import com.netflix.discovery.converters.Auto;
+import com.parcellocker.parcelhandlerservice.kafka.Producer;
+import com.parcellocker.parcelhandlerservice.model.Box;
 import com.parcellocker.parcelhandlerservice.model.Parcel;
+import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
+import com.parcellocker.parcelhandlerservice.payload.*;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 
 @Service
 public class ParcelServiceImpl implements ParcelService {
 
     @Autowired
     private ParcelRepository parcelRepository;
+
+    @Autowired
+    private ParcelLockerServiceImpl parcelLockerService;
+
+    @Autowired
+    private BoxServiceImpl boxService;
+
+    @Autowired
+    private Producer producer;
 
 
     @Override
@@ -30,5 +45,158 @@ public class ParcelServiceImpl implements ParcelService {
     public void save(Parcel parcel) {
         parcelRepository.save(parcel);
 
+    }
+
+    //Csomag küldése feladási kód nélkül
+    @Override
+    public ResponseEntity<?> sendParcelWithoutCode(ParcelSendingWithoutCodeRequest request, Long senderParcelLockerId) {
+
+        Parcel parcel = new Parcel();
+        ParcelLocker senderParcelLocker = parcelLockerService.findById(senderParcelLockerId);
+        ParcelLocker receiverParcelLocker = parcelLockerService.findById(request.getSelectedParcelLockerId());
+        StringResponse stringResponse = new StringResponse();
+        ParcelSendingWithoutCodeResponse response = new ParcelSendingWithoutCodeResponse();
+
+        //Feladási automata csomagjai
+        Set<Parcel> parcelsInSenderParcelLocker = senderParcelLocker.getParcels();
+
+        //A kiválasztott mérethez tartozó rekeszek
+        List<Box> allBoxesInSelectedSize = boxService.findBySize(request.getParcelSize());
+
+        //Feladási automata teli rekeszei
+        List<Box> fullBoxes = new ArrayList<>();
+
+        for(Parcel p : parcelsInSenderParcelLocker){
+            fullBoxes.add(p.getBox());
+        }
+
+        //Üres rekeszek keresése
+        List<Box> emptyBoxes = new ArrayList<>();
+
+        for(Box b : allBoxesInSelectedSize){
+            if (!fullBoxes.contains(b)) {
+                emptyBoxes.add(b);
+            }
+        }
+
+        //Csomaghoz rekesz hozzárendelése
+        //A szabad rekeszek elérhetőségét már frontend oldalon ellenőrzöm. Ha idáig eljut a kérés, akkor van szabad rekesz.
+        //Viszont lehetőség van a csomagküldő honlapjáról is csomagot feladni.
+        //Ezért elvileg előfordulhat az, hogy az ügyfél elkezdi a csomagfeladást az automatánál, az elején még vannak
+        //szabad rekeszek. De miközben kitölti az adatokat, adnak fel csomagot a honlapról, ezért azok a rekeszek betelnek.
+        //Ezért itt is ellenőrizni kell a szabad rekeszek elérhetőségét.
+        if(emptyBoxes.isEmpty()){
+            //Minden rekesz tele
+            stringResponse.setMessage("full");
+            return ResponseEntity.ok(stringResponse);
+        }
+        else{
+            parcel.setBox(emptyBoxes.get(0));
+        }
+
+        //Csomag változóinak beállítása
+        parcel.setUniqueParcelId(generateRandomString(10));
+        parcel.setUser(null);
+        parcel.setSenderName(request.getSenderName());
+        parcel.setSenderEmailAddress(request.getSenderEmailAddress());
+        parcel.setShippingFrom(senderParcelLocker);
+        parcel.setShippingTo(receiverParcelLocker);
+        parcel.setSize(request.getParcelSize());
+        parcel.setPrice(request.getPrice());
+        parcel.setReceiverName(request.getReceiverName());
+        parcel.setReceiverEmailAddress(request.getReceiverEmailAddress());
+        parcel.setShipped(false);
+        parcel.setPickedUp(false);
+
+        LocalDate currentDate = LocalDate.now();
+        parcel.setSendingDate(currentDate);
+
+        LocalTime currentTime = LocalTime.now();
+        parcel.setSendingTime(currentTime);
+
+        parcel.setShippingDate(null);
+        parcel.setShippingTime(null);
+        parcel.setPickingUpDate(null);
+        parcel.setPickingUpTime(null);
+
+        parcel.setPlaced(true);
+
+        //Ha a csomag ára 0, akkor már ki van fizetve. Különben nincs
+        if(request.getPrice() == 0){
+            parcel.setPaid(true);
+        }
+
+        parcel.setPaid(false);
+        parcel.setStore(null);
+        parcel.setCourier(null);
+        parcel.setSendingCode(null);
+        parcel.setPickingUpCode(generateRandomString(5));
+
+        //Csomag és csomag automata összerendlése
+        senderParcelLocker.getParcels().add(parcel);
+        parcel.setParcelLocker(senderParcelLocker);
+
+        save(parcel);
+        parcelLockerService.save(senderParcelLocker);
+
+        //Email küldése a feladónak
+        //Értesítési objektum küldése a(z) ("parcelSendingNotificationForSender") topicnak
+        ParcelSendingNotification notification = new ParcelSendingNotification();
+
+        notification.setReceiverName(request.getReceiverName());
+        notification.setSenderName(request.getSenderName());
+        notification.setSenderEmailAddress(request.getSenderEmailAddress());
+        notification.setReceiverEmailAddress(request.getReceiverEmailAddress());
+        notification.setPrice(request.getPrice());
+        notification.setUniqueParcelId(parcel.getUniqueParcelId());
+        notification.setSenderParcelLockerPostCode(senderParcelLocker.getLocation().getPostCode());
+        notification.setSenderParcelLockerCity(senderParcelLocker.getLocation().getCity());
+        notification.setSenderParcelLockerStreet(senderParcelLocker.getLocation().getStreet());
+
+        notification.setReceiverParcelLockerPostCode(receiverParcelLocker.getLocation().getPostCode());
+        notification.setReceiverParcelLockerCity(receiverParcelLocker.getLocation().getCity());
+        notification.setReceiverParcelLockerStreet(receiverParcelLocker.getLocation().getStreet());
+        notification.setSendingDate(currentDate.toString());
+        notification.setSendingTime(currentTime.toString());
+
+        producer.sendNotificationForSender(notification);
+
+        //Email küldése az átvevőnek
+        //Értesítési objektum küldése a(z) ("parcelSendingNotificationForReceiver") topicnak
+        //Sproducer.sendNotificationForReceiver(notification);
+
+
+        response.setMessage("successSending");
+        response.setBoxNumber(parcel.getBox().getBoxNumber());
+        return ResponseEntity.ok(response);
+    }
+
+    //Random string generálása
+    public String generateRandomString(int length) {
+
+        String upperAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerAlphabet = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+
+        String alphaNumeric = upperAlphabet + lowerAlphabet + numbers;
+
+        StringBuilder sb = new StringBuilder();
+
+        Random random = new Random();
+
+        for(int i = 0; i < length; i++) {
+
+            int index = random.nextInt(alphaNumeric.length());
+
+            char randomChar = alphaNumeric.charAt(index);
+
+            sb.append(randomChar);
+        }
+
+        String randomString = sb.toString();
+
+        //Ide lehet kell egy rekurzivitás
+
+        return randomString;
     }
 }

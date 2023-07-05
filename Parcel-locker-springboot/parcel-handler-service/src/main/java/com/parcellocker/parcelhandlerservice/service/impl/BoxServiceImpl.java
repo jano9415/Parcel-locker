@@ -30,4 +30,10 @@ public class BoxServiceImpl implements BoxService {
         boxRepository.save(box);
 
     }
+
+    //Keresés méret alapján
+    @Override
+    public List<Box> findBySize(String size) {
+        return boxRepository.findBySize(size);
+    }
 }

@@ -15,4 +15,7 @@ public interface BoxService {
 
     //Rekesz mentése
     void save(Box box);
+
+    //Keresés méret alapján
+    List<Box> findBySize(String size);
 }

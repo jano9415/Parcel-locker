@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,27 +25,16 @@ public class ParcelLockerController {
         return parcelLockerService.getParcelLockersForChoice();
     }
 
-    //Csomag küldése feladási kód nélkül
-    @PostMapping("/sendparcelwithoutcode/{senderParcelLockerId}")
-    public ResponseEntity<String> sendParcelWithoutCode(@RequestBody ParcelSendingWithoutCodeRequest request,
-                                                        @PathVariable Long senderParcelLockerId){
-
-        return parcelLockerService.sendParcelWithoutCode(request, senderParcelLockerId);
-    }
-
     //Feladási automata tele van?
     @GetMapping("/isparcellockerfull/{senderParcelLockerId}")
     public ResponseEntity<StringResponse> isParcelLockerFull(@PathVariable Long senderParcelLockerId){
         return parcelLockerService.isParcelLockerFull(senderParcelLockerId);
     }
 
-    //Kicsi rekeszek tele vannak?
-    @GetMapping("/aresmallboxesfull/{senderParcelLockerId}")
-    public ResponseEntity<StringResponse> areSmallBoxesFull(@PathVariable Long senderParcelLockerId){
+    //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
+    @GetMapping("/areboxesfull/{senderParcelLockerId}")
+    public ResponseEntity<List<StringResponse>> areBoxesFull(@PathVariable Long senderParcelLockerId){
 
-        return parcelLockerService.areSmallBoxesFull(senderParcelLockerId);
+        return parcelLockerService.areBoxesFull(senderParcelLockerId);
     }
-    //Közepes rekeszek tele vannak?
-
-    //Nagy rekeszek tele vannak?
 }

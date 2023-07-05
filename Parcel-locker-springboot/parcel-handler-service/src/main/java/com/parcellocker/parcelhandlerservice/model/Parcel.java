@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -21,7 +23,7 @@ public class Parcel {
     private Long id;
 
     @Column(nullable = false)
-    private int uniqueParcelId;
+    private String uniqueParcelId;
 
     //Kapcsolat a Parcel és a User között
     //Ez az osztály a birtokos
@@ -39,6 +41,10 @@ public class Parcel {
     private ParcelLocker shippingTo;
 
     @Column(nullable = false)
+    private String size;
+
+    /*
+    @Column(nullable = false)
     private int width;
 
     @Column(nullable = false)
@@ -49,6 +55,7 @@ public class Parcel {
 
     @Column(nullable = false)
     private int weight;
+     */
 
     @Column(nullable = false)
     private int price;
@@ -59,23 +66,27 @@ public class Parcel {
     @Column(nullable = false)
     private String receiverEmailAddress;
 
+    private String senderName;
+
+    private String senderEmailAddress;
+
     @Column(nullable = false)
     private boolean isShipped;
 
     @Column(nullable = false)
     private boolean isPickedUp;
 
-    private Date sendingDate;
+    private LocalDate sendingDate;
 
-    private Time sendingTime;
+    private LocalTime sendingTime;
 
-    private Date pickingUpDate;
+    private LocalDate pickingUpDate;
 
-    private Time pickingUpTime;
+    private LocalTime pickingUpTime;
 
-    private Date shippingDate;
+    private LocalDate shippingDate;
 
-    private Time shippingTime;
+    private LocalTime shippingTime;
 
     //Kapcsolat a Parcel és a Box között
     //Ez az osztály a birtokos
@@ -117,4 +128,9 @@ public class Parcel {
             inverseJoinColumns = {@JoinColumn(name = "courier_id")})
     @ManyToOne
     private Courier courier;
+
+    @Column(nullable = false)
+    private String pickingUpCode;
+
+    private String sendingCode;
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class ParcelLockerServiceImpl implements ParcelLockerService {
@@ -57,14 +58,6 @@ public class ParcelLockerServiceImpl implements ParcelLockerService {
         return ResponseEntity.ok(parcelLockerDTOS);
     }
 
-    //Csomag küldése feladási kód nélkül
-    @Override
-    public ResponseEntity<String> sendParcelWithoutCode(ParcelSendingWithoutCodeRequest request, Long senderParcelLockerId) {
-        System.out.println(request);
-        System.out.println(senderParcelLockerId);
-        return ResponseEntity.ok("ok");
-    }
-
     //Feladási automata tele van?
     @Override
     public ResponseEntity<StringResponse> isParcelLockerFull(Long id) {
@@ -79,28 +72,70 @@ public class ParcelLockerServiceImpl implements ParcelLockerService {
         return ResponseEntity.ok(stringResponse);
     }
 
-    //Kicsi rekeszek tele vannak?
+    //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
     @Override
-    public ResponseEntity<StringResponse> areSmallBoxesFull(Long senderParcelLockerId) {
+    public ResponseEntity<List<StringResponse>>areBoxesFull(Long senderParcelLockerId) {
+        List<StringResponse> stringResponses = new ArrayList<>();
+
+        stringResponses.add(checkBoxes("small", senderParcelLockerId));
+        stringResponses.add(checkBoxes("medium", senderParcelLockerId));
+        stringResponses.add(checkBoxes("large", senderParcelLockerId));
+
+        return ResponseEntity.ok(stringResponses);
+    }
+
+    //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
+    public StringResponse checkBoxes(String size, Long senderParcelLockerId){
+
         ParcelLocker parcelLocker = findById(senderParcelLockerId);
         StringResponse stringResponse = new StringResponse();
         int counter = 0;
 
         for(Parcel parcel : parcelLocker.getParcels()){
-            if(parcel.getBox().getSize().equals("small")){
+            if(parcel.getBox().getSize().equals(size)){
                 counter++;
             }
         }
 
-        //Automata kis rekeszei tele vannak
-        if(counter == parcelLocker.getAmountOfSmallBoxes()){
-            stringResponse.setMessage("full");
-            return ResponseEntity.ok(stringResponse);
+        //Automata kis rekeszeinek ellenőrzése
+        if(size.equals("small")){
+
+            //Automata kis rekeszei tele vannak
+            if(counter == parcelLocker.getAmountOfSmallBoxes()){
+                stringResponse.setMessage("full");
+                return stringResponse;
+            }
+
+            //Automata kis rekeszei nincsenek tele
+            stringResponse.setMessage("notfull");
+            return stringResponse;
+
         }
+        //Automata közepes rekeszeinek ellenőrzése
+        if(size.equals("medium")){
 
-        //Automata kis rekeszei nincsenek tele
+            //Automata közepes rekeszei tele vannak
+            if(counter == parcelLocker.getAmountOfMediumBoxes()){
+                stringResponse.setMessage("full");
+                return stringResponse;
+            }
+
+            //Automata közepes rekeszei nincsenek tele
+            stringResponse.setMessage("notfull");
+            return stringResponse;
+
+        }
+        //Automata nagy rekeszeinek ellenőrzése
+        if(size.equals("large")){
+
+            //Automata nagy rekeszei tele vannak
+            if(counter == parcelLocker.getAmountOfLargeBoxes()){
+                stringResponse.setMessage("full");
+                return stringResponse;
+            }
+        }
+        //Automata nagy rekeszei nincsenek tele
         stringResponse.setMessage("notfull");
-        return ResponseEntity.ok(stringResponse);
+        return stringResponse;
     }
-
 }
