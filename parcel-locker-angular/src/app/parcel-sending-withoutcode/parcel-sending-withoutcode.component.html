@@ -13,7 +13,7 @@
                 <mat-radio-group formControlName="parcelSize" aria-label="Csomagméret kiválasztása">
                     <mat-radio-button *ngIf="smallBoxesFull == false" value="small">Kicsi</mat-radio-button>
                     <mat-radio-button *ngIf="mediumBoxesFull == false" value="medium">Közepes</mat-radio-button>
-                    <mat-radio-button *ngIf="largeBoxesFull == false" value="big">Nagy</mat-radio-button>
+                    <mat-radio-button *ngIf="largeBoxesFull == false" value="large">Nagy</mat-radio-button>
                 </mat-radio-group>
             </div>
             <p>Ha a csomag már előre ki van fizetve, az árat hagyd üresen</p>
@@ -101,4 +101,10 @@
 </div>
 <div *ngIf="smallBoxesFull" style="text-align: center;">
     <p>Az automata kis rekeszei jelenleg tele vannak.</p>
+</div>
+<div *ngIf="mediumBoxesFull" style="text-align: center;">
+    <p>Az automata közepes rekeszei jelenleg tele vannak.</p>
+</div>
+<div *ngIf="largeBoxesFull" style="text-align: center;">
+    <p>Az automata nagy rekeszei jelenleg tele vannak.</p>
 </div>

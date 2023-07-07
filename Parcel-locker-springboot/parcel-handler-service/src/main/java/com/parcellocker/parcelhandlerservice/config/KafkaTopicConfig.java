@@ -28,4 +28,5 @@ public class KafkaTopicConfig {
         return TopicBuilder.name(topic2)
                 .build();
     }
+
 }

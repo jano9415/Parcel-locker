@@ -1,5 +1,6 @@
 <nav mat-tab-nav-bar ngClass="tabs">
     <a mat-tab-link routerLink="" routerLinkActive="active-link">Kezdőlap</a>
+    <a mat-tab-link routerLink="courierhome" routerLinkActive="active-link">Futár kezdőlap</a>
     <a *ngIf="!token" mat-tab-link routerLink="courierlogin" routerLinkActive="active-link">Bejelentkezés</a>
     <a *ngIf="token" mat-tab-link (click)="logOut()">Kijelentkezés</a>
 </nav>

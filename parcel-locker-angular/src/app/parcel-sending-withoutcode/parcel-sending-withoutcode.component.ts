@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ParcelLockerDTO } from '../Payload/parcel-locker-dto';
 import { ParcelLockerService } from '../Service/parcel-locker.service';
 import { ParcelService } from '../Service/parcel.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-parcel-sending-withoutcode',
@@ -26,7 +27,7 @@ export class ParcelSendingWithoutcodeComponent {
   largeBoxesFull: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private parcelLockerService: ParcelLockerService,
-    private parcelService: ParcelService) {
+    private parcelService: ParcelService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -141,9 +142,18 @@ export class ParcelSendingWithoutcodeComponent {
 
     this.parcelService.sendParcelWithoutCode(parcelSendingFormValues).subscribe({
       next: (response) => {
-        console.log(response);
-        //this.parcelSendingForm.reset();
-        alert("Vedd ki a csomagodat a " + response.boxNumber + " rekeszből.");
+        //Ha az automata a küldés közben megtelt, az online csomagküldés lehetősége miatt
+        if (response.message === "full") {
+          alert("Sajnos a kiválasztott méretű rekeszek megteltek.");
+          this.parcelSendingForm.reset();
+        }
+
+        //Sikeres csomagfeladás
+        if (response.message === "successSending") {
+          alert("Tedd be a csomagodat a(z) " + response.boxNumber + ". rekeszbe.");
+          this.router.navigateByUrl("/home");
+        }
+
       },
       error: (error) => {
         console.log(error);

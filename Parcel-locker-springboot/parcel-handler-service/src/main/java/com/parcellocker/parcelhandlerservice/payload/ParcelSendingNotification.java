@@ -2,8 +2,7 @@ package com.parcellocker.parcelhandlerservice.payload;
 
 import lombok.Data;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.io.Serializable;
 
 @Data
 public class ParcelSendingNotification {

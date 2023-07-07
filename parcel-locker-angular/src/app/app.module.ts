@@ -25,6 +25,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {ReactiveFormsModule} from '@angular/forms'
 import {MatRadioModule} from '@angular/material/radio';
+import { CourierHomeComponent } from './courier-home/courier-home.component';
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import {MatRadioModule} from '@angular/material/radio';
     ParcelSendingWithcodeComponent,
     ParcelSendingWithoutcodeComponent,
     CourierLoginComponent,
+    CourierHomeComponent,
 
   ],
   imports: [

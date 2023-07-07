@@ -1,13 +1,13 @@
 package com.parcellocker.notificationservice.service;
 
+
+
 import com.parcellocker.notificationservice.payload.ParcelSendingNotification;
 import com.parcellocker.notificationservice.payload.SignUpActivationDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-
-import java.util.logging.Logger;
 
 @Service
 public class EmailService {
@@ -37,6 +37,7 @@ public class EmailService {
         }
     }
 
+
     //Csomagfeladás utáni email értesítés küldése a feladónak
     public void sendNotificationForSender(ParcelSendingNotification notification) {
 
@@ -45,7 +46,7 @@ public class EmailService {
 
             message.setFrom("${spring.mail.username}");
             message.setTo(notification.getSenderEmailAddress());
-            message.setSubject("Regisztráció aktiválása");
+            message.setSubject("Csomagfeladás");
             message.setText("Kedves " + notification.getSenderName() + "\n\n"
                     + "Ön " + notification.getSendingDate() + " " + notification.getSendingTime() + "-kor " +
                     "sikeresen feladta a(z) " + notification.getUniqueParcelId() + " azonosítójú csomagját.\n"
@@ -72,10 +73,10 @@ public class EmailService {
 
             message.setFrom("${spring.mail.username}");
             message.setTo(notification.getReceiverEmailAddress());
-            message.setSubject("Regisztráció aktiválása");
+            message.setSubject("Csomagfeladás");
             message.setText("Kedves " + notification.getReceiverName() + "\n\n"
                     + "Önnek " + notification.getSendingDate() + " " + notification.getSendingTime() + "-kor " +
-                    notification.getUniqueParcelId() + " csomagazinosítóval csomagot adtak fel.\n"
+                    notification.getUniqueParcelId() + " csomagazonosítóval csomagot adtak fel.\n"
                     + "A csomag ára: " + notification.getPrice() + " Ft.\n"
                     + "A csomag feladója: " + notification.getSenderName() + "\n"
                     + "A feladás helye: " + notification.getSenderParcelLockerPostCode() + " " + notification.getSenderParcelLockerCity()
@@ -91,4 +92,6 @@ public class EmailService {
             System.out.println("Email server error.");
         }
     }
+
+
 }

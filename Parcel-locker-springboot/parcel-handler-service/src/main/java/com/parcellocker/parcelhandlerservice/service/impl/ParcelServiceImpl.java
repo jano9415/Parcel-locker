@@ -1,5 +1,6 @@
 package com.parcellocker.parcelhandlerservice.service.impl;
 
+
 import com.parcellocker.parcelhandlerservice.kafka.Producer;
 import com.parcellocker.parcelhandlerservice.model.Box;
 import com.parcellocker.parcelhandlerservice.model.Parcel;
@@ -139,8 +140,10 @@ public class ParcelServiceImpl implements ParcelService {
         save(parcel);
         parcelLockerService.save(senderParcelLocker);
 
+
         //Email küldése a feladónak
         //Értesítési objektum küldése a(z) ("parcelSendingNotificationForSender") topicnak
+
         ParcelSendingNotification notification = new ParcelSendingNotification();
 
         notification.setReceiverName(request.getReceiverName());
@@ -163,7 +166,7 @@ public class ParcelServiceImpl implements ParcelService {
 
         //Email küldése az átvevőnek
         //Értesítési objektum küldése a(z) ("parcelSendingNotificationForReceiver") topicnak
-        //Sproducer.sendNotificationForReceiver(notification);
+        producer.sendNotificationForReceiver(notification);
 
 
         response.setMessage("successSending");

@@ -1,13 +1,11 @@
 package com.parcellocker.notificationservice.payload;
 
-
 import lombok.Data;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.io.Serializable;
 
 @Data
-public class ParcelSendingNotification {
+public class ParcelSendingNotification{
 
     private String receiverName;
 
@@ -36,5 +34,4 @@ public class ParcelSendingNotification {
     private String sendingDate;
 
     private String sendingTime;
-
 }
