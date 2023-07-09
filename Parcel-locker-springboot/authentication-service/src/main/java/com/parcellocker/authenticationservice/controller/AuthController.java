@@ -1,9 +1,6 @@
 package com.parcellocker.authenticationservice.controller;
 
-import com.parcellocker.authenticationservice.payload.request.CreateAdminDTO;
-import com.parcellocker.authenticationservice.payload.request.CreateCourierDTO;
-import com.parcellocker.authenticationservice.payload.request.LogInRequest;
-import com.parcellocker.authenticationservice.payload.request.SignUpRequest;
+import com.parcellocker.authenticationservice.payload.request.*;
 import com.parcellocker.authenticationservice.service.serviceimpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +30,8 @@ public class AuthController {
 
     //Futár bejelentkezés
     @PostMapping("/courierlogin")
-    public ResponseEntity<?> courierLogin(@RequestParam String uniqueCourierId){
-        return userService.courierLogin(uniqueCourierId);
+    public ResponseEntity<?> courierLogin(@RequestBody LoginCourier request){
+        return userService.courierLogin(request);
     }
 
     //Regisztráció aktiválása

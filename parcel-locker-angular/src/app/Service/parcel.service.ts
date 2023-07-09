@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
+import { StringResponse } from '../Payload/string-response';
 
 @Injectable({
   providedIn: 'root'
@@ -54,4 +55,23 @@ export class ParcelService {
     this.getSenderParcelLockerId();
     return this.httpClient.post<any>(`${this.API_URL + "sendparcelwithoutcode"}/${this.senderParcelLockerId}`, parcelSendingFormValues);
   }
+
+  //Csomagok lekérése, amik készen állnak az elszállításra
+  //Jwt token szükséges
+  getParcelsForShipping(): Observable<any> {
+    this.getSenderParcelLockerId();
+    return this.httpClient.get<Array<any>>(`${this.API_URL + "getparcelsforshipping"}/${this.senderParcelLockerId}`, this.getOptionsWithToken());
+  }
+
+  //Automata kiürítése. Elszállításra váró csomagok átkerülnek a futárhoz
+  //Jwt token szükséges
+  emptyParcelLocker(uniqueCourierId: string): Observable<any> {
+    this.getSenderParcelLockerId();
+    return this.httpClient.post<Array<any>>(`${this.API_URL + "emptyparcellocker"}`, {
+      parcelLockerId: this.senderParcelLockerId,
+      uniqueCourierId
+    }, this.getOptionsWithToken());
+  }
+
+
 }

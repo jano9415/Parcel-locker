@@ -16,7 +16,7 @@ declare function getUniqueCourierId(): string;
 })
 export class CourierLoginComponent {
 
-  uniqueCourierId: string = "";
+  password: string = "";
 
   constructor(private authService: AuthService, private router: Router,
     private cookieService: CookieService) {
@@ -30,10 +30,10 @@ export class CourierLoginComponent {
   }
 
   courierLogin(): void {
-    this.uniqueCourierId = getUniqueCourierId();
+    this.password = getUniqueCourierId();
 
-    if (this.uniqueCourierId) {
-      this.authService.courierLogin(this.uniqueCourierId).subscribe(data => {
+    if (this.password) {
+      this.authService.courierLogin(this.password).subscribe(data => {
 
         const currentCourier = {
           token: data.token,

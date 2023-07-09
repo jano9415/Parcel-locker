@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
@@ -10,7 +11,7 @@ export class CourierHomeComponent {
 
   currenctCourier: Object | null = null;
 
-  constructor(private cookieService: CookieService) {
+  constructor(private cookieService: CookieService, private router: Router) {
 
   }
 
@@ -19,6 +20,16 @@ export class CourierHomeComponent {
     //Futár objektum kiolvasása cookie-ből és visszaalakítás
     this.currenctCourier = JSON.parse(this.cookieService.get("currentCourier"));
 
+  }
+
+  //Route a az automata kiürítése oldalra
+  emptyParcelLocker(): void {
+    this.router.navigate(["emptyparcellocker"]);
+  }
+
+  //Route a az automata feltöltése oldalra
+  fillParcelLocker(): void {
+    this.router.navigate(["fillparcellocker"]);
   }
 
 }

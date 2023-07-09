@@ -7,6 +7,8 @@ import { ParcelPickingUpComponent } from './parcel-picking-up/parcel-picking-up.
 import { CourierLoginComponent } from './courier-login/courier-login.component';
 import { ChooseParcelLockerComponent } from './choose-parcel-locker/choose-parcel-locker.component';
 import { CourierHomeComponent } from './courier-home/courier-home.component';
+import { EmptyParcelLockerComponent } from './empty-parcel-locker/empty-parcel-locker.component';
+import { FillParcelLockerComponent } from './fill-parcel-locker/fill-parcel-locker.component';
 
 const routes: Routes = [
   {path: 'home', component: HomeComponent},
@@ -16,6 +18,8 @@ const routes: Routes = [
   {path: 'courierlogin', component: CourierLoginComponent},
   {path: 'chooseparcellocker', component: ChooseParcelLockerComponent},
   {path: 'courierhome', component: CourierHomeComponent},
+  {path: 'emptyparcellocker', component: EmptyParcelLockerComponent},
+  {path: 'fillparcellocker', component: FillParcelLockerComponent},
   {path: '', redirectTo: 'home', pathMatch: 'full'}
 ];
 

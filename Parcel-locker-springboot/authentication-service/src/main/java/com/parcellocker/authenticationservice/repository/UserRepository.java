@@ -10,6 +10,9 @@ public interface UserRepository extends MongoRepository<User, Long> {
     //Létezik ez az email cím?
     boolean existsByEmailAddress(String emailAddress);
 
+    //Létezik ez a jelszó?
+    boolean existsByPassword(String password);
+
     //Létezik ez az email cím és jelszó?
     boolean existsByEmailAddressAndPassword(String emailAddress, String password);
 

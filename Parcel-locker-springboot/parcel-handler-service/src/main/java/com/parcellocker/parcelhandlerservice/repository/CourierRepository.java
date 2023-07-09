@@ -18,4 +18,7 @@ public interface CourierRepository extends CrudRepository<Courier, Long> {
     //Keresés id alapján
     @Override
     Optional<Courier> findById(Long id);
+
+    //Keresés egyedi futár azonosító alapján
+    Courier findByUniqueCourierId(String uniqueCourierId);
 }

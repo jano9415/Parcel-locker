@@ -1,10 +1,7 @@
 package com.parcellocker.authenticationservice.service;
 
 import com.parcellocker.authenticationservice.model.User;
-import com.parcellocker.authenticationservice.payload.request.CreateAdminDTO;
-import com.parcellocker.authenticationservice.payload.request.CreateCourierDTO;
-import com.parcellocker.authenticationservice.payload.request.LogInRequest;
-import com.parcellocker.authenticationservice.payload.request.SignUpRequest;
+import com.parcellocker.authenticationservice.payload.request.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
@@ -24,6 +21,9 @@ public interface UserService {
     //Létezik ez az email cím?
     boolean existsByEmailAddress(String emailAddress);
 
+    //Létezik ez a jelszó?
+    boolean existsByPassword(String password);
+
     //Keresés email cím és jelszó szerint
     User findByEmailAddressAndPassword(String emailAddress, String password);
 
@@ -37,7 +37,7 @@ public interface UserService {
     boolean existsByEmailAddressAndPassword(String emailAddress, String password);
 
     //Futár bejelentkezés
-    ResponseEntity<?> courierLogin(String uniqueCourierId);
+    ResponseEntity<?> courierLogin(LoginCourier request);
 
     //Regisztráció aktiválása
     ResponseEntity<?> signUpActivation(String activationCode);

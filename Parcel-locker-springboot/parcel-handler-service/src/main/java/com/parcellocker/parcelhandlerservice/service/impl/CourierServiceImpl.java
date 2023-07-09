@@ -33,6 +33,7 @@ public class CourierServiceImpl implements CourierService {
     }
 
     //Új futár hozzáadása az adatbázishoz.
+    //A futár objektum az authentication-service-ből jön
     @Override
     public ResponseEntity<String> createCourier(CreateCourierDTO courierDTO) {
         Courier courier = new Courier();
@@ -44,5 +45,11 @@ public class CourierServiceImpl implements CourierService {
         save(courier);
 
         return ResponseEntity.ok("Új futár hozzáadva az adatbázishoz");
+    }
+
+    //Keresés egyedi futár azonosító alapján
+    @Override
+    public Courier findByUniqueCourierId(String uniqueCourierId) {
+        return courierRepository.findByUniqueCourierId(uniqueCourierId);
     }
 }

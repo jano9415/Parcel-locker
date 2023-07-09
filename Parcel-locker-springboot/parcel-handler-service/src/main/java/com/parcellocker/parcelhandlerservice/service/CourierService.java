@@ -20,4 +20,7 @@ public interface CourierService {
 
     //Új futár hozzáadása az adatbázishoz.
     ResponseEntity<String> createCourier(CreateCourierDTO courierDTO);
+
+    //Keresés egyedi futár azonosító alapján
+    Courier findByUniqueCourierId(String uniqueCourierId);
 }

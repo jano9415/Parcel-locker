@@ -26,6 +26,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {ReactiveFormsModule} from '@angular/forms'
 import {MatRadioModule} from '@angular/material/radio';
 import { CourierHomeComponent } from './courier-home/courier-home.component';
+import { EmptyParcelLockerComponent } from './empty-parcel-locker/empty-parcel-locker.component';
+import { FillParcelLockerComponent } from './fill-parcel-locker/fill-parcel-locker.component';
+import {MatTableModule} from '@angular/material/table';
 
 
 @NgModule({
@@ -40,6 +43,8 @@ import { CourierHomeComponent } from './courier-home/courier-home.component';
     ParcelSendingWithoutcodeComponent,
     CourierLoginComponent,
     CourierHomeComponent,
+    EmptyParcelLockerComponent,
+    FillParcelLockerComponent,
 
   ],
   imports: [
@@ -58,7 +63,8 @@ import { CourierHomeComponent } from './courier-home/courier-home.component';
     MatSelectModule,
     MatFormFieldModule,
     ReactiveFormsModule,
-    MatRadioModule
+    MatRadioModule,
+    MatTableModule
     
   ],
   providers: [],

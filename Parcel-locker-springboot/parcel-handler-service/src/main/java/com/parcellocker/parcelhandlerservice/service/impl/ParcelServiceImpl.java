@@ -3,9 +3,11 @@ package com.parcellocker.parcelhandlerservice.service.impl;
 
 import com.parcellocker.parcelhandlerservice.kafka.Producer;
 import com.parcellocker.parcelhandlerservice.model.Box;
+import com.parcellocker.parcelhandlerservice.model.Courier;
 import com.parcellocker.parcelhandlerservice.model.Parcel;
 import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
 import com.parcellocker.parcelhandlerservice.payload.*;
+import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLocker;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class ParcelServiceImpl implements ParcelService {
 
     @Autowired
     private Producer producer;
+
+    @Autowired
+    private CourierServiceImpl courierService;
 
 
     @Override
@@ -174,6 +179,45 @@ public class ParcelServiceImpl implements ParcelService {
         return ResponseEntity.ok(response);
     }
 
+    //Csomagok lekérése, amik készen állnak az elszállításra
+    @Override
+    public ResponseEntity<List<GetParcelsForShippingResponse>> getParcelsForShipping(Long senderParcelLockerId) {
+
+        List<GetParcelsForShippingResponse> response = new ArrayList<>();
+
+        for(Parcel parcel : getReadyParcelsForShipping(senderParcelLockerId)){
+
+            GetParcelsForShippingResponse responseObject = new GetParcelsForShippingResponse();
+
+            responseObject.setUniqueParcelId(parcel.getUniqueParcelId());
+            response.add(responseObject);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    //Automata kiürítése. Elszállításra váró csomagok átkerülnek a futárhoz
+    //Jwt token szükséges
+    @Override
+    public ResponseEntity<StringResponse> emptyParcelLocker(EmptyParcelLocker request) {
+
+        Courier courier = courierService.findByUniqueCourierId(request.getUniqueCourierId());
+
+        for(Parcel parcel : getReadyParcelsForShipping(request.getParcelLockerId())){
+            //Csomag és futár összerendelése
+            courier.getParcels().add(parcel);
+            parcel.setCourier(courier);
+
+            //Csomag és csomag automata összerendelés megszüntetése
+            parcel.setParcelLocker(null);
+
+            save(parcel);
+            courierService.save(courier);
+        }
+
+        return null;
+    }
+
     //Random string generálása
     public String generateRandomString(int length) {
 
@@ -201,5 +245,22 @@ public class ParcelServiceImpl implements ParcelService {
         //Ide lehet kell egy rekurzivitás
 
         return randomString;
+    }
+
+    //Automatában megtalálható csomagok keresése. Ezek a csomagok készen állnak az elszállításra
+    public List<Parcel> getReadyParcelsForShipping(Long senderParcelLockerId){
+
+        ParcelLocker senderParcelLocker = parcelLockerService.findById(senderParcelLockerId);
+
+        Set<Parcel> parcels = senderParcelLocker.getParcels();
+
+        List<Parcel> readyParcels = new ArrayList<>();
+
+        for(Parcel parcel : parcels){
+            if(parcel.isShipped() == false && parcel.isPlaced() == true && parcel.isPickedUp() == false){
+                readyParcels.add(parcel);
+            }
+        }
+        return readyParcels;
     }
 }

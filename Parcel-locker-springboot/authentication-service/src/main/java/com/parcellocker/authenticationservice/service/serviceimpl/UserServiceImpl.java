@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.security.MessageDigest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -156,6 +157,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmailAddress(emailAddress);
     }
 
+    //Létezik ez a jelszó?
+    @Override
+    public boolean existsByPassword(String password) {
+        return userRepository.existsByPassword(password);
+    }
+
     //Keresés email cím és jelszó szerint
     @Override
     public User findByEmailAddressAndPassword(String emailAddress, String password) {
@@ -181,16 +188,23 @@ public class UserServiceImpl implements UserService {
     }
 
     //Futár bejelentkezés
+    //Csak jelszó érkezik a kérésbe
+    //Futár keresése jelszó szerint
+    //Sikeres bejelentkezés esetén visszatérés egy loginResponse objektummal
+    //Ez az objektum tartalmazza: jwt token (ami tartalmazza a futár egyedi azonosítóját), id,
+    // egyedi azonosító újra (ez nem biztos, hogy kelleni fog) és a szerepkörök
     @Override
-    public ResponseEntity<?> courierLogin(String uniqueCourierId) {
+    public ResponseEntity<?> courierLogin(LoginCourier request) {
 
-        User user = findByEmailAddress(uniqueCourierId);
+        String sha256Password = sha256Encode(request.getPassword());
+
+        User user = findByPassword(sha256Password);
 
         if(user == null){
             return ResponseEntity.badRequest().body("Hibás azonosító");
         }
 
-        String token = jwtUtil.generateToken(uniqueCourierId);
+        String token = jwtUtil.generateToken(user.getEmailAddress());
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setUserId(user.getId());
         loginResponse.setEmailAddress(user.getEmailAddress());
@@ -239,17 +253,31 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.badRequest().body("Ez a futár azonosító már regisztrálva van!");
         }
 
+        String sha256Password = sha256Encode(courierDTO.getPassword());
+
+        //Futár esetén a jelszót is ellenőrizni kell. Kettő ugyan olyan nem lehet, mert a jelszó egyben a bejelentkezési
+        //RFID azonosító is
+        if(existsByPassword(sha256Password)){
+            return ResponseEntity.badRequest().body("Ez a jelszó (RFID azonosító) már regisztrálva van");
+        }
+
         //Új futár létrehozása
         User user = new User();
         user.setEnable(true);
         user.setEmailAddress(courierDTO.getUniqueCourierId());
+        user.setPassword(sha256Password);
+
+        //CourierDTO objektum létrehozása. Ezt az objektumot külöm a parcel-handler service-nek.
+        //Ez az objektum már nem tartalmaz jelszót, viszont tartalmaz vezeték és kereszt nevet
+        CourierDTO courierToParcelHandlerService = new CourierDTO();
+        courierToParcelHandlerService.setUniqueCourierId(courierDTO.getUniqueCourierId());
+        courierToParcelHandlerService.setFirstName(courierDTO.getFirstName());
+        courierToParcelHandlerService.setLastName(courierDTO.getLastName());
 
         //Futár küldése a parcel handler service-nek
-        //Ugyan azt az objektumot küldöm el, ami a kérés body részében jön
-        //Az az objektum tartalmaz mindent, amire szükség van. És mivel nincs benne jelszó, nem kell új DTO objektumot létrehozni
         webClientBuilder.build().post()
                 .uri("http://parcel-handler-service/parcelhandler/courier/createcourier")
-                .body(Mono.just(courierDTO), CreateCourierDTO.class)
+                .body(Mono.just(courierToParcelHandlerService), CourierDTO.class)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -321,6 +349,29 @@ public class UserServiceImpl implements UserService {
         String randomString = sb.toString();
 
         return randomString;
+    }
+
+    //SHA-256 kódolás
+    public String sha256Encode(String input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(input.getBytes("UTF-8"));
+            StringBuilder hexString = new StringBuilder();
+
+            for (byte b : encodedHash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+
+            return hexString.toString();
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

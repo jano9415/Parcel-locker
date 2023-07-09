@@ -5,12 +5,13 @@ import PhoneInput from 'react-phone-input-2';
 import { TextField, Button, Typography, Box } from '@mui/material';
 
 const CreateCourierComponent = () => {
-    const [uniqueCourierId, setUniqueCourierId] = useState("")
-    const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
+    const [uniqueCourierId, setUniqueCourierId] = useState("");
+    const [password, setPassword] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
 
 
-    const [emailAlredyExistMessage, setEmailAlredyExistMessage] = useState("");
+    const [emailOrPasswordAlredyExistMessage, setEmailOrPasswordAlredyExistMessage] = useState("");
 
 
     const [isEveryValid, setIsEveryValid] = useState(false)
@@ -24,27 +25,29 @@ const CreateCourierComponent = () => {
 
     }, [])
 
+
+    //Új futár létrehozása
     const signUp = (e) => {
         e.preventDefault();
 
         if (formValidaton()) {
-            AuthService.createCourier(uniqueCourierId, firstName, lastName).then((response) => {
+            AuthService.createCourier(uniqueCourierId, password, firstName, lastName).then((response) => {
                 navigate("/login");
                 window.location.reload();
 
             },
                 (error) => {
-                    setEmailAlredyExistMessage(error.response.data)
+                    setEmailOrPasswordAlredyExistMessage(error.response.data)
                 })
         }
-        else{
+        else {
             setEveryInputMessage("Minden mező kitöltése kötelező.")
 
         }
 
     }
 
-  
+
 
     //Minden mező kitöltése kötelező
     const formValidaton = () => {
@@ -52,11 +55,13 @@ const CreateCourierComponent = () => {
         const isFirstNameNotEmpty = firstName.length > 0;
         const isLastNameNotEmpty = lastName.length > 0;
         const isUniqueCourierIdNotEmpty = uniqueCourierId.length > 0;
+        const isPasswordNotEmpty = password.length > 0;
 
         if (
             isFirstNameNotEmpty &&
             isLastNameNotEmpty &&
-            isUniqueCourierIdNotEmpty
+            isUniqueCourierIdNotEmpty &&
+            isPasswordNotEmpty
         ) {
             setIsEveryValid(true);
             return true;
@@ -67,7 +72,7 @@ const CreateCourierComponent = () => {
     };
 
     const showSendButton = () => {
-        if(formValidaton()){
+        if (formValidaton()) {
             setSendButtonEnable(false)
         }
     }
@@ -81,6 +86,13 @@ const CreateCourierComponent = () => {
                 label="Futár azonosító"
                 value={uniqueCourierId}
                 onChange={(e) => setUniqueCourierId(e.target.value)}
+                sx={{ marginBottom: '16px' }}
+            />
+            <TextField
+                type="password"
+                label="Jelszó"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 sx={{ marginBottom: '16px' }}
             />
             <TextField
@@ -101,10 +113,10 @@ const CreateCourierComponent = () => {
             />
             <Button disabled={sendButtonEnable} variant="contained" onClick={(e) => signUp(e)}>Küldés</Button>
             {everyInputMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{everyInputMessage}</Typography>}
-            {emailAlredyExistMessage && (
+            {emailOrPasswordAlredyExistMessage && (
                 <div className="form-group">
                     <div className="alert alert-danger" role="alert">
-                        {emailAlredyExistMessage}
+                        {emailOrPasswordAlredyExistMessage}
                     </div>
                 </div>
             )}

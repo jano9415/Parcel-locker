@@ -2,13 +2,10 @@ package com.parcellocker.authenticationservice.payload.request;
 
 import lombok.Data;
 
-
 @Data
-public class CreateCourierDTO {
+public class CourierDTO {
 
     private String uniqueCourierId;
-
-    private String password;
 
     private String firstName;
 

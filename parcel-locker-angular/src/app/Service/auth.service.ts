@@ -12,6 +12,10 @@ export class AuthService {
 
   constructor(private httpClient: HttpClient) { }
 
+
+  /*
+  //Futár bejelentkezés
+  //Paraméteres példa miatt itt marad még
   courierLogin(uniqueCourierId: string): Observable<LoginResponse> {
     //Paraméter összeállítása
     const parameters = new HttpParams()
@@ -22,5 +26,13 @@ export class AuthService {
     return this.httpClient.post<LoginResponse>(`${this.API_URL + "courierlogin"}`, {}, {
       params: parameters
     })
+  }
+  */
+
+  //Futár bejelentkezés
+  courierLogin(password: string): Observable<LoginResponse> {
+
+
+    return this.httpClient.post<LoginResponse>(`${this.API_URL + "courierlogin"}`, {password});
   }
 }
