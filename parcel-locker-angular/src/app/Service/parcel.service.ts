@@ -73,5 +73,14 @@ export class ParcelService {
     }, this.getOptionsWithToken());
   }
 
+  //Futárnál lévő csomagok lekérése. Csak olyan csomagok, amik az adott automatához tartoznak és van nekik szabad rekesz
+  //Jwt token szükséges
+  getParcelsForParcelLocker(uniqueCourierId: string): Observable<any> {
+    this.getSenderParcelLockerId();
+    return this.httpClient.get<Array<any>>(`${this.API_URL + "getparcelsforparcellocker"}/${this.senderParcelLockerId}/${uniqueCourierId}`,
+     this.getOptionsWithToken());
+  }
+
+
 
 }

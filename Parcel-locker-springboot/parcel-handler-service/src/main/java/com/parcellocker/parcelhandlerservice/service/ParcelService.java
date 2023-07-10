@@ -7,6 +7,8 @@ import com.parcellocker.parcelhandlerservice.payload.GetParcelsForShippingRespon
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLocker;
+import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.FillParcelLockerResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -30,5 +32,13 @@ public interface ParcelService {
 
     //Automata kiürítése. Elszállításra váró csomagok átkerülnek a futárhoz
     //Jwt token szükséges
-    ResponseEntity<StringResponse> emptyParcelLocker(EmptyParcelLocker request);
+    ResponseEntity<List<EmptyParcelLockerResponse>> emptyParcelLocker(EmptyParcelLocker request);
+
+    //Futárnál lévő csomagok lekérése. Csak olyan csomagok, amik az adott automatához tartoznak és van nekik szabad rekesz
+    //Jwt token szükséges
+    ResponseEntity<List<FillParcelLockerResponse>>getParcelsForParcelLocker(Long senderParcelLockerId, String uniqueCourierId);
+
+    //Automata feltöltése
+    //Jwt token szükséges
+    ResponseEntity<List<FillParcelLockerResponse>> fillParcelLocker(Long senderParcelLockerId, String uniqueCourierId);
 }

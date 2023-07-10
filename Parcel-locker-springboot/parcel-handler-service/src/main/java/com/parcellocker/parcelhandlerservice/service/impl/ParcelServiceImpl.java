@@ -8,6 +8,8 @@ import com.parcellocker.parcelhandlerservice.model.Parcel;
 import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
 import com.parcellocker.parcelhandlerservice.payload.*;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLocker;
+import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.FillParcelLockerResponse;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,11 +201,20 @@ public class ParcelServiceImpl implements ParcelService {
     //Automata kiürítése. Elszállításra váró csomagok átkerülnek a futárhoz
     //Jwt token szükséges
     @Override
-    public ResponseEntity<StringResponse> emptyParcelLocker(EmptyParcelLocker request) {
+    public ResponseEntity<List<EmptyParcelLockerResponse>> emptyParcelLocker(EmptyParcelLocker request) {
 
         Courier courier = courierService.findByUniqueCourierId(request.getUniqueCourierId());
 
+        List<EmptyParcelLockerResponse> response = new ArrayList<>();
+
         for(Parcel parcel : getReadyParcelsForShipping(request.getParcelLockerId())){
+            EmptyParcelLockerResponse boxNumber = new EmptyParcelLockerResponse();
+            boxNumber.setBoxNumber(parcel.getBox().getBoxNumber());
+            response.add(boxNumber);
+
+            //Csomagnak nincs rekesz száma
+            parcel.setBox(null);
+
             //Csomag és futár összerendelése
             courier.getParcels().add(parcel);
             parcel.setCourier(courier);
@@ -215,7 +226,138 @@ public class ParcelServiceImpl implements ParcelService {
             courierService.save(courier);
         }
 
-        return null;
+        return ResponseEntity.ok(response);
+    }
+
+    //Futárnál lévő csomagok lekérése. Csak olyan csomagok, amik az adott automatához tartoznak és van nekik szabad rekesz
+    //Jwt token szükséges
+    @Override
+    public ResponseEntity<List<FillParcelLockerResponse>>getParcelsForParcelLocker(Long senderParcelLockerId, String uniqueCourierId) {
+
+        //Automata, amit fel szeretne tölteni a futár
+        ParcelLocker senderParcelLocker = parcelLockerService.findById(senderParcelLockerId);
+
+        //Futár és nála lévő csomagok
+        Courier courier = courierService.findByUniqueCourierId(uniqueCourierId);
+        Set<Parcel> parcelsOfCourier = courier.getParcels();
+
+        List<FillParcelLockerResponse> response = new ArrayList<>();
+
+        List<Parcel> parcelsForParcelLocker = new ArrayList<>();
+
+
+        //Automata teli rekeszei
+        List<Box> fullBoxes = new ArrayList<>();
+
+        //Automata csomagjai
+        Set<Parcel> parcelsInSenderParcelLocker = senderParcelLocker.getParcels();
+
+        for(Parcel parcel : parcelsOfCourier){
+            //Ha a csomag érkezési helye ez az automata
+            if(parcel.getShippingTo().getId() == senderParcelLockerId){
+
+                //A csomag méretéhez tartozó összes rekesz
+                List<Box> allBoxesInSelectedSize = boxService.findBySize(parcel.getSize());
+
+                //Teli rekeszek keresése
+                for(Parcel p : parcelsInSenderParcelLocker){
+                    fullBoxes.add(p.getBox());
+                }
+
+                //Üres rekeszek keresése
+                List<Box> emptyBoxes = new ArrayList<>();
+
+                for(Box b : allBoxesInSelectedSize){
+                    if (!fullBoxes.contains(b)) {
+                        emptyBoxes.add(b);
+                    }
+                }
+
+                //Ha van szabad rekesz
+                if(!emptyBoxes.isEmpty()){
+                    FillParcelLockerResponse responseObj = new FillParcelLockerResponse();
+                    responseObj.setUniqueParcelId(parcel.getUniqueParcelId());
+                    responseObj.setBoxNumber(emptyBoxes.get(0).getBoxNumber());
+                    fullBoxes.add(emptyBoxes.get(0));
+
+                    response.add(responseObj);
+                }
+            }
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    //Automata feltöltése
+    //Jwt token szükséges
+    @Override
+    public ResponseEntity<List<FillParcelLockerResponse>> fillParcelLocker(Long senderParcelLockerId, String uniqueCourierId) {
+
+        //Automata, amit fel szeretne tölteni a futár
+        ParcelLocker senderParcelLocker = parcelLockerService.findById(senderParcelLockerId);
+
+        //Futár és nála lévő csomagok
+        Courier courier = courierService.findByUniqueCourierId(uniqueCourierId);
+        Set<Parcel> parcelsOfCourier = courier.getParcels();
+
+        List<FillParcelLockerResponse> response = new ArrayList<>();
+
+        List<Parcel> parcelsForParcelLocker = new ArrayList<>();
+
+        for(Parcel parcel : parcelsOfCourier){
+            //Ha a csomag érkezési helye ez az automata
+            if(parcel.getShippingTo().getId() == senderParcelLockerId){
+
+                //Automata csomagjai
+                Set<Parcel> parcelsInSenderParcelLocker = senderParcelLocker.getParcels();
+
+                //A csomag méretéhez tartozó összes rekesz
+                List<Box> allBoxesInSelectedSize = boxService.findBySize(parcel.getSize());
+
+                //Automata teli rekeszei
+                List<Box> fullBoxes = new ArrayList<>();
+
+                for(Parcel p : parcelsInSenderParcelLocker){
+                    fullBoxes.add(p.getBox());
+                }
+
+                //Üres rekeszek keresése
+                List<Box> emptyBoxes = new ArrayList<>();
+
+                for(Box b : allBoxesInSelectedSize){
+                    if (!fullBoxes.contains(b)) {
+                        emptyBoxes.add(b);
+                    }
+                }
+
+
+                //Minden rekesz tele van. Nem tudod feltölteni ezt az automatát
+                if(emptyBoxes.isEmpty()){
+                    FillParcelLockerResponse responseObj = new FillParcelLockerResponse();
+                    responseObj.setMessage("full");
+                    response.add(responseObj);
+                    return ResponseEntity.ok(response);
+                }
+                else{
+                    //Csomag és automata összerendlése
+
+                    //Csomag éa futár összerendelés megszüntetése
+
+                    //Csomaghoz rekesz hozzáadása
+
+                }
+
+                if(!emptyBoxes.isEmpty()){
+                    FillParcelLockerResponse responseObj = new FillParcelLockerResponse();
+                    responseObj.setUniqueParcelId(parcel.getUniqueParcelId());
+                    responseObj.setBoxNumber(emptyBoxes.get(0).getBoxNumber());
+
+                    response.add(responseObj);
+                }
+            }
+        }
+
+        return ResponseEntity.ok(response);
     }
 
     //Random string generálása

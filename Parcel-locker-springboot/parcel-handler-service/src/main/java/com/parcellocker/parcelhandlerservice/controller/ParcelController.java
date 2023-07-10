@@ -5,6 +5,8 @@ import com.parcellocker.parcelhandlerservice.payload.GetParcelsForShippingRespon
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLocker;
+import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.FillParcelLockerResponse;
 import com.parcellocker.parcelhandlerservice.service.impl.ParcelServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +41,23 @@ public class ParcelController {
     //Automata kiürítése. Elszállításra váró csomagok átkerülnek a futárhoz
     //Jwt token szükséges
     @PostMapping("/emptyparcellocker")
-    public ResponseEntity<StringResponse> emptyParcelLocker(@RequestBody EmptyParcelLocker request){
+    public ResponseEntity<List<EmptyParcelLockerResponse>> emptyParcelLocker(@RequestBody EmptyParcelLocker request){
         return parcelService.emptyParcelLocker(request);
+    }
+
+    //Futárnál lévő csomagok lekérése. Csak olyan csomagok, amik az adott automatához tartoznak és van nekik szabad rekesz
+    //Jwt token szükséges
+    @GetMapping("/getparcelsforparcellocker/{senderParcelLockerId}/{uniqueCourierId}")
+    public ResponseEntity<List<FillParcelLockerResponse>> getParcelsForParcelLocker(@PathVariable Long senderParcelLockerId,
+                                                                                    @PathVariable String uniqueCourierId){
+        return parcelService.getParcelsForParcelLocker(senderParcelLockerId, uniqueCourierId);
+    }
+
+    //Automata feltöltése
+    //Jwt token szükséges
+    @GetMapping("/fillparcellocker/{senderParcelLockerId}/{uniqueCourierId}")
+    public ResponseEntity<List<FillParcelLockerResponse>> fillParcelLocker(@PathVariable Long senderParcelLockerId,
+                                                                                    @PathVariable String uniqueCourierId){
+        return parcelService.fillParcelLocker(senderParcelLockerId, uniqueCourierId);
     }
 }
