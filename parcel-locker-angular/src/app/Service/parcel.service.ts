@@ -81,6 +81,13 @@ export class ParcelService {
      this.getOptionsWithToken());
   }
 
+  //Automata feltöltése
+  fillParcelLocker(uniqueCourierId: string): Observable<any>{
+    this.getSenderParcelLockerId();
+    return this.httpClient.get<Array<any>>(`${this.API_URL + "fillparcellocker"}/${this.senderParcelLockerId}/${uniqueCourierId}`,
+    this.getOptionsWithToken());
+  }
+
 
 
 }

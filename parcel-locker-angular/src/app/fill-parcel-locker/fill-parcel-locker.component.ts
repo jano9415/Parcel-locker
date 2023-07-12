@@ -51,4 +51,19 @@ export class FillParcelLockerComponent {
 
   }
 
+  //Automata feltöltése
+  fillParcelLocker(): void{
+    this.parcelService.fillParcelLocker(this.currenctCourier.emailAddress).subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log("Compelete");
+      }
+    })
+  }
+
 }

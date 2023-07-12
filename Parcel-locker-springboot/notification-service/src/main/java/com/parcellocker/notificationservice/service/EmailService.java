@@ -4,6 +4,7 @@ package com.parcellocker.notificationservice.service;
 
 import com.parcellocker.notificationservice.payload.ParcelSendingNotification;
 import com.parcellocker.notificationservice.payload.SignUpActivationDTO;
+import com.parcellocker.notificationservice.payload.kafka.ParcelShippingNotification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -93,5 +94,13 @@ public class EmailService {
         }
     }
 
+    //Szállítás utáni email küldése a csomag feladójának
+    public void sendShippingNotificationForSender(ParcelShippingNotification jsonObject) {
+        System.out.println(jsonObject.getUniqueParcelId());
+    }
 
+    //Szállítás utáni email küldése a csomag átvevőjének
+    public void sendShippingNotificationForReceiver(ParcelShippingNotification jsonObject) {
+        System.out.println(jsonObject.getPickingUpCode());
+    }
 }

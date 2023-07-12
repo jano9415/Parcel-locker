@@ -3,6 +3,7 @@ package com.parcellocker.parcelhandlerservice.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingNotification;
+import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelShippingNotification;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -29,10 +30,22 @@ public class Producer {
     private NewTopic topic2;
 
     @Autowired
+    private NewTopic topic3;
+
+    @Autowired
+    private NewTopic topic4;
+
+    @Autowired
     private KafkaTemplate<String, ParcelSendingNotification> kafkaTemplate1;
 
     @Autowired
     private KafkaTemplate<String, ParcelSendingNotification> kafkaTemplate2;
+
+    @Autowired
+    private KafkaTemplate<String, ParcelShippingNotification> kafkaTemplate3;
+
+    @Autowired
+    private KafkaTemplate<String, ParcelShippingNotification> kafkaTemplate4;
 
     //String -> Object, Object -> String
     ObjectMapper objectMapper = new ObjectMapper();
@@ -79,6 +92,51 @@ public class Producer {
                 .setHeader(KafkaHeaders.TOPIC , topic2.name())
                 .build();
         kafkaTemplate2.send(message);
+
+    }
+
+    //Szállítás utáni email értesítés a csomag feladójának
+    public void sendShippingNotificationForSender(ParcelShippingNotification notification){
+
+        //Objektum konvertálása string-be
+        String jsonString;
+
+        try {
+            jsonString = objectMapper.writeValueAsString(notification);
+        }
+        catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Üzenet küldése a topic-nak
+        Message<String> message = MessageBuilder
+                .withPayload(jsonString)
+                .setHeader(KafkaHeaders.TOPIC , topic3.name())
+                .build();
+        kafkaTemplate3.send(message);
+
+    }
+
+    //Szállítás utáni email értesítés a csomag átvevőjének
+    public void sendShippingNotificationForReceiver(ParcelShippingNotification notification){
+
+        //Objektum konvertálása string-be
+        String jsonString;
+
+        try {
+            jsonString = objectMapper.writeValueAsString(notification);
+        }
+        catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Üzenet küldése a topic-nak
+
+        Message<String> message = MessageBuilder
+                .withPayload(jsonString)
+                .setHeader(KafkaHeaders.TOPIC , topic4.name())
+                .build();
+        kafkaTemplate4.send(message);
 
     }
 }

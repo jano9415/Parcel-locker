@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parcellocker.notificationservice.payload.ParcelSendingNotification;
 import com.parcellocker.notificationservice.payload.SignUpActivationDTO;
+import com.parcellocker.notificationservice.payload.kafka.ParcelShippingNotification;
 import com.parcellocker.notificationservice.service.EmailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,44 @@ public class Consumer {
         }
 
         emailService.sendNotificationForReceiver(jsonObject);
+    }
+
+    //Feliratkozok a topic-ra. A group-id az application.properties-ből jön
+    //Group-id: notification-service
+    //Topic név: parcelShippingNotificationForSender
+    //Szállítás utáni email értesítés küldése a feladónak
+    @KafkaListener(topics = "parcelShippingNotificationForSender" , groupId = "${spring.kafka.consumer.group-id}")
+    public void sendShippingNotificationForSender(String notification){
+
+        //String konvertálása obejektumba
+        ParcelShippingNotification jsonObject;
+
+        try {
+            jsonObject = objectMapper.readValue(notification, ParcelShippingNotification.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        emailService.sendShippingNotificationForSender(jsonObject);
+    }
+
+    //Feliratkozok a topic-ra. A group-id az application.properties-ből jön
+    //Group-id: notification-service
+    //Topic név: parcelShippingNotificationForReceiver
+    //Szállítás utáni email értesítés küldése az átvevőnek
+    @KafkaListener(topics = "parcelShippingNotificationForReceiver", groupId = "${spring.kafka.consumer.group-id}")
+    public void sendShippingNotificationForReceiver(String notification){
+
+        //String konvertálása objektumba
+        ParcelShippingNotification jsonObject;
+
+        try {
+            jsonObject = objectMapper.readValue(notification, ParcelShippingNotification.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        emailService.sendShippingNotificationForReceiver(jsonObject);
     }
 
 

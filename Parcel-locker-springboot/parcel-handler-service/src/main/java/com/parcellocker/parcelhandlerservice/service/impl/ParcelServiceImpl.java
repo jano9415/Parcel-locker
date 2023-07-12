@@ -7,6 +7,7 @@ import com.parcellocker.parcelhandlerservice.model.Courier;
 import com.parcellocker.parcelhandlerservice.model.Parcel;
 import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
 import com.parcellocker.parcelhandlerservice.payload.*;
+import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelShippingNotification;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLocker;
 import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
 import com.parcellocker.parcelhandlerservice.payload.response.FillParcelLockerResponse;
@@ -330,7 +331,6 @@ public class ParcelServiceImpl implements ParcelService {
                     }
                 }
 
-
                 //Minden rekesz tele van. Nem tudod feltölteni ezt az automatát
                 if(emptyBoxes.isEmpty()){
                     FillParcelLockerResponse responseObj = new FillParcelLockerResponse();
@@ -339,20 +339,72 @@ public class ParcelServiceImpl implements ParcelService {
                     return ResponseEntity.ok(response);
                 }
                 else{
+                    //Csomag paramétereinek frissítése
+                    parcel.setShipped(true);
+                    LocalDate currentDate = LocalDate.now();
+                    parcel.setShippingDate(currentDate);
+
+                    LocalTime currentTime = LocalTime.now();
+                    parcel.setShippingTime(currentTime);
+
+
                     //Csomag és automata összerendlése
+                    parcel.setParcelLocker(senderParcelLocker);
+                    senderParcelLocker.getParcels().add(parcel);
 
                     //Csomag éa futár összerendelés megszüntetése
+                    parcel.setCourier(null);
 
                     //Csomaghoz rekesz hozzáadása
+                    parcel.setBox(emptyBoxes.get(0));
 
-                }
+                    save(parcel);
+                    parcelLockerService.save(senderParcelLocker);
 
-                if(!emptyBoxes.isEmpty()){
+                    //Email küldés
+                    //Értesítési objektum kafka számára
+                    ParcelShippingNotification notification = new ParcelShippingNotification();
+
+                    notification.setReceiverName(parcel.getReceiverName());
+                    notification.setReceiverEmailAddress(parcel.getReceiverEmailAddress());
+                    notification.setPrice(parcel.getPrice());
+                    notification.setUniqueParcelId(parcel.getUniqueParcelId());
+                    notification.setSenderParcelLockerPostCode(parcel.getShippingFrom().getLocation().getPostCode());
+                    notification.setSenderParcelLockerCity(parcel.getShippingFrom().getLocation().getCity());
+                    notification.setSenderParcelLockerStreet(parcel.getShippingFrom().getLocation().getStreet());
+
+                    notification.setReceiverParcelLockerPostCode(parcel.getShippingTo().getLocation().getPostCode());
+                    notification.setReceiverParcelLockerCity(parcel.getShippingTo().getLocation().getCity());
+                    notification.setReceiverParcelLockerStreet(parcel.getShippingTo().getLocation().getStreet());
+                    notification.setShippingDate(currentDate.toString());
+                    notification.setShippingTime(currentTime.toString());
+
+                    notification.setPickingUpCode(parcel.getPickingUpCode());
+
+                    if(parcel.getUser() == null){
+
+                        notification.setSenderName(parcel.getSenderName());
+                        notification.setSenderEmailAddress(parcel.getSenderEmailAddress());
+                    }
+                    else{
+                        notification.setSenderName(parcel.getUser().getLastName() + " " + parcel.getUser().getFirstName());
+                        notification.setSenderEmailAddress(parcel.getUser().getEmailAddress());
+                    }
+
+                    //Email küldése az feladójának
+                    //Értesítési objektum küldése a(z) ("parcelShippingNotificationForSender") topicnak
+                    producer.sendShippingNotificationForSender(notification);
+                    //Email küldése az átvevőnek
+                    //Értesítési objektum küldése a(z) ("parcelShippingNotificationForReceiver") topicnak
+                    producer.sendShippingNotificationForReceiver(notification);
+
+
+                    //Válasz objektum
                     FillParcelLockerResponse responseObj = new FillParcelLockerResponse();
                     responseObj.setUniqueParcelId(parcel.getUniqueParcelId());
                     responseObj.setBoxNumber(emptyBoxes.get(0).getBoxNumber());
-
                     response.add(responseObj);
+
                 }
             }
         }
@@ -390,6 +442,7 @@ public class ParcelServiceImpl implements ParcelService {
     }
 
     //Automatában megtalálható csomagok keresése. Ezek a csomagok készen állnak az elszállításra
+    //Még nincs leszállítva, el van helyezve, nincs átvéve, a csomag érkezési automatája nem ez az automata
     public List<Parcel> getReadyParcelsForShipping(Long senderParcelLockerId){
 
         ParcelLocker senderParcelLocker = parcelLockerService.findById(senderParcelLockerId);
@@ -399,7 +452,8 @@ public class ParcelServiceImpl implements ParcelService {
         List<Parcel> readyParcels = new ArrayList<>();
 
         for(Parcel parcel : parcels){
-            if(parcel.isShipped() == false && parcel.isPlaced() == true && parcel.isPickedUp() == false){
+            if(parcel.isShipped() == false && parcel.isPlaced() == true && parcel.isPickedUp() == false
+            && parcel.getShippingTo().getId() != senderParcelLockerId){
                 readyParcels.add(parcel);
             }
         }
