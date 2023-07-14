@@ -15,7 +15,8 @@ export class FillParcelLockerComponent {
 
   parcelsForParcelLocker: Array<Object> | null = null;
 
-  displayedColumns: string[] = ['uniqueParcelId'];
+  displayedColumns: string[] = ['uniqueParcelId', 'price', 'senderParcelLockerPostCode', 'receiverParcelLockerPostCode',
+  'boxNumber'];
 
   dataSourceForTable!: MatTableDataSource<any>;
 
@@ -37,7 +38,8 @@ export class FillParcelLockerComponent {
     //Csomagok lekérése és megjelenítése, amiket el lehet helyezni ebben az automatában
     this.parcelService.getParcelsForParcelLocker(this.currenctCourier.emailAddress).subscribe({
       next: (response) => {
-        console.log(response);
+        this.parcelsForParcelLocker = response;
+        this.dataSourceForTable = new MatTableDataSource(response);
       },
       error: (error) => {
         console.log(error);
@@ -52,10 +54,12 @@ export class FillParcelLockerComponent {
   }
 
   //Automata feltöltése
+  //A válasz a kinyíló rekeszek azonosítója
   fillParcelLocker(): void{
     this.parcelService.fillParcelLocker(this.currenctCourier.emailAddress).subscribe({
       next: (response) => {
         console.log(response);
+        window.location.reload();
       },
       error: (error) => {
         console.log(error);

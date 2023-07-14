@@ -15,7 +15,8 @@ export class EmptyParcelLockerComponent {
 
   parcelsForShipping: Array<Object> | null = null;
 
-  displayedColumns: string[] = ['uniqueParcelId'];
+  displayedColumns: string[] = ['uniqueParcelId', 'price', 'senderParcelLockerPostCode', 'receiverParcelLockerPostCode',
+    'boxNumber'];
 
   dataSourceForTable!: MatTableDataSource<any>;
 
@@ -38,7 +39,6 @@ export class EmptyParcelLockerComponent {
     //Csomagok lekérése és megjelenítése, amik készen állnak az elszállításra
     this.parcelService.getParcelsForShipping().subscribe({
       next: (response) => {
-        console.log(response);
         this.parcelsForShipping = response;
         this.dataSourceForTable = new MatTableDataSource(response);
       },
@@ -58,6 +58,7 @@ export class EmptyParcelLockerComponent {
     this.parcelService.emptyParcelLocker(this.currenctCourier.emailAddress).subscribe({
       next: (response) => {
         console.log(response);
+        window.location.reload();
       },
       error: (error) => {
         console.log(error);

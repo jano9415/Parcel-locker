@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parcellocker.notificationservice.payload.ParcelSendingNotification;
 import com.parcellocker.notificationservice.payload.SignUpActivationDTO;
+import com.parcellocker.notificationservice.payload.kafka.ParcelPickingUpNotification;
 import com.parcellocker.notificationservice.payload.kafka.ParcelShippingNotification;
 import com.parcellocker.notificationservice.service.EmailService;
 
@@ -120,6 +121,44 @@ public class Consumer {
         }
 
         emailService.sendShippingNotificationForReceiver(jsonObject);
+    }
+
+    //Feliratkozok a topic-ra. A group-id az application.properties-ből jön
+    //Group-id: notification-service
+    //Topic név: parcelPickingUpNotificationForReceiver
+    //Átvétel utáni email értesítés küldése az átvevőnek
+    @KafkaListener(topics = "parcelPickingUpNotificationForReceiver", groupId = "${spring.kafka.consumer.group-id}")
+    public void parcelPickingUpNotificationForReceiver(String notification){
+
+        //String konvertálása objektumba
+        ParcelPickingUpNotification jsonObject;
+
+        try {
+            jsonObject = objectMapper.readValue(notification, ParcelPickingUpNotification.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        emailService.sendPickingUpNotificationForReceiver(jsonObject);
+    }
+
+    //Feliratkozok a topic-ra. A group-id az application.properties-ből jön
+    //Group-id: notification-service
+    //Topic név: parcelPickingUpNotificationForSender
+    //Átvétel utáni email értesítés küldése a feladónak
+    @KafkaListener(topics = "parcelPickingUpNotificationForSender", groupId = "${spring.kafka.consumer.group-id}")
+    public void sendPickingUpNotificationForSender(String notification){
+
+        //String konvertálása objektumba
+        ParcelPickingUpNotification jsonObject;
+
+        try {
+            jsonObject = objectMapper.readValue(notification, ParcelPickingUpNotification.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        emailService.sendPickingUpNotificationForSender(jsonObject);
     }
 
 

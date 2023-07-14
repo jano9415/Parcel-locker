@@ -18,4 +18,7 @@ public interface ParcelRepository extends CrudRepository<Parcel, Long> {
     //Keresés id alapján
     @Override
     Optional<Parcel> findById(Long id);
+
+    //Keresés átvételi kód szerint
+    Parcel findByPickingUpCode(String pickingUpCode);
 }

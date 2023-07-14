@@ -3,6 +3,7 @@ package com.parcellocker.parcelhandlerservice.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingNotification;
+import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelPickingUpNotification;
 import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelShippingNotification;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -36,6 +37,12 @@ public class Producer {
     private NewTopic topic4;
 
     @Autowired
+    private NewTopic topic5;
+
+    @Autowired
+    private NewTopic topic6;
+
+    @Autowired
     private KafkaTemplate<String, ParcelSendingNotification> kafkaTemplate1;
 
     @Autowired
@@ -46,6 +53,12 @@ public class Producer {
 
     @Autowired
     private KafkaTemplate<String, ParcelShippingNotification> kafkaTemplate4;
+
+    @Autowired
+    private KafkaTemplate<String, ParcelPickingUpNotification> kafkaTemplate5;
+
+    @Autowired
+    private KafkaTemplate<String, ParcelPickingUpNotification> kafkaTemplate6;
 
     //String -> Object, Object -> String
     ObjectMapper objectMapper = new ObjectMapper();
@@ -137,6 +150,52 @@ public class Producer {
                 .setHeader(KafkaHeaders.TOPIC , topic4.name())
                 .build();
         kafkaTemplate4.send(message);
+
+    }
+
+    //Átvétel utáni email értesítés a csomag átvevőjének
+    public void sendPickingUpNotificationForReceiver(ParcelPickingUpNotification notification){
+
+        //Objektum konvertálása string-be
+        String jsonString;
+
+        try {
+            jsonString = objectMapper.writeValueAsString(notification);
+        }
+        catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Üzenet küldése a topic-nak
+
+        Message<String> message = MessageBuilder
+                .withPayload(jsonString)
+                .setHeader(KafkaHeaders.TOPIC , topic5.name())
+                .build();
+        kafkaTemplate5.send(message);
+
+    }
+
+    //Átvétel utáni email értesítés a csomag feladójának
+    public void sendPickingUpNotificationForSender(ParcelPickingUpNotification notification){
+
+        //Objektum konvertálása string-be
+        String jsonString;
+
+        try {
+            jsonString = objectMapper.writeValueAsString(notification);
+        }
+        catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Üzenet küldése a topic-nak
+
+        Message<String> message = MessageBuilder
+                .withPayload(jsonString)
+                .setHeader(KafkaHeaders.TOPIC , topic6.name())
+                .build();
+        kafkaTemplate6.send(message);
 
     }
 }

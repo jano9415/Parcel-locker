@@ -7,10 +7,13 @@ import com.parcellocker.parcelhandlerservice.model.Courier;
 import com.parcellocker.parcelhandlerservice.model.Parcel;
 import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
 import com.parcellocker.parcelhandlerservice.payload.*;
+import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelPickingUpNotification;
 import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelShippingNotification;
-import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLocker;
+import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
 import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
 import com.parcellocker.parcelhandlerservice.payload.response.FillParcelLockerResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.GetParcelsForParcelLockerResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.PickUpParcelResponse;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +57,12 @@ public class ParcelServiceImpl implements ParcelService {
     public void save(Parcel parcel) {
         parcelRepository.save(parcel);
 
+    }
+
+    //Keresés átvételi kód szerint
+    @Override
+    public Parcel findByPickingUpCode(String pickingUpCode) {
+        return parcelRepository.findByPickingUpCode(pickingUpCode);
     }
 
     //Csomag küldése feladási kód nélkül
@@ -134,8 +143,10 @@ public class ParcelServiceImpl implements ParcelService {
         if(request.getPrice() == 0){
             parcel.setPaid(true);
         }
+        else{
+            parcel.setPaid(false);
+        }
 
-        parcel.setPaid(false);
         parcel.setStore(null);
         parcel.setCourier(null);
         parcel.setSendingCode(null);
@@ -193,6 +204,19 @@ public class ParcelServiceImpl implements ParcelService {
             GetParcelsForShippingResponse responseObject = new GetParcelsForShippingResponse();
 
             responseObject.setUniqueParcelId(parcel.getUniqueParcelId());
+            responseObject.setPrice(parcel.getPrice());
+
+            responseObject.setSenderParcelLockerPostCode(parcel.getShippingFrom().getLocation().getPostCode());
+            responseObject.setSenderParcelLockerCity(parcel.getShippingFrom().getLocation().getCity());
+            responseObject.setSenderParcelLockerStreet(parcel.getShippingFrom().getLocation().getStreet());
+
+            responseObject.setReceiverParcelLockerPostCode(parcel.getShippingTo().getLocation().getPostCode());
+            responseObject.setReceiverParcelLockerCity(parcel.getShippingTo().getLocation().getCity());
+            responseObject.setReceiverParcelLockerStreet(parcel.getShippingTo().getLocation().getStreet());
+
+            responseObject.setBoxNumber(parcel.getBox().getBoxNumber());
+
+
             response.add(responseObject);
         }
 
@@ -202,7 +226,7 @@ public class ParcelServiceImpl implements ParcelService {
     //Automata kiürítése. Elszállításra váró csomagok átkerülnek a futárhoz
     //Jwt token szükséges
     @Override
-    public ResponseEntity<List<EmptyParcelLockerResponse>> emptyParcelLocker(EmptyParcelLocker request) {
+    public ResponseEntity<List<EmptyParcelLockerResponse>> emptyParcelLocker(EmptyParcelLockerRequest request) {
 
         Courier courier = courierService.findByUniqueCourierId(request.getUniqueCourierId());
 
@@ -233,7 +257,7 @@ public class ParcelServiceImpl implements ParcelService {
     //Futárnál lévő csomagok lekérése. Csak olyan csomagok, amik az adott automatához tartoznak és van nekik szabad rekesz
     //Jwt token szükséges
     @Override
-    public ResponseEntity<List<FillParcelLockerResponse>>getParcelsForParcelLocker(Long senderParcelLockerId, String uniqueCourierId) {
+    public ResponseEntity<List<GetParcelsForParcelLockerResponse>>getParcelsForParcelLocker(Long senderParcelLockerId, String uniqueCourierId) {
 
         //Automata, amit fel szeretne tölteni a futár
         ParcelLocker senderParcelLocker = parcelLockerService.findById(senderParcelLockerId);
@@ -242,7 +266,7 @@ public class ParcelServiceImpl implements ParcelService {
         Courier courier = courierService.findByUniqueCourierId(uniqueCourierId);
         Set<Parcel> parcelsOfCourier = courier.getParcels();
 
-        List<FillParcelLockerResponse> response = new ArrayList<>();
+        List<GetParcelsForParcelLockerResponse> response = new ArrayList<>();
 
         List<Parcel> parcelsForParcelLocker = new ArrayList<>();
 
@@ -276,9 +300,19 @@ public class ParcelServiceImpl implements ParcelService {
 
                 //Ha van szabad rekesz
                 if(!emptyBoxes.isEmpty()){
-                    FillParcelLockerResponse responseObj = new FillParcelLockerResponse();
+                    GetParcelsForParcelLockerResponse responseObj = new GetParcelsForParcelLockerResponse();
                     responseObj.setUniqueParcelId(parcel.getUniqueParcelId());
                     responseObj.setBoxNumber(emptyBoxes.get(0).getBoxNumber());
+                    responseObj.setPrice(parcel.getPrice());
+
+                    responseObj.setSenderParcelLockerPostCode(parcel.getShippingFrom().getLocation().getPostCode());
+                    responseObj.setSenderParcelLockerCity(parcel.getShippingFrom().getLocation().getCity());
+                    responseObj.setSenderParcelLockerStreet(parcel.getShippingFrom().getLocation().getStreet());
+
+                    responseObj.setReceiverParcelLockerPostCode(parcel.getShippingTo().getLocation().getPostCode());
+                    responseObj.setReceiverParcelLockerCity(parcel.getShippingTo().getLocation().getCity());
+                    responseObj.setReceiverParcelLockerStreet(parcel.getShippingTo().getLocation().getStreet());
+
                     fullBoxes.add(emptyBoxes.get(0));
 
                     response.add(responseObj);
@@ -409,6 +443,88 @@ public class ParcelServiceImpl implements ParcelService {
             }
         }
 
+        return ResponseEntity.ok(response);
+    }
+
+    //Csomag átvétele
+    @Override
+    public ResponseEntity<PickUpParcelResponse> pickUpParcel(String pickingUpCode, Long senderParcelLockerId) {
+
+        Parcel parcel = findByPickingUpCode(pickingUpCode);
+        PickUpParcelResponse response = new PickUpParcelResponse();
+
+        //Nincs ilyen csomag
+        if(parcel == null){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
+        }
+
+        //Nem ebben az automatában van
+        if(senderParcelLockerId != parcel.getShippingTo().getId()){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
+        }
+
+        //Már át van véve
+        if(parcel.isPickedUp()){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
+        }
+
+
+        //Válasz objektum
+        response.setBoxNumber(parcel.getBox().getBoxNumber());
+        response.setPrice(parcel.getPrice());
+
+        //Ha a csomag ki van fizetve, akkor nincs több tennivaló. Át lehet venni
+        if(parcel.getPrice() == 0 && parcel.isPaid()){
+
+            response.setMessage("pickedUp");
+
+            //Átvétel dátuma
+            LocalDate currentDate = LocalDate.now();
+            parcel.setPickingUpDate(currentDate);
+            LocalTime currentTime = LocalTime.now();
+            parcel.setPickingUpTime(currentTime);
+
+            //Email értesítés objektum
+            ParcelPickingUpNotification notification = new ParcelPickingUpNotification();
+            notification.setReceiverName(parcel.getReceiverName());
+            notification.setReceiverEmailAddress(parcel.getReceiverEmailAddress());
+            notification.setUniqueParcelId(parcel.getUniqueParcelId());
+
+            notification.setReceiverParcelLockerPostCode(parcel.getShippingTo().getLocation().getPostCode());
+            notification.setReceiverParcelLockerCity(parcel.getShippingTo().getLocation().getCity());
+            notification.setReceiverParcelLockerStreet(parcel.getShippingTo().getLocation().getStreet());
+
+            notification.setPickingUpDate(currentDate.toString());
+            notification.setPickingUpTime(currentTime.toString());
+
+            if(parcel.getUser() == null){
+                notification.setSenderName(parcel.getSenderName());
+                notification.setSenderEmailAddress(parcel.getSenderEmailAddress());
+            }
+            else{
+                notification.setSenderName(parcel.getUser().getLastName() + " " + parcel.getUser().getFirstName());
+                notification.setSenderEmailAddress(parcel.getUser().getEmailAddress());
+            }
+            //Email küldése a csomag feladójának
+            producer.sendPickingUpNotificationForSender(notification);
+            //Email küldése a csomag átvevőjének
+            producer.sendPickingUpNotificationForReceiver(notification);
+
+            //Csomag adatainak frissítése az adatbázisban
+            parcel.setPickedUp(true);
+            parcel.setBox(null);
+            parcel.setParcelLocker(null);
+
+            save(parcel);
+
+            return ResponseEntity.ok(response);
+        }
+
+        //A csomagot átvétel előtt még ki kell fizetni
+        response.setMessage("notPickedUp");
         return ResponseEntity.ok(response);
     }
 

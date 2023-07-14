@@ -17,12 +17,19 @@ public class KafkaTopicConfig {
     //Csomag feladásakor
     private String topic2 = "parcelSendingNotificationForReceiver";
 
-    //Kafka topic neve. Csomag feladási email értesítés küldése a csomag feladójának.
+    //Kafka topic neve. Csomag szállítási email értesítés küldése a csomag feladójának.
     //Csomag leszállításakor
     private String topic3 = "parcelShippingNotificationForSender";
-    //Kafka topic neve. Csomag feladási email értesítés küldése a csomag átvevőjének.
+    //Kafka topic neve. Csomag szállítási email értesítés küldése a csomag átvevőjének.
     //Csomag leszállításakor
     private String topic4 = "parcelShippingNotificationForReceiver";
+
+    //Kafka topic neve. Csomag átvételi email értesítés küldése a csomag feladójának.
+    //Csomag átvételekor
+    private String topic5 = "parcelPickingUpNotificationForSender";
+    //Kafka topic neve. Csomag átvételi email értesítés küldése a csomag átvevőjének.
+    //Csomag átvételekor
+    private String topic6 = "parcelPickingUpNotificationForReceiver";
 
     //Topic objektum létrehozása
     @Bean
@@ -49,6 +56,20 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic topic4(){
         return TopicBuilder.name(topic4)
+                .build();
+    }
+
+    //Topic objektum létrehozása
+    @Bean
+    public NewTopic topic5(){
+        return TopicBuilder.name(topic5)
+                .build();
+    }
+
+    //Topic objektum létrehozása
+    @Bean
+    public NewTopic topic6(){
+        return TopicBuilder.name(topic6)
                 .build();
     }
 

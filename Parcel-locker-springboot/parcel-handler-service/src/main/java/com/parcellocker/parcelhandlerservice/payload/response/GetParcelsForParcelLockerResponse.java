@@ -1,9 +1,9 @@
-package com.parcellocker.parcelhandlerservice.payload;
+package com.parcellocker.parcelhandlerservice.payload.response;
 
 import lombok.Data;
 
 @Data
-public class GetParcelsForShippingResponse {
+public class GetParcelsForParcelLockerResponse {
 
     private String uniqueParcelId;
 

@@ -1,1 +1,20 @@
-<p>parcel-picking-up works!</p>
+<form class="mt-5" style="text-align: center;" [formGroup]="parcelPickingUpForm"
+    (ngSubmit)="pickUpParcel(parcelPickingUpForm)">
+
+    <div class="d-flex justify-content-center">
+        <div>
+            <mat-form-field>
+                <mat-label>Átvételi kód</mat-label>
+                <input matInput formControlName="pickingUpCode">
+            </mat-form-field>
+            <mat-error *ngIf="getPickingUpCode && getPickingUpCode.invalid && getPickingUpCode.touched">A mező kitöltése
+                kötelező</mat-error>
+        </div>
+
+    </div>
+
+    <div>
+        <button mat-raised-button color="primary" type="submit" [disabled]="parcelPickingUpForm.invalid">Küldés</button>
+    </div>
+
+</form>

@@ -1,12 +1,13 @@
 package com.parcellocker.parcelhandlerservice.controller;
 
-import com.parcellocker.parcelhandlerservice.payload.GetParcelsForShippingRequest;
 import com.parcellocker.parcelhandlerservice.payload.GetParcelsForShippingResponse;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
-import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLocker;
+import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
 import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
 import com.parcellocker.parcelhandlerservice.payload.response.FillParcelLockerResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.GetParcelsForParcelLockerResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.PickUpParcelResponse;
 import com.parcellocker.parcelhandlerservice.service.impl.ParcelServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,15 +42,15 @@ public class ParcelController {
     //Automata kiürítése. Elszállításra váró csomagok átkerülnek a futárhoz
     //Jwt token szükséges
     @PostMapping("/emptyparcellocker")
-    public ResponseEntity<List<EmptyParcelLockerResponse>> emptyParcelLocker(@RequestBody EmptyParcelLocker request){
+    public ResponseEntity<List<EmptyParcelLockerResponse>> emptyParcelLocker(@RequestBody EmptyParcelLockerRequest request){
         return parcelService.emptyParcelLocker(request);
     }
 
     //Futárnál lévő csomagok lekérése. Csak olyan csomagok, amik az adott automatához tartoznak és van nekik szabad rekesz
     //Jwt token szükséges
     @GetMapping("/getparcelsforparcellocker/{senderParcelLockerId}/{uniqueCourierId}")
-    public ResponseEntity<List<FillParcelLockerResponse>> getParcelsForParcelLocker(@PathVariable Long senderParcelLockerId,
-                                                                                    @PathVariable String uniqueCourierId){
+    public ResponseEntity<List<GetParcelsForParcelLockerResponse>> getParcelsForParcelLocker(@PathVariable Long senderParcelLockerId,
+                                                                                             @PathVariable String uniqueCourierId){
         return parcelService.getParcelsForParcelLocker(senderParcelLockerId, uniqueCourierId);
     }
 
@@ -59,5 +60,13 @@ public class ParcelController {
     public ResponseEntity<List<FillParcelLockerResponse>> fillParcelLocker(@PathVariable Long senderParcelLockerId,
                                                                                     @PathVariable String uniqueCourierId){
         return parcelService.fillParcelLocker(senderParcelLockerId, uniqueCourierId);
+    }
+
+    //Csomag átvétele
+    //Nem szükséges jwt token
+    @GetMapping("/pickupparcel/{pickingUpCode}/{senderParcelLockerId}")
+    public ResponseEntity<PickUpParcelResponse> pickUpParcel(@PathVariable String pickingUpCode,
+                                                             @PathVariable Long senderParcelLockerId){
+        return parcelService.pickUpParcel(pickingUpCode, senderParcelLockerId);
     }
 }

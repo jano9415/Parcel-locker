@@ -4,6 +4,7 @@ package com.parcellocker.notificationservice.service;
 
 import com.parcellocker.notificationservice.payload.ParcelSendingNotification;
 import com.parcellocker.notificationservice.payload.SignUpActivationDTO;
+import com.parcellocker.notificationservice.payload.kafka.ParcelPickingUpNotification;
 import com.parcellocker.notificationservice.payload.kafka.ParcelShippingNotification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -95,12 +96,109 @@ public class EmailService {
     }
 
     //Szállítás utáni email küldése a csomag feladójának
-    public void sendShippingNotificationForSender(ParcelShippingNotification jsonObject) {
-        System.out.println(jsonObject.getUniqueParcelId());
+    public void sendShippingNotificationForSender(ParcelShippingNotification notification) {
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+
+            message.setFrom("${spring.mail.username}");
+            message.setTo(notification.getSenderEmailAddress());
+            message.setSubject("Feladott csomagja megérkezett");
+            message.setText("Kedves " + notification.getSenderName() + "\n\n"
+                    + "Az Ön " + notification.getUniqueParcelId() + " azonosítójú csomagja " + notification.getShippingDate()
+                    + " " + notification.getShippingTime() + "-kor megérkezett a feladott automatába." + "\n"
+                    + "A csomag ára: " + notification.getPrice() + " Ft.\n"
+                    + "A csomag címzettje: " + notification.getReceiverName() + "\n"
+                    + "A feladás helye: " + notification.getSenderParcelLockerPostCode() + " " + notification.getSenderParcelLockerCity()
+                    + " " + notification.getSenderParcelLockerStreet() + "\n"
+                    + "Az érkezés helye: " + notification.getReceiverParcelLockerPostCode() + " " + notification.getReceiverParcelLockerCity()
+                    + " " + notification.getReceiverParcelLockerStreet() + "\n"
+                    + "Ha a feladott csomagot átveszik, újabb email értesítést fogunk küldeni." + "\n"
+
+            );
+            javaMailSender.send(message);
+
+        }
+        catch (Exception e){
+            System.out.println("Email server error.");
+        }
+
     }
 
     //Szállítás utáni email küldése a csomag átvevőjének
-    public void sendShippingNotificationForReceiver(ParcelShippingNotification jsonObject) {
-        System.out.println(jsonObject.getPickingUpCode());
+    public void sendShippingNotificationForReceiver(ParcelShippingNotification notification) {
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+
+            message.setFrom("${spring.mail.username}");
+            message.setTo(notification.getReceiverEmailAddress());
+            message.setSubject("Csomagja megérkezett");
+            message.setText("Kedves " + notification.getReceiverName() + "\n\n"
+                    + "Az Ön " + notification.getUniqueParcelId() + " azonosítójú csomagja " + notification.getShippingDate()
+                    + " " + notification.getShippingTime() + "-kor megérkezett." + "\n"
+                    + "Itt tudja átvenni: " + notification.getReceiverParcelLockerPostCode() + " " + notification.getReceiverParcelLockerCity()
+                    + " " + notification.getReceiverParcelLockerStreet() + "\n"
+                    + "Az átvételhez szükséges nyitókód: " + notification.getPickingUpCode() + "\n"
+                    + "A csomag ára: " + notification.getPrice() + " Ft.\n"
+                    + "A csomag feladója: " + notification.getSenderName() + "\n"
+                    + "A feladás helye: " + notification.getSenderParcelLockerPostCode() + " " + notification.getSenderParcelLockerCity()
+                    + " " + notification.getSenderParcelLockerStreet() + "\n"
+            );
+            javaMailSender.send(message);
+
+        }
+        catch (Exception e){
+            System.out.println("Email server error.");
+        }
+
+    }
+
+    //Átvétel utáni email értesítés küldése az átvevőnek
+    public void sendPickingUpNotificationForReceiver(ParcelPickingUpNotification notification) {
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+
+            message.setFrom("${spring.mail.username}");
+            message.setTo(notification.getReceiverEmailAddress());
+            message.setSubject("Csomag átvéve");
+            message.setText("Kedves " + notification.getReceiverName() + "\n\n"
+                    + "A(z) " + notification.getUniqueParcelId() + " azonosítójú csomagodat " + notification.getPickingUpDate()
+                    + " " + notification.getPickingUpTime() + "-kor sikeresen átvetted." + "\n"
+                    + "Átvétel helye: " + notification.getReceiverParcelLockerPostCode() + " " + notification.getReceiverParcelLockerCity()
+                    + " " + notification.getReceiverParcelLockerStreet() + "\n"
+                    + "A csomag feladója: " + notification.getSenderName() + "\n"
+            );
+            javaMailSender.send(message);
+
+        }
+        catch (Exception e){
+            System.out.println("Email server error.");
+        }
+    }
+
+    //Átvétel utáni email értesítés küldése a feladónak
+    public void sendPickingUpNotificationForSender(ParcelPickingUpNotification notification) {
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+
+            message.setFrom("${spring.mail.username}");
+            message.setTo(notification.getSenderEmailAddress());
+            message.setSubject("Csomag átvéve");
+            message.setText("Kedves " + notification.getSenderName() + "\n\n"
+                    + "A(z) " + notification.getUniqueParcelId() + " azonosítójú csomagodat " + notification.getPickingUpDate()
+                    + " " + notification.getPickingUpTime() + "-kor sikeresen átvették." + "\n"
+                    + "Átvétel helye: " + notification.getReceiverParcelLockerPostCode() + " " + notification.getReceiverParcelLockerCity()
+                    + " " + notification.getReceiverParcelLockerStreet() + "\n"
+                    + "A csomag címzettje: " + notification.getReceiverName() + "\n"
+            );
+            javaMailSender.send(message);
+
+        }
+        catch (Exception e){
+            System.out.println("Email server error.");
+        }
     }
 }

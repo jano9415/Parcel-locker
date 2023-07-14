@@ -82,10 +82,17 @@ export class ParcelService {
   }
 
   //Automata feltöltése
+  //Jwt token szükséges
   fillParcelLocker(uniqueCourierId: string): Observable<any>{
     this.getSenderParcelLockerId();
     return this.httpClient.get<Array<any>>(`${this.API_URL + "fillparcellocker"}/${this.senderParcelLockerId}/${uniqueCourierId}`,
     this.getOptionsWithToken());
+  }
+
+  //Csomag átvétele
+  pickUpParcel(pickingUpCode: string): Observable<any> {
+    this.getSenderParcelLockerId();
+    return this.httpClient.get<any>(`${this.API_URL + "pickupparcel"}/${pickingUpCode}/${this.senderParcelLockerId}`);
   }
 
 
