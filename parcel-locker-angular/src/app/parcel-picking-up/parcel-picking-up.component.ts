@@ -11,6 +11,8 @@ export class ParcelPickingUpComponent {
 
   parcelPickingUpForm!: FormGroup;
 
+  boxNumberMessage: string = "";
+
   constructor(private formBuilder: FormBuilder, private parcelService: ParcelService) {
 
   }
@@ -30,12 +32,49 @@ export class ParcelPickingUpComponent {
 
     const formValues = this.parcelPickingUpForm.value;
 
-    
+
     const pickingUpCode = this.parcelPickingUpForm.get("pickingUpCode")?.value;
 
     this.parcelService.pickUpParcel(pickingUpCode).subscribe({
       next: (response) => {
-        console.log(response);
+        //Csomag nem található
+        if (response.message === "notFound") {
+          this.boxNumberMessage = "A megadott azonosítóval nem található csomag.";
+
+        }
+        //Csomag már ki van fizetve. Át lehet venni
+        if (response.message === "pickedUp") {
+          this.boxNumberMessage = "Vedd ki a csomagodat a(z) " + response.boxNumber + ". rekeszből.";
+
+        }
+        //Csomagot még ki kell fizetni, utána lehet csak átvenni
+        if (response.message === "notPickedUp") {
+          this.boxNumberMessage = "Csomag még nincs kifizetve. Az átvétel befejezéséhez használja a bankkártya terminált.";
+
+          //Fizetési funkció, ami majd visszatér a sikeres vagy sikertelen tranzakcióval
+          const paymentState = this.payParcel(response.price);
+          if (paymentState) {
+            this.boxNumberMessage = "Vedd ki a csomagodat a(z) " + response.boxNumber + ". rekeszből.";
+
+            //Csomagadatok frissítése az adatbázisban
+            this.parcelService.pickUpParcelAfterPayment(pickingUpCode).subscribe({
+              next: (response) => {
+                console.log(response.message);
+              },
+              error: (error) => {
+                console.log(error);
+              },
+              complete: () => {
+                console.log("Compelete");
+              }
+            })
+          }
+          else {
+            this.boxNumberMessage = "Sikertelen tranzakció. Új tranzakció végrehajtásához adja meg újra az átvételi kódot.";
+          }
+
+
+        }
       },
       error: (error) => {
         console.log(error);
@@ -54,4 +93,14 @@ export class ParcelPickingUpComponent {
 
 
 
+  //Példa fizetési függvény
+  payParcel(price: number): boolean {
+
+    //Sikeres tranzakció
+    //return(true);
+
+    //Sikertelen tranzakció
+    return false;
+
+  }
 }

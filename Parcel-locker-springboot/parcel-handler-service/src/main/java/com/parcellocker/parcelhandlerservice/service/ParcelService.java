@@ -47,4 +47,8 @@ public interface ParcelService {
 
     //Csomag átvétele
     ResponseEntity<PickUpParcelResponse> pickUpParcel(String pickingUpCode, Long senderParcelLockerId);
+
+    //Csomag átvétele fizetés után. Adatbázis frissítése.
+    //Nem szükséges jwt token
+    ResponseEntity<StringResponse> pickUpParcelAfterPayment(String pickingUpCode, Long senderParcelLockerId);
 }

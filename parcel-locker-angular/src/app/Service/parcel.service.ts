@@ -90,9 +90,19 @@ export class ParcelService {
   }
 
   //Csomag átvétele
+  //Ha már ki van fizetve, akkor át lehet venni
+  //Ha még nincs kifizetve a csomag, az átvétel még nem történik meg, csak visszatér a csomag adataival
+  //Nem szükséges jwt token
   pickUpParcel(pickingUpCode: string): Observable<any> {
     this.getSenderParcelLockerId();
     return this.httpClient.get<any>(`${this.API_URL + "pickupparcel"}/${pickingUpCode}/${this.senderParcelLockerId}`);
+  }
+
+  //Csomag átvétele fizetés után
+  //Nem szükséges jwt token
+  pickUpParcelAfterPayment(pickingUpCode: string): Observable<any> {
+    this.getSenderParcelLockerId();
+    return this.httpClient.get<any>(`${this.API_URL + "pickupparcelafterpayment"}/${pickingUpCode}/${this.senderParcelLockerId}`);
   }
 
 

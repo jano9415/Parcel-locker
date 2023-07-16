@@ -63,10 +63,22 @@ public class ParcelController {
     }
 
     //Csomag átvétele
+    //Ha már ki van fizetve, akkor át lehet venni. Adatok frissítése az adatbázisban és visszatérés a csomag adataival
+    //Response -> message, boxNumber, price
+    //Ha még nincs kifizetve a csomag, az átvétel még nem történik meg, csak visszatérek a csomag adataival.
+    //Ekkor az adatbázis még nem lesz frissítve.
     //Nem szükséges jwt token
     @GetMapping("/pickupparcel/{pickingUpCode}/{senderParcelLockerId}")
     public ResponseEntity<PickUpParcelResponse> pickUpParcel(@PathVariable String pickingUpCode,
                                                              @PathVariable Long senderParcelLockerId){
         return parcelService.pickUpParcel(pickingUpCode, senderParcelLockerId);
+    }
+
+    //Csomag átvétele fizetés után. Adatbázis frissítése.
+    //Nem szükséges jwt token
+    @GetMapping("/pickupparcelafterpayment/{pickingUpCode}/{senderParcelLockerId}")
+    public ResponseEntity<StringResponse> pickUpParcelAfterPayment(@PathVariable String pickingUpCode,
+                                                             @PathVariable Long senderParcelLockerId){
+        return parcelService.pickUpParcelAfterPayment(pickingUpCode, senderParcelLockerId);
     }
 }

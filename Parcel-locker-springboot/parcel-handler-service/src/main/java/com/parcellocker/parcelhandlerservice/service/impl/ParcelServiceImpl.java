@@ -72,7 +72,6 @@ public class ParcelServiceImpl implements ParcelService {
         Parcel parcel = new Parcel();
         ParcelLocker senderParcelLocker = parcelLockerService.findById(senderParcelLockerId);
         ParcelLocker receiverParcelLocker = parcelLockerService.findById(request.getSelectedParcelLockerId());
-        StringResponse stringResponse = new StringResponse();
         ParcelSendingWithoutCodeResponse response = new ParcelSendingWithoutCodeResponse();
 
         //Feladási automata csomagjai
@@ -97,6 +96,7 @@ public class ParcelServiceImpl implements ParcelService {
             }
         }
 
+        /*
         //Csomaghoz rekesz hozzárendelése
         //A szabad rekeszek elérhetőségét már frontend oldalon ellenőrzöm. Ha idáig eljut a kérés, akkor van szabad rekesz.
         //Viszont lehetőség van a csomagküldő honlapjáról is csomagot feladni.
@@ -111,6 +111,7 @@ public class ParcelServiceImpl implements ParcelService {
         else{
             parcel.setBox(emptyBoxes.get(0));
         }
+         */
 
         //Csomag változóinak beállítása
         parcel.setUniqueParcelId(generateRandomString(10));
@@ -481,50 +482,26 @@ public class ParcelServiceImpl implements ParcelService {
 
             response.setMessage("pickedUp");
 
-            //Átvétel dátuma
-            LocalDate currentDate = LocalDate.now();
-            parcel.setPickingUpDate(currentDate);
-            LocalTime currentTime = LocalTime.now();
-            parcel.setPickingUpTime(currentTime);
-
-            //Email értesítés objektum
-            ParcelPickingUpNotification notification = new ParcelPickingUpNotification();
-            notification.setReceiverName(parcel.getReceiverName());
-            notification.setReceiverEmailAddress(parcel.getReceiverEmailAddress());
-            notification.setUniqueParcelId(parcel.getUniqueParcelId());
-
-            notification.setReceiverParcelLockerPostCode(parcel.getShippingTo().getLocation().getPostCode());
-            notification.setReceiverParcelLockerCity(parcel.getShippingTo().getLocation().getCity());
-            notification.setReceiverParcelLockerStreet(parcel.getShippingTo().getLocation().getStreet());
-
-            notification.setPickingUpDate(currentDate.toString());
-            notification.setPickingUpTime(currentTime.toString());
-
-            if(parcel.getUser() == null){
-                notification.setSenderName(parcel.getSenderName());
-                notification.setSenderEmailAddress(parcel.getSenderEmailAddress());
-            }
-            else{
-                notification.setSenderName(parcel.getUser().getLastName() + " " + parcel.getUser().getFirstName());
-                notification.setSenderEmailAddress(parcel.getUser().getEmailAddress());
-            }
-            //Email küldése a csomag feladójának
-            producer.sendPickingUpNotificationForSender(notification);
-            //Email küldése a csomag átvevőjének
-            producer.sendPickingUpNotificationForReceiver(notification);
-
-            //Csomag adatainak frissítése az adatbázisban
-            parcel.setPickedUp(true);
-            parcel.setBox(null);
-            parcel.setParcelLocker(null);
-
-            save(parcel);
+            //Adatbázis frissítése és értesítési email küldése
+            updateDbAfterPickUpParcel(pickingUpCode,senderParcelLockerId);
 
             return ResponseEntity.ok(response);
         }
 
         //A csomagot átvétel előtt még ki kell fizetni
         response.setMessage("notPickedUp");
+        return ResponseEntity.ok(response);
+    }
+
+    //Csomag átvétele fizetés után. Adatbázis frissítése.
+    //Nem szükséges jwt token
+    @Override
+    public ResponseEntity<StringResponse> pickUpParcelAfterPayment(String pickingUpCode, Long senderParcelLockerId) {
+
+        updateDbAfterPickUpParcel(pickingUpCode,senderParcelLockerId);
+
+        StringResponse response = new StringResponse();
+        response.setMessage("pickedUp");
         return ResponseEntity.ok(response);
     }
 
@@ -574,5 +551,50 @@ public class ParcelServiceImpl implements ParcelService {
             }
         }
         return readyParcels;
+    }
+
+    //Csomag átvétele utáni adatbázis frissítése
+    public void updateDbAfterPickUpParcel(String pickingUpCode, Long senderParcelLockerId){
+
+        Parcel parcel = findByPickingUpCode(pickingUpCode);
+
+        //Átvétel dátuma
+        LocalDate currentDate = LocalDate.now();
+        parcel.setPickingUpDate(currentDate);
+        LocalTime currentTime = LocalTime.now();
+        parcel.setPickingUpTime(currentTime);
+
+        //Email értesítés objektum
+        ParcelPickingUpNotification notification = new ParcelPickingUpNotification();
+        notification.setReceiverName(parcel.getReceiverName());
+        notification.setReceiverEmailAddress(parcel.getReceiverEmailAddress());
+        notification.setUniqueParcelId(parcel.getUniqueParcelId());
+
+        notification.setReceiverParcelLockerPostCode(parcel.getShippingTo().getLocation().getPostCode());
+        notification.setReceiverParcelLockerCity(parcel.getShippingTo().getLocation().getCity());
+        notification.setReceiverParcelLockerStreet(parcel.getShippingTo().getLocation().getStreet());
+
+        notification.setPickingUpDate(currentDate.toString());
+        notification.setPickingUpTime(currentTime.toString());
+
+        if(parcel.getUser() == null){
+            notification.setSenderName(parcel.getSenderName());
+            notification.setSenderEmailAddress(parcel.getSenderEmailAddress());
+        }
+        else{
+            notification.setSenderName(parcel.getUser().getLastName() + " " + parcel.getUser().getFirstName());
+            notification.setSenderEmailAddress(parcel.getUser().getEmailAddress());
+        }
+        //Email küldése a csomag feladójának
+        producer.sendPickingUpNotificationForSender(notification);
+        //Email küldése a csomag átvevőjének
+        producer.sendPickingUpNotificationForReceiver(notification);
+
+        //Csomag adatainak frissítése az adatbázisban
+        parcel.setPickedUp(true);
+        parcel.setBox(null);
+        parcel.setParcelLocker(null);
+
+        save(parcel);
     }
 }

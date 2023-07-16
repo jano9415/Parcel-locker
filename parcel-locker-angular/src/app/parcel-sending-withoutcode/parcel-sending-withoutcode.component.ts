@@ -26,6 +26,8 @@ export class ParcelSendingWithoutcodeComponent {
 
   largeBoxesFull: boolean = false;
 
+  boxNumberMessage: string = "";
+
   constructor(private formBuilder: FormBuilder, private parcelLockerService: ParcelLockerService,
     private parcelService: ParcelService, private router: Router) {
   }
@@ -135,25 +137,88 @@ export class ParcelSendingWithoutcodeComponent {
     }
   }
 
+  //Kicsi, közepes vagy nagy rekeszek telítettségének ellenőrzése
+  checkBoxesInSelectedSize(size: string): boolean {
+
+    if (size === "small") {
+      return this.smallBoxesFull
+    }
+    if (size === "small") {
+      return this.mediumBoxesFull
+    }
+    return this.largeBoxesFull
+
+  }
+
   //Csomagfeladás feladási kód nélkül
   //Form küldése
   sendForm(form: FormGroup) {
     const parcelSendingFormValues = this.parcelSendingForm.value;
 
-    this.parcelService.sendParcelWithoutCode(parcelSendingFormValues).subscribe({
+    //Miután az ügyfél megnyomja a csomagfeladás gombot, újra ellenőrzöm az automata telítettségét
+    //Lehet, hogy az automata a form kitöltése közben megtelt, az online csomagküldés lehetősége miatt
+    //Ekkor nem is indítok fizetési tranzakciót
+    const selectedParcelSize = this.parcelSendingForm.get("parcelSize")?.value;
+
+    this.parcelLockerService.areBoxesFull().subscribe({
       next: (response) => {
-        //Ha az automata a küldés közben megtelt, az online csomagküldés lehetősége miatt
-        if (response.message === "full") {
-          alert("Sajnos a kiválasztott méretű rekeszek megteltek.");
-          this.parcelSendingForm.reset();
+        //Kicsi rekeszek
+        if (response[0].message === "full") {
+          this.smallBoxesFull = true;
+        }
+        if (response[0].message === "notfull") {
+          this.smallBoxesFull = false;
+        }
+        //Közepes rekeszek
+        if (response[1].message === "full") {
+          this.mediumBoxesFull = true;
+        }
+        if (response[1].message === "notfull") {
+          this.mediumBoxesFull = false;
+        }
+        //Nagy rekeszek
+        if (response[2].message === "full") {
+          this.largeBoxesFull = true;
+        }
+        if (response[2].message === "notfull") {
+          this.largeBoxesFull = false;
         }
 
-        //Sikeres csomagfeladás
-        if (response.message === "successSending") {
-          alert("Tedd be a csomagodat a(z) " + response.boxNumber + ". rekeszbe.");
-          this.router.navigateByUrl("/home");
-        }
 
+
+        if (this.checkBoxesInSelectedSize(selectedParcelSize)) {
+          this.boxNumberMessage = "Sajnos a kiválasztott méretű rekeszek megteltek online csomagfeladás miatt.";
+        }
+        else {
+          //Csomagfeladás kifizetése
+          const paymentState = this.payParcel(4600);
+          if (paymentState) {
+
+            //Kérés a szervernek
+            this.parcelService.sendParcelWithoutCode(parcelSendingFormValues).subscribe({
+              next: (response) => {
+                //Sikeres csomagfeladás
+                if (response.message === "successSending") {
+                  this.boxNumberMessage = "Tedd be a csomagodat a(z) " + response.boxNumber + ". rekeszbe.";
+                  //this.router.navigateByUrl("/home");
+                }
+
+              },
+              error: (error) => {
+                console.log(error);
+              },
+              complete: () => {
+                console.log("Compelete");
+              }
+            })
+
+          }
+          else {
+            this.boxNumberMessage = "Sikertelen tranzakció. Kérjük próbálja meg újra feladni a csomagját.";
+
+          }
+
+        }
       },
       error: (error) => {
         console.log(error);
@@ -172,6 +237,10 @@ export class ParcelSendingWithoutcodeComponent {
 
   get getPrice() {
     return this.parcelSendingForm.get("price");
+  }
+
+  get getParcelSize() {
+    return this.parcelSendingForm.get("parcelSize");
   }
 
   get getSenderName() {
@@ -194,5 +263,16 @@ export class ParcelSendingWithoutcodeComponent {
     return this.parcelSendingForm.get("selectedParcelLockerId");
   }
 
+
+  //Példa fizetési függvény
+  payParcel(price: number): boolean {
+
+    //Sikeres tranzakció
+    //return(true);
+
+    //Sikertelen tranzakció
+    return false;
+
+  }
 
 }
