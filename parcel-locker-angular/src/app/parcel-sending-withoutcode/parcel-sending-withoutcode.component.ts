@@ -28,6 +28,8 @@ export class ParcelSendingWithoutcodeComponent {
 
   boxNumberMessage: string = "";
 
+  paymentMessage: string = "";
+
   constructor(private formBuilder: FormBuilder, private parcelLockerService: ParcelLockerService,
     private parcelService: ParcelService, private router: Router) {
   }
@@ -188,9 +190,11 @@ export class ParcelSendingWithoutcodeComponent {
 
         if (this.checkBoxesInSelectedSize(selectedParcelSize)) {
           this.boxNumberMessage = "Sajnos a kiválasztott méretű rekeszek megteltek online csomagfeladás miatt.";
+          this.parcelSendingForm.reset();
         }
         else {
           //Csomagfeladás kifizetése
+          this.paymentMessage = "Fizetéshez használja a bankkártya terminált.";
           const paymentState = this.payParcel(4600);
           if (paymentState) {
 
@@ -200,7 +204,7 @@ export class ParcelSendingWithoutcodeComponent {
                 //Sikeres csomagfeladás
                 if (response.message === "successSending") {
                   this.boxNumberMessage = "Tedd be a csomagodat a(z) " + response.boxNumber + ". rekeszbe.";
-                  //this.router.navigateByUrl("/home");
+                  this.parcelSendingForm.reset();
                 }
 
               },
@@ -267,11 +271,13 @@ export class ParcelSendingWithoutcodeComponent {
   //Példa fizetési függvény
   payParcel(price: number): boolean {
 
+    console.log('Tranzakció folyamatban.');
+
     //Sikeres tranzakció
-    //return(true);
+    return(true);
 
     //Sikertelen tranzakció
-    return false;
+    //return false;
 
   }
 

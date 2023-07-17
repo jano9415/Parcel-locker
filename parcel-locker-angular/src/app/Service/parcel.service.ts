@@ -78,15 +78,15 @@ export class ParcelService {
   getParcelsForParcelLocker(uniqueCourierId: string): Observable<any> {
     this.getSenderParcelLockerId();
     return this.httpClient.get<Array<any>>(`${this.API_URL + "getparcelsforparcellocker"}/${this.senderParcelLockerId}/${uniqueCourierId}`,
-     this.getOptionsWithToken());
+      this.getOptionsWithToken());
   }
 
   //Automata feltöltése
   //Jwt token szükséges
-  fillParcelLocker(uniqueCourierId: string): Observable<any>{
+  fillParcelLocker(uniqueCourierId: string): Observable<any> {
     this.getSenderParcelLockerId();
     return this.httpClient.get<Array<any>>(`${this.API_URL + "fillparcellocker"}/${this.senderParcelLockerId}/${uniqueCourierId}`,
-    this.getOptionsWithToken());
+      this.getOptionsWithToken());
   }
 
   //Csomag átvétele
@@ -103,6 +103,13 @@ export class ParcelService {
   pickUpParcelAfterPayment(pickingUpCode: string): Observable<any> {
     this.getSenderParcelLockerId();
     return this.httpClient.get<any>(`${this.API_URL + "pickupparcelafterpayment"}/${pickingUpCode}/${this.senderParcelLockerId}`);
+  }
+
+  //Csomag küldése feladási kóddal
+  //Nem szükséges jwt token
+  sendParcelWithCode(sendingCode: string): Observable<any> {
+    this.getSenderParcelLockerId();
+    return this.httpClient.get<any>(`${this.API_URL + "sendparcelwithcode"}/${sendingCode}/${this.senderParcelLockerId}`);
   }
 
 

@@ -81,4 +81,12 @@ public class ParcelController {
                                                              @PathVariable Long senderParcelLockerId){
         return parcelService.pickUpParcelAfterPayment(pickingUpCode, senderParcelLockerId);
     }
+
+    //Csomag küldése feladási kóddal
+    //Nem szükséges jwt token
+    @GetMapping("/sendparcelwithcode/{sendingCode}/{senderParcelLockerId}")
+    public ResponseEntity<StringResponse> sendParcelWithCode(@PathVariable String sendingCode,
+                                                                   @PathVariable Long senderParcelLockerId){
+        return parcelService.sendParcelWithCode(sendingCode, senderParcelLockerId);
+    }
 }

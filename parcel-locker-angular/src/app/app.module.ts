@@ -11,7 +11,6 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginMenuComponent } from './login-menu/login-menu.component';
-import { CourierMenuComponent } from './courier-menu/courier-menu.component';
 import { ChooseParcelLockerComponent } from './choose-parcel-locker/choose-parcel-locker.component';
 import { ParcelPickingUpComponent } from './parcel-picking-up/parcel-picking-up.component';
 import { ParcelSendingWithcodeComponent } from './parcel-sending-withcode/parcel-sending-withcode.component';
@@ -36,7 +35,6 @@ import {MatTableModule} from '@angular/material/table';
     AppComponent,
     HomeComponent,
     LoginMenuComponent,
-    CourierMenuComponent,
     ChooseParcelLockerComponent,
     ParcelPickingUpComponent,
     ParcelSendingWithcodeComponent,

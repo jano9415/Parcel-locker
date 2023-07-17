@@ -113,6 +113,8 @@ public class ParcelServiceImpl implements ParcelService {
         }
          */
 
+        parcel.setBox(emptyBoxes.get(0));
+
         //Csomag változóinak beállítása
         parcel.setUniqueParcelId(generateRandomString(10));
         parcel.setUser(null);
@@ -503,6 +505,13 @@ public class ParcelServiceImpl implements ParcelService {
         StringResponse response = new StringResponse();
         response.setMessage("pickedUp");
         return ResponseEntity.ok(response);
+    }
+
+    //Csomag küldése feladási kóddal
+    //Nem szükséges jwt token
+    @Override
+    public ResponseEntity<StringResponse> sendParcelWithCode(String sendingCode, Long senderParcelLockerId) {
+        return null;
     }
 
     //Random string generálása

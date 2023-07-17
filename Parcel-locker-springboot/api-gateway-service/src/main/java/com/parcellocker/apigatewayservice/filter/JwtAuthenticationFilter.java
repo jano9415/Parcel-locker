@@ -56,7 +56,9 @@ public class JwtAuthenticationFilter implements GatewayFilter {
                 //Rekeszek tele vannak? Kicsi, közepes és nagy
                 "/parcelhandler/parcellocker/areboxesfull",
                 //Csomag átvétele
-                "/parcelhandler/parcel/pickupparcel"
+                "/parcelhandler/parcel/pickupparcel",
+                //Csomag feladása feladási kóddal
+                "/parcelhandler/parcel/sendparcelwithcode"
         );
 
         Predicate<ServerHttpRequest> isApiSecured = r -> apiEndpoints.stream()

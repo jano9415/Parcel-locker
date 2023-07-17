@@ -20,6 +20,8 @@ export class EmptyParcelLockerComponent {
 
   dataSourceForTable!: MatTableDataSource<any>;
 
+  boxNumberMessages!: Array<any>;
+
   constructor(private cookieService: CookieService, private router: Router,
     private parcelService: ParcelService) {
 
@@ -57,8 +59,8 @@ export class EmptyParcelLockerComponent {
 
     this.parcelService.emptyParcelLocker(this.currenctCourier.emailAddress).subscribe({
       next: (response) => {
-        console.log(response);
-        window.location.reload();
+        this.boxNumberMessages = response;
+        //window.location.reload();
       },
       error: (error) => {
         console.log(error);

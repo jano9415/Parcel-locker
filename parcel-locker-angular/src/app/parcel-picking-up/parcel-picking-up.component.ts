@@ -13,6 +13,8 @@ export class ParcelPickingUpComponent {
 
   boxNumberMessage: string = "";
 
+  paymentMessage: string = "";
+
   constructor(private formBuilder: FormBuilder, private parcelService: ParcelService) {
 
   }
@@ -49,7 +51,7 @@ export class ParcelPickingUpComponent {
         }
         //Csomagot még ki kell fizetni, utána lehet csak átvenni
         if (response.message === "notPickedUp") {
-          this.boxNumberMessage = "Csomag még nincs kifizetve. Az átvétel befejezéséhez használja a bankkártya terminált.";
+          this.paymentMessage = "Csomag még nincs kifizetve. Az átvétel befejezéséhez használja a bankkártya terminált.";
 
           //Fizetési funkció, ami majd visszatér a sikeres vagy sikertelen tranzakcióval
           const paymentState = this.payParcel(response.price);
@@ -97,10 +99,10 @@ export class ParcelPickingUpComponent {
   payParcel(price: number): boolean {
 
     //Sikeres tranzakció
-    //return(true);
+    return(true);
 
     //Sikertelen tranzakció
-    return false;
+    //return false;
 
   }
 }

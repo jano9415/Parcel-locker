@@ -52,7 +52,7 @@ export class CourierLoginComponent {
         //Futár objektum kiolvasása cookie-ből és visszaalakítás
         const deserializedCourier = JSON.parse(this.cookieService.get("currentCourier"));
 
-        this.router.navigateByUrl("/home");
+        this.router.navigateByUrl("courierhome");
         //window.location.reload();
         
       })

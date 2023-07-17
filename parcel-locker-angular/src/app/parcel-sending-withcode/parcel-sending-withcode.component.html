@@ -1,1 +1,20 @@
+<form class="mt-5" style="text-align: center;" [formGroup]="parcelsendingWithCodeForm"
+    (ngSubmit)="sendParcel(parcelsendingWithCodeForm)">
 
+    <div class="d-flex justify-content-center">
+        <div>
+            <mat-form-field>
+                <mat-label>Feladási kód</mat-label>
+                <input matInput formControlName="sendingCode">
+            </mat-form-field>
+            <mat-error *ngIf="getSendingCode && getSendingCode.invalid && getSendingCode.touched">A mező kitöltése
+                kötelező</mat-error>
+        </div>
+
+    </div>
+
+    <div>
+        <button mat-raised-button color="primary" type="submit" [disabled]="parcelsendingWithCodeForm.invalid">Küldés</button>
+    </div>
+
+</form>

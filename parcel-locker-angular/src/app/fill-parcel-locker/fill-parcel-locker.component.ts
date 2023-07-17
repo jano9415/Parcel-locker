@@ -4,6 +4,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { ParcelService } from '../Service/parcel.service';
 import { MatTableDataSource } from '@angular/material/table';
 
+
+
 @Component({
   selector: 'app-fill-parcel-locker',
   templateUrl: './fill-parcel-locker.component.html',
@@ -13,12 +15,14 @@ export class FillParcelLockerComponent {
 
   currenctCourier: any | null = null;
 
-  parcelsForParcelLocker: Array<Object> | null = null;
+  parcelsForParcelLocker: Array<any> | null = null;
 
   displayedColumns: string[] = ['uniqueParcelId', 'price', 'senderParcelLockerPostCode', 'receiverParcelLockerPostCode',
   'boxNumber'];
 
   dataSourceForTable!: MatTableDataSource<any>;
+
+  boxNumberMessages!: Array<any>;
 
   constructor(private cookieService: CookieService, private router: Router,
     private parcelService: ParcelService) {
@@ -58,8 +62,8 @@ export class FillParcelLockerComponent {
   fillParcelLocker(): void{
     this.parcelService.fillParcelLocker(this.currenctCourier.emailAddress).subscribe({
       next: (response) => {
-        console.log(response);
-        window.location.reload();
+        this.boxNumberMessages = response;
+        //window.location.reload();
       },
       error: (error) => {
         console.log(error);
