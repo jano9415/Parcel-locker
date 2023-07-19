@@ -105,6 +105,13 @@ export class ParcelService {
     return this.httpClient.get<any>(`${this.API_URL + "pickupparcelafterpayment"}/${pickingUpCode}/${this.senderParcelLockerId}`);
   }
 
+  //Csomag keresése feladási kód szerint
+  //Nem szükséges jwt token
+  getParcelForSendingWithCode(sendingCode: string): Observable<any> {
+    this.getSenderParcelLockerId();
+    return this.httpClient.get<any>(`${this.API_URL + "getparcelforsendingwithcode"}/${sendingCode}/${this.senderParcelLockerId}`);
+  }
+
   //Csomag küldése feladási kóddal
   //Nem szükséges jwt token
   sendParcelWithCode(sendingCode: string): Observable<any> {

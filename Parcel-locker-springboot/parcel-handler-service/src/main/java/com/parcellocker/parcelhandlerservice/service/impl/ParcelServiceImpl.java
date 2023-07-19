@@ -10,10 +10,7 @@ import com.parcellocker.parcelhandlerservice.payload.*;
 import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelPickingUpNotification;
 import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelShippingNotification;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
-import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
-import com.parcellocker.parcelhandlerservice.payload.response.FillParcelLockerResponse;
-import com.parcellocker.parcelhandlerservice.payload.response.GetParcelsForParcelLockerResponse;
-import com.parcellocker.parcelhandlerservice.payload.response.PickUpParcelResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.*;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -507,7 +504,44 @@ public class ParcelServiceImpl implements ParcelService {
         return ResponseEntity.ok(response);
     }
 
+    //Keresés feladási kód szerint
+    @Override
+    public Parcel findBySendingCode(String sendingCode) {
+        return parcelRepository.findBySendingCode(sendingCode);
+    }
+
+    //Keresés feladási kód szerint
+    //Ha van csomag és a feladási automata megegyezik a kérésben érkező feladási automatával, akkor visszatérek
+    //a rekesz számával
+    //Különben a csomag nem található
+    @Override
+    public ResponseEntity<GetParcelForSendingWithCodeResponse> getParcelForSendingWithCode(String sendingCode, Long senderParcelLockerId) {
+        Parcel parcel = findBySendingCode(sendingCode);
+
+        GetParcelForSendingWithCodeResponse response = new GetParcelForSendingWithCodeResponse();
+
+        //Csomag nem található
+        if(parcel == null){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
+
+        }
+        //Van csomag, de azt nem ebbe az automatába kell elhelyezni
+        if(parcel.getShippingFrom().getId() == senderParcelLockerId){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
+
+        }
+
+        response.setMessage("found");
+        response.setBoxNumber(parcel.getBox().getBoxNumber());
+        return ResponseEntity.ok(response);
+    }
+
     //Csomag küldése feladási kóddal
+    //Az előző kérésben már ellenőrizve lett, hogy megtalálható a csomag
+    //Ez a kérés már fizetés után van
+    //Itt már csak frissítem a csomag adatait
     //Nem szükséges jwt token
     @Override
     public ResponseEntity<StringResponse> sendParcelWithCode(String sendingCode, Long senderParcelLockerId) {

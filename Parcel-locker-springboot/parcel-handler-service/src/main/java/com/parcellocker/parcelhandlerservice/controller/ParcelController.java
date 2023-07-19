@@ -4,10 +4,7 @@ import com.parcellocker.parcelhandlerservice.payload.GetParcelsForShippingRespon
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
-import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
-import com.parcellocker.parcelhandlerservice.payload.response.FillParcelLockerResponse;
-import com.parcellocker.parcelhandlerservice.payload.response.GetParcelsForParcelLockerResponse;
-import com.parcellocker.parcelhandlerservice.payload.response.PickUpParcelResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.*;
 import com.parcellocker.parcelhandlerservice.service.impl.ParcelServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -80,6 +77,17 @@ public class ParcelController {
     public ResponseEntity<StringResponse> pickUpParcelAfterPayment(@PathVariable String pickingUpCode,
                                                              @PathVariable Long senderParcelLockerId){
         return parcelService.pickUpParcelAfterPayment(pickingUpCode, senderParcelLockerId);
+    }
+
+    //Keresés feladási kód szerint
+    //Ha van csomag és a feladási automata megegyezik a kérésben érkező feladási automatával, akkor visszatérek
+    //a rekesz számával
+    //Különben a csomag nem található
+    //Nem szükséges jwt token
+    @GetMapping("/getparcelforsendingwithcode/{sendingCode}/{senderParcelLockerId}")
+    public ResponseEntity<GetParcelForSendingWithCodeResponse> getParcelForSendingWithCode(@PathVariable String sendingCode,
+                                                                                           @PathVariable Long senderParcelLockerId){
+        return parcelService.getParcelForSendingWithCode(sendingCode, senderParcelLockerId);
     }
 
     //Csomag küldése feladási kóddal

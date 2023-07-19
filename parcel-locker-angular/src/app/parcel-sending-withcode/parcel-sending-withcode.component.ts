@@ -29,8 +29,24 @@ export class ParcelSendingWithcodeComponent {
 
   }
 
-  //Csomag küldése
+  //Csomagfeladás feladási kóddal
+  //Ha a csomag nem található a válasz: message: notFound
+  //Ha a csomag megtalálható a válasz: message: found, boxNumber: rekesz száma
+  //Ha megvan a csomag, először ki kell fizetni a szállítási díjat
+  //Utána kinyílik a rekesz, és megtörténik az adatbázis frissítése
   sendParcel(form: FormGroup): void {
+
+    this.parcelService.getParcelForSendingWithCode(this.getSendingCode?.value).subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log("Compelete");
+      }
+    })
 
   }
 

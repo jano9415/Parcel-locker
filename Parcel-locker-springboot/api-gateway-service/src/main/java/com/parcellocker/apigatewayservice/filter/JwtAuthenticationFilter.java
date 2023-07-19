@@ -57,6 +57,8 @@ public class JwtAuthenticationFilter implements GatewayFilter {
                 "/parcelhandler/parcellocker/areboxesfull",
                 //Csomag átvétele
                 "/parcelhandler/parcel/pickupparcel",
+                //Csomag keresés feladási kód szerint
+                "/parcelhandler/parcel/getparcelforsendingwithcode",
                 //Csomag feladása feladási kóddal
                 "/parcelhandler/parcel/sendparcelwithcode"
         );

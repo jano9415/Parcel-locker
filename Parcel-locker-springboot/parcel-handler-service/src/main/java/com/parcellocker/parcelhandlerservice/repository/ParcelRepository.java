@@ -21,4 +21,7 @@ public interface ParcelRepository extends CrudRepository<Parcel, Long> {
 
     //Keresés átvételi kód szerint
     Parcel findByPickingUpCode(String pickingUpCode);
+
+    //Keresés feladási kód szerint
+    Parcel findBySendingCode(String sendingCode);
 }

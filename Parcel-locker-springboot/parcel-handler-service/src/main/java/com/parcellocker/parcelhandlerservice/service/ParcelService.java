@@ -5,10 +5,7 @@ import com.parcellocker.parcelhandlerservice.payload.GetParcelsForShippingRespon
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
-import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
-import com.parcellocker.parcelhandlerservice.payload.response.FillParcelLockerResponse;
-import com.parcellocker.parcelhandlerservice.payload.response.GetParcelsForParcelLockerResponse;
-import com.parcellocker.parcelhandlerservice.payload.response.PickUpParcelResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -51,6 +48,15 @@ public interface ParcelService {
     //Csomag átvétele fizetés után. Adatbázis frissítése.
     //Nem szükséges jwt token
     ResponseEntity<StringResponse> pickUpParcelAfterPayment(String pickingUpCode, Long senderParcelLockerId);
+
+    //Keresés feladási kód szerint
+    Parcel findBySendingCode(String sendingCode);
+
+    //Keresés feladási kód szerint
+    //Ha van csomag és a feladási automata megegyezik a kérésben érkező feladási automatával, akkor visszatérek
+    //a rekesz számával
+    //Különben a csomag nem található
+    ResponseEntity<GetParcelForSendingWithCodeResponse> getParcelForSendingWithCode(String sendingCode, Long senderParcelLockerId);
 
 
     //Csomag küldése feladási kóddal
