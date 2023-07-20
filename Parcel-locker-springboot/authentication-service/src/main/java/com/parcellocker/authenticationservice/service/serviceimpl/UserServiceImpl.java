@@ -201,7 +201,7 @@ public class UserServiceImpl implements UserService {
         User user = findByPassword(sha256Password);
 
         if(user == null){
-            return ResponseEntity.badRequest().body("Hibás azonosító");
+            return ResponseEntity.badRequest().body("notFound");
         }
 
         String token = jwtUtil.generateToken(user.getEmailAddress());

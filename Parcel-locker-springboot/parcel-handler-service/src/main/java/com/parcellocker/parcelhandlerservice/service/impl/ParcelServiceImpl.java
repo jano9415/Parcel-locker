@@ -93,23 +93,7 @@ public class ParcelServiceImpl implements ParcelService {
             }
         }
 
-        /*
         //Csomaghoz rekesz hozzárendelése
-        //A szabad rekeszek elérhetőségét már frontend oldalon ellenőrzöm. Ha idáig eljut a kérés, akkor van szabad rekesz.
-        //Viszont lehetőség van a csomagküldő honlapjáról is csomagot feladni.
-        //Ezért elvileg előfordulhat az, hogy az ügyfél elkezdi a csomagfeladást az automatánál, az elején még vannak
-        //szabad rekeszek. De miközben kitölti az adatokat, adnak fel csomagot a honlapról, ezért azok a rekeszek betelnek.
-        //Ezért itt is ellenőrizni kell a szabad rekeszek elérhetőségét.
-        if(emptyBoxes.isEmpty()){
-            //Minden rekesz tele
-            stringResponse.setMessage("full");
-            return ResponseEntity.ok(stringResponse);
-        }
-        else{
-            parcel.setBox(emptyBoxes.get(0));
-        }
-         */
-
         parcel.setBox(emptyBoxes.get(0));
 
         //Csomag változóinak beállítása
@@ -527,10 +511,15 @@ public class ParcelServiceImpl implements ParcelService {
 
         }
         //Van csomag, de azt nem ebbe az automatába kell elhelyezni
-        if(parcel.getShippingFrom().getId() == senderParcelLockerId){
+        if(parcel.getShippingFrom().getId() != senderParcelLockerId){
             response.setMessage("notFound");
             return ResponseEntity.ok(response);
 
+        }
+        //Csomag már el van helyezve
+        if(parcel.isPlaced()){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
         }
 
         response.setMessage("found");
@@ -541,11 +530,60 @@ public class ParcelServiceImpl implements ParcelService {
     //Csomag küldése feladási kóddal
     //Az előző kérésben már ellenőrizve lett, hogy megtalálható a csomag
     //Ez a kérés már fizetés után van
-    //Itt már csak frissítem a csomag adatait
+    //Itt már csak frissítem a csomag adatait és elküldöm az email értesítéseket
     //Nem szükséges jwt token
     @Override
     public ResponseEntity<StringResponse> sendParcelWithCode(String sendingCode, Long senderParcelLockerId) {
-        return null;
+
+        Parcel parcel = findBySendingCode(sendingCode);
+        ParcelLocker senderParcelLocker = parcelLockerService.findById(parcel.getShippingFrom().getId());
+        ParcelLocker receiverParcelLocker = parcelLockerService.findById(parcel.getShippingTo().getId());
+        StringResponse response = new StringResponse();
+
+        //Csomag adatainak frissítése
+        //Amit frissíteni kell: a csomag el van helyezve, feladási dátum és időpont
+        LocalDate currentDate = LocalDate.now();
+        parcel.setSendingDate(currentDate);
+
+        LocalTime currentTime = LocalTime.now();
+        parcel.setSendingTime(currentTime);
+
+        parcel.setPlaced(true);
+
+        save(parcel);
+
+
+
+        //Email küldése a feladónak
+        //Értesítési objektum küldése a(z) ("parcelSendingNotificationForSender") topicnak
+
+        ParcelSendingNotification notification = new ParcelSendingNotification();
+
+        notification.setReceiverName(parcel.getReceiverName());
+        notification.setSenderName(parcel.getUser().getLastName() + " " + parcel.getUser().getFirstName());
+        notification.setSenderEmailAddress(parcel.getUser().getEmailAddress());
+        notification.setReceiverEmailAddress(parcel.getReceiverEmailAddress());
+        notification.setPrice(parcel.getPrice());
+        notification.setUniqueParcelId(parcel.getUniqueParcelId());
+        notification.setSenderParcelLockerPostCode(senderParcelLocker.getLocation().getPostCode());
+        notification.setSenderParcelLockerCity(senderParcelLocker.getLocation().getCity());
+        notification.setSenderParcelLockerStreet(senderParcelLocker.getLocation().getStreet());
+
+        notification.setReceiverParcelLockerPostCode(receiverParcelLocker.getLocation().getPostCode());
+        notification.setReceiverParcelLockerCity(receiverParcelLocker.getLocation().getCity());
+        notification.setReceiverParcelLockerStreet(receiverParcelLocker.getLocation().getStreet());
+        notification.setSendingDate(currentDate.toString());
+        notification.setSendingTime(currentTime.toString());
+
+        producer.sendNotificationForSender(notification);
+
+        //Email küldése az átvevőnek
+        //Értesítési objektum küldése a(z) ("parcelSendingNotificationForReceiver") topicnak
+        producer.sendNotificationForReceiver(notification);
+
+
+        response.setMessage("successSending");
+        return ResponseEntity.ok(response);
     }
 
     //Random string generálása

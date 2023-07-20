@@ -51,7 +51,7 @@ export class ParcelPickingUpComponent {
         }
         //Csomagot még ki kell fizetni, utána lehet csak átvenni
         if (response.message === "notPickedUp") {
-          this.paymentMessage = "Csomag még nincs kifizetve. Az átvétel befejezéséhez használja a bankkártya terminált.";
+          this.paymentMessage = "Csomag még nincs kifizetve. Fizetéshez használd a bankkártya terminált.";
 
           //Fizetési funkció, ami majd visszatér a sikeres vagy sikertelen tranzakcióval
           const paymentState = this.payParcel(response.price);
@@ -72,7 +72,7 @@ export class ParcelPickingUpComponent {
             })
           }
           else {
-            this.boxNumberMessage = "Sikertelen tranzakció. Új tranzakció végrehajtásához adja meg újra az átvételi kódot.";
+            this.boxNumberMessage = "Sikertelen tranzakció. Add meg újra az átvételi kódot.";
           }
 
 

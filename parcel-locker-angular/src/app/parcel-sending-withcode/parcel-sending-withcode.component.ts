@@ -38,7 +38,39 @@ export class ParcelSendingWithcodeComponent {
 
     this.parcelService.getParcelForSendingWithCode(this.getSendingCode?.value).subscribe({
       next: (response) => {
-        console.log(response);
+        //Ha van csomag, akkor még ki kell fizetni a feladást
+        if(response.message === "found"){
+
+          this.paymentMessage = "Fizetéshez használd a bankkártya terminált.";
+          const paymentState = this.payParcel(4600);
+
+          if(paymentState){
+            //Adatok frissítése az adatbázisban
+            this.parcelService.sendParcelWithCode(this.getSendingCode?.value).subscribe({
+              next: (response) => {
+                console.log(response);
+              },
+              error: (error) => {
+                console.log(error);
+              },
+              complete: () => {
+                console.log("Compelete");
+              }
+            })
+
+            this.boxNumberMessage = "Tedd be a csomagodat a(z) " + response.boxNumber + ". rekeszbe.";
+            this.parcelsendingWithCodeForm.reset();
+
+          }
+          else{
+            this.boxNumberMessage = "Sikertelen tranzakció. Próbáld meg újra feladni a csomagot.";
+          }
+        }
+        //Csomag nem található
+        if(response.message === "notFound"){
+          this.boxNumberMessage = "A megadott feladási kóddal nem található csomag.";
+
+        }
       },
       error: (error) => {
         console.log(error);
@@ -54,5 +86,18 @@ export class ParcelSendingWithcodeComponent {
   get getSendingCode() {
     return this.parcelsendingWithCodeForm.get("sendingCode");
   }
+
+    //Példa fizetési függvény
+    payParcel(price: number): boolean {
+
+      console.log('Tranzakció folyamatban.');
+  
+      //Sikeres tranzakció
+      return(true);
+  
+      //Sikertelen tranzakció
+      //return false;
+  
+    }
 
 }

@@ -194,7 +194,7 @@ export class ParcelSendingWithoutcodeComponent {
         }
         else {
           //Csomagfeladás kifizetése
-          this.paymentMessage = "Fizetéshez használja a bankkártya terminált.";
+          this.paymentMessage = "Fizetéshez használd a bankkártya terminált.";
           const paymentState = this.payParcel(4600);
           if (paymentState) {
 
@@ -218,7 +218,7 @@ export class ParcelSendingWithoutcodeComponent {
 
           }
           else {
-            this.boxNumberMessage = "Sikertelen tranzakció. Kérjük próbálja meg újra feladni a csomagját.";
+            this.boxNumberMessage = "Sikertelen tranzakció. Próbáld meg újra feladni a csomagot.";
 
           }
 
