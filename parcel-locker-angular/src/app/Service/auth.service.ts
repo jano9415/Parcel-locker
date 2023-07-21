@@ -32,10 +32,10 @@ export class AuthService {
 
   //Futár bejelentkezés
   //Rfid uid: 07 6205 26
-  courierLogin(password: string): Observable<LoginResponse> {
+  courierLogin(password: string): Observable<any> {
 
 
-    return this.httpClient.post<LoginResponse>(`${this.API_URL + "courierlogin"}`, {password});
+    return this.httpClient.post<any>(`${this.API_URL + "courierlogin"}`, {password});
   }
   
 }

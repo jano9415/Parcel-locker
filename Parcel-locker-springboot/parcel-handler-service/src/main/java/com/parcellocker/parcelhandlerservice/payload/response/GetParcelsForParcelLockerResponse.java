@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class GetParcelsForParcelLockerResponse {
 
+    private String message;
+
     private String uniqueParcelId;
 
     private int price;

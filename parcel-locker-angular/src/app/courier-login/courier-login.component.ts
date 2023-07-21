@@ -39,39 +39,48 @@ export class CourierLoginComponent {
 
       this.authService.courierLogin(this.password).subscribe({
         next: (response) => {
-          console.log(response);
 
-          const currentCourier = {
-            token: response.token,
-            tokenType: response.tokenType,
-            userId: response.userId,
-            emailAddress: response.emailAddress,
-            firstName: response.firstName,
-            lastName: response.lastName,
-            roles: response.roles
+          if (response.message === "notFound") {
+            this.message = "Hibás azonosító. Kattints a kezdőlapra, frissítsd az oldalt, majd kattints a bejelentkezésre" +
+             " és próbálj meg újra bejelentkezni.";
           }
+          else {
 
-          //Futár objektum szerializálása és mentés cookie-ban
-          const serializedCourier = JSON.stringify(currentCourier);
-          this.cookieService.set("currentCourier", serializedCourier);
+            const currentCourier = {
+              token: response.token,
+              tokenType: response.tokenType,
+              userId: response.userId,
+              emailAddress: response.emailAddress,
+              firstName: response.firstName,
+              lastName: response.lastName,
+              roles: response.roles
+            }
 
-          //Futár objektum kiolvasása cookie-ből és visszaalakítás
-          const deserializedCourier = JSON.parse(this.cookieService.get("currentCourier"));
+            //Futár objektum szerializálása és mentés cookie-ban
+            const serializedCourier = JSON.stringify(currentCourier);
+            this.cookieService.set("currentCourier", serializedCourier);
 
-          this.router.navigateByUrl("courierhome");
-          //window.location.reload();
+            //Futár objektum kiolvasása cookie-ből és visszaalakítás
+            const deserializedCourier = JSON.parse(this.cookieService.get("currentCourier"));
+
+            //Navigáció a home oldalra és oldal frissítése
+            this.router.navigateByUrl("courierhome", { skipLocationChange: false }).then(() => {
+              window.location.reload();
+            });
+
+
+          }
 
         },
         error: (error) => {
           console.log(error);
-          this.message = "Hibás azonosító.";
         },
         complete: () => {
           console.log("Compelete");
         }
       })
     }
-    else{
+    else {
       this.message = "Érintsd a kártyád az olvasóhoz.";
     }
   }

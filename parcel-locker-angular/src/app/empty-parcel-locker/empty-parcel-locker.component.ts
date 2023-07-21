@@ -22,6 +22,10 @@ export class EmptyParcelLockerComponent {
 
   boxNumberMessages!: Array<any>;
 
+  noParcelMessage: string = "";
+
+  sendButtonVisible: boolean = false;
+
   constructor(private cookieService: CookieService, private router: Router,
     private parcelService: ParcelService) {
 
@@ -41,8 +45,17 @@ export class EmptyParcelLockerComponent {
     //Csomagok lekérése és megjelenítése, amik készen állnak az elszállításra
     this.parcelService.getParcelsForShipping().subscribe({
       next: (response) => {
-        this.parcelsForShipping = response;
-        this.dataSourceForTable = new MatTableDataSource(response);
+
+        if (response.length === 0) {
+          this.noParcelMessage = "Nincs elszállításra váró csomag";
+          this.sendButtonVisible = false;
+        }
+        else {
+          this.parcelsForShipping = response;
+          this.dataSourceForTable = new MatTableDataSource(response);
+          this.sendButtonVisible = true;
+        }
+
       },
       error: (error) => {
         console.log(error);
@@ -60,7 +73,6 @@ export class EmptyParcelLockerComponent {
     this.parcelService.emptyParcelLocker(this.currenctCourier.emailAddress).subscribe({
       next: (response) => {
         this.boxNumberMessages = response;
-        //window.location.reload();
       },
       error: (error) => {
         console.log(error);

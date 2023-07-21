@@ -6,6 +6,7 @@ import com.parcellocker.authenticationservice.model.User;
 import com.parcellocker.authenticationservice.payload.request.*;
 import com.parcellocker.authenticationservice.payload.response.LoginResponse;
 import com.parcellocker.authenticationservice.payload.response.SignUpActivationDTO;
+import com.parcellocker.authenticationservice.payload.response.StringResponse;
 import com.parcellocker.authenticationservice.repository.UserRepository;
 import com.parcellocker.authenticationservice.service.UserService;
 import com.parcellocker.authenticationservice.util.JwtUtil;
@@ -200,8 +201,11 @@ public class UserServiceImpl implements UserService {
 
         User user = findByPassword(sha256Password);
 
+        StringResponse response = new StringResponse();
+
         if(user == null){
-            return ResponseEntity.badRequest().body("notFound");
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
         }
 
         String token = jwtUtil.generateToken(user.getEmailAddress());

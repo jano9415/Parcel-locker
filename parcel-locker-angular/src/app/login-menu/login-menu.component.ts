@@ -34,8 +34,11 @@ export class LoginMenuComponent {
   logOut() {
 
     this.cookieService.set("currentCourier", "");
-    this.router.navigateByUrl("/home");
-    window.location.reload();
+
+    //Navigáció a home oldalra és oldal frissítése
+    this.router.navigateByUrl("home", { skipLocationChange: false }).then(() => {
+      window.location.reload();
+    });
 
   }
 

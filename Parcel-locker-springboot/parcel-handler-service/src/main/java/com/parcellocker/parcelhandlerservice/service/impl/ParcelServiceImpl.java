@@ -308,7 +308,11 @@ public class ParcelServiceImpl implements ParcelService {
     }
 
     //Automata feltöltése
+    //Ez a kérés csak akkor van meghívva, ha a futárnak vannak csomagjai az adott automatához, és azoknak van hely
+    //Frontend oldalon a gomb aktív vagy inaktív
+    //Ezt tartalmazza az előző függvény
     //Jwt token szükséges
+    //Visszatérés a csomagazonosítókkal és a rekesz számokkal
     @Override
     public ResponseEntity<List<FillParcelLockerResponse>> fillParcelLocker(Long senderParcelLockerId, String uniqueCourierId) {
 
@@ -349,14 +353,9 @@ public class ParcelServiceImpl implements ParcelService {
                     }
                 }
 
-                //Minden rekesz tele van. Nem tudod feltölteni ezt az automatát
-                if(emptyBoxes.isEmpty()){
-                    FillParcelLockerResponse responseObj = new FillParcelLockerResponse();
-                    responseObj.setMessage("full");
-                    response.add(responseObj);
-                    return ResponseEntity.ok(response);
-                }
-                else{
+                //Ha van szabad rekesz
+                if(!emptyBoxes.isEmpty()){
+
                     //Csomag paramétereinek frissítése
                     parcel.setShipped(true);
                     LocalDate currentDate = LocalDate.now();
@@ -424,6 +423,7 @@ public class ParcelServiceImpl implements ParcelService {
                     response.add(responseObj);
 
                 }
+
             }
         }
 

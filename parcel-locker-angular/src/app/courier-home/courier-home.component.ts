@@ -22,12 +22,12 @@ export class CourierHomeComponent {
 
   }
 
-  //Route a az automata kiürítése oldalra
+  //Route az automata kiürítése oldalra
   emptyParcelLocker(): void {
     this.router.navigate(["emptyparcellocker"]);
   }
 
-  //Route a az automata feltöltése oldalra
+  //Route az automata feltöltése oldalra
   fillParcelLocker(): void {
     this.router.navigate(["fillparcellocker"]);
   }

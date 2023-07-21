@@ -18,11 +18,15 @@ export class FillParcelLockerComponent {
   parcelsForParcelLocker: Array<any> | null = null;
 
   displayedColumns: string[] = ['uniqueParcelId', 'price', 'senderParcelLockerPostCode', 'receiverParcelLockerPostCode',
-  'boxNumber'];
+    'boxNumber'];
 
   dataSourceForTable!: MatTableDataSource<any>;
 
   boxNumberMessages!: Array<any>;
+
+  noParcelMessage: string = "";
+
+  sendButtonVisible: boolean = false;
 
   constructor(private cookieService: CookieService, private router: Router,
     private parcelService: ParcelService) {
@@ -42,8 +46,16 @@ export class FillParcelLockerComponent {
     //Csomagok lekérése és megjelenítése, amiket el lehet helyezni ebben az automatában
     this.parcelService.getParcelsForParcelLocker(this.currenctCourier.emailAddress).subscribe({
       next: (response) => {
-        this.parcelsForParcelLocker = response;
-        this.dataSourceForTable = new MatTableDataSource(response);
+
+        if (response.length === 0) {
+          this.noParcelMessage = "Ehhez az automatához nincs csomagod, vagy az automata tele van.";
+          this.sendButtonVisible = false;
+        }
+        else {
+          this.parcelsForParcelLocker = response;
+          this.dataSourceForTable = new MatTableDataSource(response);
+          this.sendButtonVisible = true;
+        }
       },
       error: (error) => {
         console.log(error);
@@ -53,17 +65,14 @@ export class FillParcelLockerComponent {
       }
     })
 
-
-
   }
 
   //Automata feltöltése
   //A válasz a kinyíló rekeszek azonosítója
-  fillParcelLocker(): void{
+  fillParcelLocker(): void {
     this.parcelService.fillParcelLocker(this.currenctCourier.emailAddress).subscribe({
       next: (response) => {
         this.boxNumberMessages = response;
-        //window.location.reload();
       },
       error: (error) => {
         console.log(error);

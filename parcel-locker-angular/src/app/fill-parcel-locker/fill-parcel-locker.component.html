@@ -35,7 +35,7 @@
 
 <div class="d-flex justify-content-center mt-3">
     <div>
-        <button (click)="fillParcelLocker()" style="width: 300px; height: 100px;" mat-raised-button
+        <button [disabled]="sendButtonVisible === false" (click)="fillParcelLocker()" style="width: 300px; height: 100px;" mat-raised-button
             color="primary">Automata feltöltése</button>
     </div>
 </div>
@@ -45,5 +45,11 @@
         <p *ngFor="let boxNumberMessage of boxNumberMessages">
             {{boxNumberMessage.uniqueParcelId + " azonosítójú csomagot tedd be a(z)" + boxNumberMessage.boxNumber + ". rekeszbe"}}
         </p>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center mt-3">
+    <div>
+        <p>{{noParcelMessage}}</p>
     </div>
 </div>

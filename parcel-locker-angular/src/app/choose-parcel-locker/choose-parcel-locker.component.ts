@@ -21,8 +21,16 @@ export class ChooseParcelLockerComponent {
 
   ngOnInit(): void {
     //Automaták lekérése kiválasztásra
-    this.parcelLockerService.getParcelLockersForChoice().subscribe(data => {
-      this.parcelLockers = data;
+    this.parcelLockerService.getParcelLockersForChoice().subscribe({
+      next: (response) => {
+        this.parcelLockers = response;
+      },
+      error: (error) => {
+        console.log(error);
+      },
+      complete: () => {
+        console.log("Compelete");
+      }
     })
 
   }
