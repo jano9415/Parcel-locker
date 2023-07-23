@@ -25,6 +25,10 @@ const ProfileMenuComponent = () => {
         setAnchorEl(null);
     };
 
+    const profile = () => {
+        console.log("fdsf");
+    }
+
     return (
         <React.Fragment>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', color: 'white', backgroundColor: 'blue' }}>
@@ -52,7 +56,7 @@ const ProfileMenuComponent = () => {
                                 aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
                             >
-                                <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                                <Avatar sx={{ width: 32, height: 32 }}>{AuthService.getCurrentUser().emailAddress[0]}</Avatar>
                             </IconButton>
                         </Tooltip>
                     )
@@ -95,7 +99,7 @@ const ProfileMenuComponent = () => {
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
-                        <MenuItem onClick={handleClose}>
+                        <MenuItem onClick={profile}>
                             <Avatar /> Profilom
                         </MenuItem>
                         <Divider />

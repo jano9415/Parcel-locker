@@ -33,12 +33,18 @@ const CreateAdminComponent = () => {
 
         if (formValidaton()) {
             AuthService.createAdmin(emailAddress, password).then((response) => {
-                navigate("/login");
-                window.location.reload();
+                if (response.data.message === "emailExists") {
+                    setEmailAlredyExistMessage("Ez az admin email cím már regisztrálva van")
+
+                }
+                if (response.data.message === "successAdminCreation") {
+                    navigate("/login");
+                    window.location.reload();
+                }
 
             },
                 (error) => {
-                    setEmailAlredyExistMessage(error.response.data)
+
                 })
         }
         else {
@@ -119,7 +125,7 @@ const CreateAdminComponent = () => {
         }
     };
 
-    //OnBlur esemény a telefonszám mezőre
+    //OnBlur esemény
     const showSendButton = () => {
         setSendButtonEnable(false)
     }
@@ -155,13 +161,7 @@ const CreateAdminComponent = () => {
             {passwordMessage && <Typography sx={{ color: 'green', marginBottom: '16px' }}>{passwordMessage}</Typography>}
             <Button disabled={sendButtonEnable} variant="contained" onClick={(e) => signUp(e)}>Küldés</Button>
             {everyInputMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{everyInputMessage}</Typography>}
-            {emailAlredyExistMessage && (
-                <div className="form-group">
-                    <div className="alert alert-danger" role="alert">
-                        {emailAlredyExistMessage}
-                    </div>
-                </div>
-            )}
+            {emailAlredyExistMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{emailAlredyExistMessage}</Typography>}
         </Box>
     );
 }

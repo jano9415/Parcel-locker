@@ -1,6 +1,8 @@
+import Cookies from "js-cookie";
+
 export default function authHeader () {
-    //Aktuálisan bejelentkezett user kiolvasása a local storage-ból.
-    const user = JSON.parse(localStorage.getItem('user'));
+    //Aktuálisan bejelentkezett user kiolvasása cookie-ből
+    const user = JSON.parse(Cookies.get('user'));
 
     //Visszatérés a bejelentkezett felhasználó jwt tokenével.
     if (user && user.token) {

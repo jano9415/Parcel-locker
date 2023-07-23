@@ -31,14 +31,29 @@ const LoginComponent = () => {
 
 
         if (formValidaton()) {
+            setEveryInputMessage("");
+
             AuthService.logIn(emailAddress, password).then(
-                () => {
-                    navigate("/");
-                    window.location.reload();
+                (response) => {
+                    if (response.message === "emailError") {
+                        setErrorMessage("Hibás email cím");
+                        setLoading(false);
+                    }
+                    if (response.message === "passwordError") {
+                        setErrorMessage("Hibás jelszó");
+                        setLoading(false);
+                    }
+                    if (response.message === "notActivated") {
+                        setErrorMessage("Még nem aktiváltad a felhasználói fiókodat");
+                        setLoading(false);
+                    }
+                    if (response.emailAddress) {
+                        navigate("/");
+                        window.location.reload();
+                    }
+
                 },
                 (error) => {
-                    setLoading(false);
-                    setErrorMessage(error.response.data)
 
                 }
             )
@@ -138,13 +153,7 @@ const LoginComponent = () => {
                     <span>Bejelentkezés</span>
                 </Button>
                 {everyInputMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{everyInputMessage}</Typography>}
-                {errorMessage && (
-                    <div className="form-group">
-                        <div className="alert alert-danger" role="alert">
-                            {errorMessage}
-                        </div>
-                    </div>
-                )}
+                <Typography sx={{ color: 'red', marginBottom: '16px' }}>{errorMessage}</Typography>
                 {showSignUpActivationMessage()}
             </Box>
         </div>

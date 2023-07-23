@@ -38,15 +38,18 @@ const SignUpComponent = () => {
 
         if (formValidaton()) {
             AuthService.signUp(emailAddress, password, firstName, lastName, phoneNumber).then((response) => {
-                navigate("/login");
-                window.location.reload();
-
+                if (response.data.message === "emailExists") {
+                    setEmailAlredyExistMessage("Ez az email cím már regisztrálva van. Adj meg egy másikat");
+                }
+                if(response.data.message === "successRegistration") {
+                    navigate("/login");
+                    window.location.reload();
+                }
             },
                 (error) => {
-                    setEmailAlredyExistMessage(error.response.data)
                 })
         }
-        else{
+        else {
             setEveryInputMessage("Minden mező kitöltése kötelező.")
 
         }
@@ -131,7 +134,7 @@ const SignUpComponent = () => {
 
     //OnBlur esemény a telefonszám mezőre
     const showSendButton = () => {
-        if(formValidaton()){
+        if (formValidaton()) {
             setSendButtonEnable(false)
         }
     }
@@ -185,23 +188,14 @@ const SignUpComponent = () => {
             />
             <PhoneInput
                 required
-                label="fsfd"
+                label="Telefonszám"
                 country={'hu'}
                 value={phoneNumber}
                 onChange={setPhoneNumber}
                 onBlur={showSendButton} />
             <Button disabled={sendButtonEnable} variant="contained" onClick={(e) => signUp(e)}>Küldés</Button>
-            <Link to="/">
-                <button className='btn btn-danger'>Mégse</button>
-            </Link>
             {everyInputMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{everyInputMessage}</Typography>}
-            {emailAlredyExistMessage && (
-                <div className="form-group">
-                    <div className="alert alert-danger" role="alert">
-                        {emailAlredyExistMessage}
-                    </div>
-                </div>
-            )}
+            {emailAlredyExistMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{emailAlredyExistMessage}</Typography>}
         </Box>
     );
 }

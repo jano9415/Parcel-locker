@@ -55,9 +55,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> signUp(SignUpRequest signUpRequest) {
 
+        StringResponse response = new StringResponse();
+
         //A megadott email cím már létezik
         if(existsByEmailAddress(signUpRequest.getEmailAddress())){
-            return ResponseEntity.badRequest().body("Ez az email cím már regisztrálva van!");
+            response.setMessage("emailExists");
+            return ResponseEntity.ok(response);
+            //return ResponseEntity.badRequest().body("Ez az email cím már regisztrálva van!");
         }
 
         //Új felhasználó létrehozása
@@ -114,7 +118,8 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         userRepository.save(user);
 
-        return ResponseEntity.ok("Új felhasználó sikeresen hozzáadva");
+        response.setMessage("successRegistration");
+        return ResponseEntity.ok(response);
 
     }
 
@@ -126,16 +131,21 @@ public class UserServiceImpl implements UserService {
 
         User user = findByEmailAddress(logInRequest.getEmailAddress());
 
+        StringResponse response = new StringResponse();
+
         if(user == null){
-            return ResponseEntity.badRequest().body("Hibás email cím");
+            response.setMessage("emailError");
+            return ResponseEntity.ok(response);
         }
 
         if(!passwordEncoder.matches(logInRequest.getPassword(), user.getPassword())){
-            return ResponseEntity.badRequest().body("Hibás jelszó");
+            response.setMessage("passwordError");
+            return ResponseEntity.ok(response);
         }
 
         if(user.isEnable() == false){
-            return ResponseEntity.badRequest().body("Aktiváld a felhasználói fiókodat");
+            response.setMessage("notActivated");
+            return ResponseEntity.ok(response);
         }
 
         String token = jwtUtil.generateToken(logInRequest.getEmailAddress());
@@ -252,9 +262,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> createCourier(CreateCourierDTO courierDTO) {
 
+        StringResponse response = new StringResponse();
+
         //A megadott futár azonosító már létezik
         if(existsByEmailAddress(courierDTO.getUniqueCourierId())){
-            return ResponseEntity.badRequest().body("Ez a futár azonosító már regisztrálva van!");
+            response.setMessage("uidExists");
+            return ResponseEntity.ok(response);
         }
 
         String sha256Password = sha256Encode(courierDTO.getPassword());
@@ -262,7 +275,8 @@ public class UserServiceImpl implements UserService {
         //Futár esetén a jelszót is ellenőrizni kell. Kettő ugyan olyan nem lehet, mert a jelszó egyben a bejelentkezési
         //RFID azonosító is
         if(existsByPassword(sha256Password)){
-            return ResponseEntity.badRequest().body("Ez a jelszó (RFID azonosító) már regisztrálva van");
+            response.setMessage("passwordExists");
+            return ResponseEntity.ok(response);
         }
 
         //Új futár létrehozása
@@ -296,16 +310,21 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         userRepository.save(user);
 
-        return ResponseEntity.ok("Új futár sikeresen hozzáadva");
+        response.setMessage("successCourierCreation");
+        return ResponseEntity.ok(response);
     }
 
     //Új admin létrehozása
     @Override
     public ResponseEntity<?> createAdmin(CreateAdminDTO adminDTO) {
 
+        StringResponse response = new StringResponse();
+
         //A megadott email cím már létezik
         if(existsByEmailAddress(adminDTO.getEmailAddress())){
-            return ResponseEntity.badRequest().body("Ez az email cím már regisztrálva van!");
+            response.setMessage("emailExists");
+            return ResponseEntity.ok(response);
+            //return ResponseEntity.badRequest().body("Ez az email cím már regisztrálva van!");
         }
 
         //Új admin létrehozása
@@ -324,7 +343,9 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         userRepository.save(user);
 
-        return ResponseEntity.ok("Új admin sikeresen hozzáadva");
+        response.setMessage("successAdminCreation");
+        return ResponseEntity.ok(response);
+        //return ResponseEntity.ok("Új admin sikeresen hozzáadva");
     }
 
     //Random string generálása a regisztrációhoz szükséges aktivációs kód számára

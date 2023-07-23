@@ -8,7 +8,6 @@ import CreateCourierComponent from './Components/CreateCourierComponent';
 import CreateAdminComponent from './Components/CreateAdminComponent';
 import UserMenuComponent from './Components/UserMenuComponent';
 import AdminMenuComponent from './Components/AdminMenuComponent';
-import UpperMenuComponent from './Components/UpperMenuComponent';
 import ProfileMenuComponent from './Components/ProfileMenuComponent';
 import { useEffect, useState } from 'react';
 import AuthService from './Service/AuthService';
@@ -74,15 +73,11 @@ const App = () => {
         </div>
 
         <footer>
-          <nav>
-            <div className='navbar-nav mr-auto'>
-              <li>
-                <Link to={"/logincourier"} className='nav-link'>
-                  <span>Futár bejelentkezés</span>
-                </Link>
-              </li>
+          <div className="d-flex justify-content-center">
+            <div>
+              Tájékoztató footer szöveg
             </div>
-          </nav>
+          </div>
         </footer>
 
       </Router>

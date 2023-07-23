@@ -32,12 +32,21 @@ const CreateCourierComponent = () => {
 
         if (formValidaton()) {
             AuthService.createCourier(uniqueCourierId, password, firstName, lastName).then((response) => {
-                navigate("/login");
-                window.location.reload();
+                if (response.data.message === "uidExists") {
+                    setEmailOrPasswordAlredyExistMessage("Ez a futár azonosító már regisztrálva van");
+                }
+                if (response.data.message === "passwordExists") {
+                    setEmailOrPasswordAlredyExistMessage("Ez a jelszó már regisztrálva van. A jelszó egyben a futár rfid azonosítója is");
+                }
+                if (response.data.message === "successCourierCreation") {
+
+                    navigate("/login");
+                    window.location.reload();
+                }
 
             },
                 (error) => {
-                    setEmailOrPasswordAlredyExistMessage(error.response.data)
+
                 })
         }
         else {
@@ -86,6 +95,7 @@ const CreateCourierComponent = () => {
                 label="Futár azonosító"
                 value={uniqueCourierId}
                 onChange={(e) => setUniqueCourierId(e.target.value)}
+                required
                 sx={{ marginBottom: '16px' }}
             />
             <TextField
@@ -93,6 +103,7 @@ const CreateCourierComponent = () => {
                 label="Jelszó"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
                 sx={{ marginBottom: '16px' }}
             />
             <TextField
@@ -108,18 +119,13 @@ const CreateCourierComponent = () => {
                 label="Keresztnév"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
+                required
                 sx={{ marginBottom: '16px' }}
                 onBlur={showSendButton}
             />
             <Button disabled={sendButtonEnable} variant="contained" onClick={(e) => signUp(e)}>Küldés</Button>
             {everyInputMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{everyInputMessage}</Typography>}
-            {emailOrPasswordAlredyExistMessage && (
-                <div className="form-group">
-                    <div className="alert alert-danger" role="alert">
-                        {emailOrPasswordAlredyExistMessage}
-                    </div>
-                </div>
-            )}
+            {emailOrPasswordAlredyExistMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{emailOrPasswordAlredyExistMessage}</Typography>}
         </Box>
     );
 }
