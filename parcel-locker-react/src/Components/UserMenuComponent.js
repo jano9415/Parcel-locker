@@ -16,9 +16,9 @@ const UserMenuComponent = () => {
         <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
             <Tabs value={value} onChange={handleChange} centered>
 
-                <Tab label={<Link to={"/"} className='nav-link'>Csomagküldés</Link>} />
-                <Tab label={<Link to={"/"} className='nav-link'>Csomagkövetés</Link>} />
-                <Tab label={<Link to={"/"} className='nav-link'>Csomagautomaták</Link>} />
+                <Tab label={<Link to={"/parcelsending"} className='nav-link'>Csomagküldés</Link>} />
+                <Tab label={<Link to={"/followparcel"} className='nav-link'>Csomagkövetés</Link>} />
+                <Tab label={<Link to={"/parcellockers"} className='nav-link'>Csomagautomaták</Link>} />
 
             </Tabs>
         </Box>

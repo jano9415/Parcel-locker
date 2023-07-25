@@ -12,6 +12,9 @@ import ProfileMenuComponent from './Components/ProfileMenuComponent';
 import { useEffect, useState } from 'react';
 import AuthService from './Service/AuthService';
 import EventBus from './Service/EventBus';
+import SendParcelComponent from './Components/SendParcelComponent';
+import FollowParcelComponent from './Components/FollowParcelComponent';
+import ParcelLockersComponent from './Components/ParcelLockersComponent';
 
 
 const App = () => {
@@ -68,6 +71,9 @@ const App = () => {
             <Route path='/logincourier' element={<LoginCourierComponent />} />
             <Route path='/createcourier' element={<CreateCourierComponent />} />
             <Route path='/createadmin' element={<CreateAdminComponent />} />
+            <Route path='/parcelsending' element={<SendParcelComponent />} />
+            <Route path='/followparcel' element={<FollowParcelComponent />} />
+            <Route path='/parcellockers' element={<ParcelLockersComponent />} />
 
           </Routes>
         </div>
