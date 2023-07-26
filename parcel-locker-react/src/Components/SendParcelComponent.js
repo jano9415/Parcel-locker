@@ -1,13 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, useFormik } from 'formik';
 import { Box, Button, FormControl, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from '@mui/material';
 import * as Yup from 'yup';
+import ParcelLockerService from '../Service/ParcelLockerService';
 
 
 
 
 const SendParcelComponent = () => {
 
+    const [parcelLockers, setParcelLockers] = useState([{}]);
+    const [senderParcelLockerFull, setSenderParcelLockerFull] = useState(false);
+    const [smallBoxesFull, setSmallBoxesFull] = useState(false);
+    const [mediumBoxesFull, setMediumBoxesFull] = useState(false);
+    const [largeBoxesFull, setLargeBoxesFull] = useState(false);
+
+
+
+    useEffect(() => {
+        //Csomag automaták lekérése
+        ParcelLockerService.getParcelLockersForChoice().then(
+            (response) => {
+                setParcelLockers(response.data);
+            },
+            (error) => {
+
+            }
+        )
+    }, [])
+
+    //Formik objektum és validáció
     const formik = useFormik({
         initialValues: {
             price: 0,
@@ -40,19 +62,61 @@ const SendParcelComponent = () => {
         }
     })
 
-    //Csomag automaták lekérése
-    const parcelLockers = [
-        {
-            label: "Várpalota",
-            value: "1",
-        },
-        {
-            label: "Veszprém",
-            value: "2",
+    //Esemény az érkezési automata kiválasztása után. Ekkor már biztosan ki van választva a feladási automata
+    const areBoxesFull = () => {
+
+        //Feladási automata tele van?
+        ParcelLockerService.isParcelLockerFull(formik.values.parcelLockerFrom).then(
+            (response) => {
+                if (response.data.message === "full") {
+                    setSenderParcelLockerFull(true);
+                }
+                if (response.data.message === "notFull") {
+                    setSenderParcelLockerFull(false);
+                }
+            },
+            (error) => {
+
+            }
+        )
+
+        //Ha az automata nincs tele, akkor ellenőrzöm a kis, közepes és nagy rekeszek telítettségét.
+        if (senderParcelLockerFull == false) {
+            //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
+            ParcelLockerService.areBoxesFull(formik.values.parcelLockerFrom).then(
+                (response) => {
+                    //Kicsi rekeszek
+                    if (response.data[0].message === "full") {
+                        setSmallBoxesFull(true);
+                    }
+                    if (response.data[0].message === "notfull") {
+                        setSmallBoxesFull(false);
+                    }
+                    //Közepes rekeszek
+                    if (response.data[1].message === "full") {
+                        setMediumBoxesFull(true);
+                    }
+                    if (response.data[1].message === "notfull") {
+                        setMediumBoxesFull(false);
+                    }
+                    //Nagy rekeszek
+                    if (response.data[2].message === "full") {
+                        setLargeBoxesFull(true);
+                    }
+                    if (response.data[2].message === "notfull") {
+                        setLargeBoxesFull(false);
+                    }
+                },
+                (error) => {
+
+                }
+            )
+
         }
-    ];
 
 
+
+    }
 
 
     return (
@@ -71,7 +135,8 @@ const SendParcelComponent = () => {
                         >
                             {
                                 parcelLockers.map((parcelLocker) => (
-                                    <MenuItem value={parcelLocker.value}>{parcelLocker.label}</MenuItem>
+                                    <MenuItem key={parcelLockers.id} value={parcelLocker.id}>{parcelLocker.postCode + " "
+                                        + parcelLocker.city + " " + parcelLocker.street}</MenuItem>
                                 ))
                             }
                         </Select>
@@ -89,10 +154,12 @@ const SendParcelComponent = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             fullWidth
+                            onClick={areBoxesFull}
                         >
                             {
                                 parcelLockers.map((parcelLocker) => (
-                                    <MenuItem value={parcelLocker.value}>{parcelLocker.label}</MenuItem>
+                                    <MenuItem key={parcelLockers.id} value={parcelLocker.id}>{parcelLocker.postCode + " "
+                                        + parcelLocker.city + " " + parcelLocker.street}</MenuItem>
                                 ))
                             }
                         </Select>
