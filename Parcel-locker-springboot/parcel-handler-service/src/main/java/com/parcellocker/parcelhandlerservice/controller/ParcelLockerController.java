@@ -19,7 +19,8 @@ public class ParcelLockerController {
     private ParcelLockerServiceImpl parcelLockerService;
 
 
-    //Csomag automaták lekérése. Ezekből lehet kiválasztani az angular alkalmazásban a feladási automatát.
+    //Csomag automaták lekérése. Ezekből lehet kiválasztani a feladási vagy érkezési automatát
+    //Nem szükséges jwt token
     @GetMapping("/getparcellockersforchoice")
     public ResponseEntity<List<ParcelLockerDTO>> getParcelLockersForChoice(){
         return parcelLockerService.getParcelLockersForChoice();

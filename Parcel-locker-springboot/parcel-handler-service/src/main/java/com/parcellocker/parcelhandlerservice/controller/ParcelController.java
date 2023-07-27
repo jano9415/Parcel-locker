@@ -4,6 +4,7 @@ import com.parcellocker.parcelhandlerservice.payload.GetParcelsForShippingRespon
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
+import com.parcellocker.parcelhandlerservice.payload.request.SendParcelWithCodeFromWebpageRequest;
 import com.parcellocker.parcelhandlerservice.payload.response.*;
 import com.parcellocker.parcelhandlerservice.service.impl.ParcelServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,11 +91,22 @@ public class ParcelController {
         return parcelService.getParcelForSendingWithCode(sendingCode, senderParcelLockerId);
     }
 
-    //Csomag küldése feladási kóddal
+    //Csomag küldése az automatából feladási kóddal
+    //Ennek a funkciónak az előzménye a csomagfeladás kóddal a weblapról
+    //Ekkor történik meg a tényleges csomagfeladás
     //Nem szükséges jwt token
     @GetMapping("/sendparcelwithcode/{sendingCode}/{senderParcelLockerId}")
     public ResponseEntity<StringResponse> sendParcelWithCode(@PathVariable String sendingCode,
                                                                    @PathVariable Long senderParcelLockerId){
         return parcelService.sendParcelWithCode(sendingCode, senderParcelLockerId);
+    }
+
+    //Csomag küldése a weblapról feladási kóddal
+    //Ez még csak egy előzetes csomagfeladás. A felhasználó megkapja email-ben a csomagfeladási kódot
+    //A végleges csomagfeladás az automatánál történik
+    //Jwt token szükséges
+    @PostMapping("/sendparcelwithcodefromwebpage")
+    public ResponseEntity<StringResponse> sendParcelWithCodeFromWebpage(@RequestBody SendParcelWithCodeFromWebpageRequest request){
+        return parcelService.sendParcelWithCodeFromWebpage(request);
     }
 }

@@ -10,6 +10,7 @@ import com.parcellocker.parcelhandlerservice.payload.*;
 import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelPickingUpNotification;
 import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelShippingNotification;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
+import com.parcellocker.parcelhandlerservice.payload.request.SendParcelWithCodeFromWebpageRequest;
 import com.parcellocker.parcelhandlerservice.payload.response.*;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelService;
@@ -584,6 +585,16 @@ public class ParcelServiceImpl implements ParcelService {
 
         response.setMessage("successSending");
         return ResponseEntity.ok(response);
+    }
+
+    //Csomag küldése a weblapról feladási kóddal
+    //Ez még csak egy előzetes csomagfeladás. A felhasználó megkapja email-ben a csomagfeladási kódot
+    //A végleges csomagfeladás az automatánál történik
+    //Jwt token szükséges
+    @Override
+    public ResponseEntity<StringResponse> sendParcelWithCodeFromWebpage(SendParcelWithCodeFromWebpageRequest request) {
+        System.out.println(request);
+        return null;
     }
 
     //Random string generálása

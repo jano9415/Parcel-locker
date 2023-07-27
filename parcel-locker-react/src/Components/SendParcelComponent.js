@@ -3,6 +3,8 @@ import { Form, useFormik } from 'formik';
 import { Box, Button, FormControl, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from '@mui/material';
 import * as Yup from 'yup';
 import ParcelLockerService from '../Service/ParcelLockerService';
+import AuthService from '../Service/AuthService';
+import ParcelService from '../Service/ParcelService';
 
 
 
@@ -34,20 +36,23 @@ const SendParcelComponent = () => {
         initialValues: {
             price: 0,
             size: '',
-            parcelLockerFrom: '',
-            parcelLockerTo: '',
+            parcelLockerFromId: '',
+            parcelLockerToId: '',
             receiverName: '',
             receiverEmailAddress: '',
             receiverPhoneNumber: '',
+            //Ezt nem a felhasználótól kérem be
+            //Bejelentkezett felhasználó email címe
+            senderEmailAddress: AuthService.getCurrentUser().emailAddress,
         },
         validationSchema: Yup.object({
             price: Yup.number()
                 .min(0, 'Nullánál nagyobb számot adj meg'),
             size: Yup.string()
                 .required("Válassz csomag méretet"),
-            parcelLockerFrom: Yup.string()
+            parcelLockerFromId: Yup.string()
                 .required("Válassz feladási automatát"),
-            parcelLockerTo: Yup.string()
+            parcelLockerToId: Yup.string()
                 .required("Válassz érkezési automatát"),
             receiverName: Yup.string()
                 .required("Add meg az átvevő nevét"),
@@ -58,7 +63,15 @@ const SendParcelComponent = () => {
                 .required("Add meg az átvevő telefonszámát")
         }),
         onSubmit: values => {
-            console.log(values);
+            //Csomagfeladás
+            ParcelService.sendParcelWithCodeFromWebpage(values).then(
+                (respone) => {
+
+                },
+                (error) => {
+
+                }
+            )
         }
     })
 
@@ -66,12 +79,12 @@ const SendParcelComponent = () => {
     const areBoxesFull = () => {
 
         //Feladási automata tele van?
-        ParcelLockerService.isParcelLockerFull(formik.values.parcelLockerFrom).then(
+        ParcelLockerService.isParcelLockerFull(formik.values.parcelLockerFromId).then(
             (response) => {
                 if (response.data.message === "full") {
                     setSenderParcelLockerFull(true);
                 }
-                if (response.data.message === "notFull") {
+                if (response.data.message === "notfull") {
                     setSenderParcelLockerFull(false);
                 }
             },
@@ -81,9 +94,9 @@ const SendParcelComponent = () => {
         )
 
         //Ha az automata nincs tele, akkor ellenőrzöm a kis, közepes és nagy rekeszek telítettségét.
-        if (senderParcelLockerFull == false) {
+        if (senderParcelLockerFull === false) {
             //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
-            ParcelLockerService.areBoxesFull(formik.values.parcelLockerFrom).then(
+            ParcelLockerService.areBoxesFull(formik.values.parcelLockerFromId).then(
                 (response) => {
                     //Kicsi rekeszek
                     if (response.data[0].message === "full") {
@@ -126,31 +139,31 @@ const SendParcelComponent = () => {
                     <Box>
                         <InputLabel>Feladási automata</InputLabel>
                         <Select
-                            id='parcelLockerFrom'
-                            name='parcelLockerFrom'
-                            value={formik.parcelLockerFrom}
+                            id='parcelLockerFromId'
+                            name='parcelLockerFromId'
+                            value={formik.parcelLockerFromId}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             fullWidth
                         >
                             {
                                 parcelLockers.map((parcelLocker) => (
-                                    <MenuItem key={parcelLockers.id} value={parcelLocker.id}>{parcelLocker.postCode + " "
+                                    <MenuItem key={parcelLocker.id} value={parcelLocker.id}>{parcelLocker.postCode + " "
                                         + parcelLocker.city + " " + parcelLocker.street}</MenuItem>
                                 ))
                             }
                         </Select>
                         {
-                            formik.touched.parcelLockerFrom && formik.errors.parcelLockerFrom && (
-                                <Typography sx={{ color: 'red' }}>{formik.errors.parcelLockerFrom}</Typography>
+                            formik.touched.parcelLockerFromId && formik.errors.parcelLockerFromId && (
+                                <Typography sx={{ color: 'red' }}>{formik.errors.parcelLockerFromId}</Typography>
                             )
                         }
 
                         <InputLabel>Érkezési automata</InputLabel>
                         <Select
-                            id='parcelLockerTo'
-                            name='parcelLockerTo'
-                            value={formik.parcelLockerTo}
+                            id='parcelLockerToId'
+                            name='parcelLockerToId'
+                            value={formik.parcelLockerToId}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             fullWidth
@@ -158,14 +171,14 @@ const SendParcelComponent = () => {
                         >
                             {
                                 parcelLockers.map((parcelLocker) => (
-                                    <MenuItem key={parcelLockers.id} value={parcelLocker.id}>{parcelLocker.postCode + " "
+                                    <MenuItem key={parcelLocker.id} value={parcelLocker.id}>{parcelLocker.postCode + " "
                                         + parcelLocker.city + " " + parcelLocker.street}</MenuItem>
                                 ))
                             }
                         </Select>
                         {
-                            formik.touched.parcelLockerTo && formik.errors.parcelLockerTo && (
-                                <Typography sx={{ color: 'red' }}>{formik.errors.parcelLockerTo}</Typography>
+                            formik.touched.parcelLockerToId && formik.errors.parcelLockerToId && (
+                                <Typography sx={{ color: 'red' }}>{formik.errors.parcelLockerToId}</Typography>
                             )
                         }
                         <Typography>A csomag adatai</Typography>
@@ -179,10 +192,21 @@ const SendParcelComponent = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                         >
-                            <FormControlLabel value={"small"} label="Kicsi" control={<Radio />} />
-                            <FormControlLabel value={"medium"} label="Közepes" control={<Radio />} />
-                            <FormControlLabel value={"large"} label="Nagy" control={<Radio />} />
-
+                            {
+                                smallBoxesFull === false && (
+                                    <FormControlLabel value={"small"} label="Kicsi" control={<Radio />} />
+                                )
+                            }
+                            {
+                                mediumBoxesFull === false && (
+                                    <FormControlLabel value={"medium"} label="Közepes" control={<Radio />} />
+                                )
+                            }
+                            {
+                                largeBoxesFull === false && (
+                                    <FormControlLabel value={"large"} label="Nagy" control={<Radio />} />
+                                )
+                            }
                         </RadioGroup>
                         {
                             formik.touched.size && formik.errors.size && (
@@ -250,16 +274,27 @@ const SendParcelComponent = () => {
                             <Typography sx={{ color: 'red' }}>{formik.errors.receiverPhoneNumber}</Typography>
                         )
                         }
-                        <Box>
-                            <Button disabled={!formik.isValid} type='submit'>Küldés</Button>
-                        </Box>
+                        {
+                            senderParcelLockerFull && (
+                                <Box>
+                                    <Typography sx={{ color: 'red' }}>Ez a feladási automata jelenleg tele van. Nem tudsz csomagot feladni</Typography>
+                                </Box>
+                            )
+                        }
+                        {
+                            senderParcelLockerFull === false && (
+                                <Box>
+                                    <Button disabled={!formik.isValid} type='submit'>Küldés</Button>
+                                </Box>
+                            )
+                        }
                     </Box>
                 </Box>
-            </form>
+            </form >
 
 
 
-        </div>
+        </div >
     );
 }
 

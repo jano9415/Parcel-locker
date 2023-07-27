@@ -5,6 +5,7 @@ import com.parcellocker.parcelhandlerservice.payload.GetParcelsForShippingRespon
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
+import com.parcellocker.parcelhandlerservice.payload.request.SendParcelWithCodeFromWebpageRequest;
 import com.parcellocker.parcelhandlerservice.payload.response.*;
 import org.springframework.http.ResponseEntity;
 
@@ -62,4 +63,10 @@ public interface ParcelService {
     //Csomag küldése feladási kóddal
     //Nem szükséges jwt token
     ResponseEntity<StringResponse> sendParcelWithCode(String sendingCode, Long senderParcelLockerId);
+
+    //Csomag küldése a weblapról feladási kóddal
+    //Ez még csak egy előzetes csomagfeladás. A felhasználó megkapja email-ben a csomagfeladási kódot
+    //A végleges csomagfeladás az automatánál történik
+    //Jwt token szükséges
+    ResponseEntity<StringResponse> sendParcelWithCodeFromWebpage(SendParcelWithCodeFromWebpageRequest request);
 }
