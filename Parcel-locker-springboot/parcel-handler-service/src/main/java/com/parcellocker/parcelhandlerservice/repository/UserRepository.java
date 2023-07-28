@@ -18,4 +18,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
     //Keresés id alapján
     @Override
     Optional<User> findById(Long id);
+
+    //Keresés email cím alapján
+    User findByEmailAddress(String emailAddress);
 }

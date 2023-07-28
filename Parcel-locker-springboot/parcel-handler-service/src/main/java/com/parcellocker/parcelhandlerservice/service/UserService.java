@@ -22,4 +22,7 @@ public interface UserService {
     //Új user hozzáadása az adatbázishoz. A user objektum az authentication service-től érkezik szinkron kommunikációval.
     ResponseEntity<String> createUser(ParcelHandlerServiceUserDTO user);
 
+    //Keresés email cím alapján
+    User findByEmailAddress(String emailAddress);
+
 }

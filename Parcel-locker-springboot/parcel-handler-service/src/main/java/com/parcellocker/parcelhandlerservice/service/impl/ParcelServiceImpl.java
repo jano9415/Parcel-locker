@@ -2,10 +2,7 @@ package com.parcellocker.parcelhandlerservice.service.impl;
 
 
 import com.parcellocker.parcelhandlerservice.kafka.Producer;
-import com.parcellocker.parcelhandlerservice.model.Box;
-import com.parcellocker.parcelhandlerservice.model.Courier;
-import com.parcellocker.parcelhandlerservice.model.Parcel;
-import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
+import com.parcellocker.parcelhandlerservice.model.*;
 import com.parcellocker.parcelhandlerservice.payload.*;
 import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelPickingUpNotification;
 import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelShippingNotification;
@@ -39,6 +36,9 @@ public class ParcelServiceImpl implements ParcelService {
 
     @Autowired
     private CourierServiceImpl courierService;
+
+    @Autowired
+    private UserServiceImpl userService;
 
 
     @Override
@@ -593,7 +593,13 @@ public class ParcelServiceImpl implements ParcelService {
     //Jwt token szükséges
     @Override
     public ResponseEntity<StringResponse> sendParcelWithCodeFromWebpage(SendParcelWithCodeFromWebpageRequest request) {
-        System.out.println(request);
+
+        Parcel parcel = new Parcel();
+        ParcelLocker senderParcelLocker = parcelLockerService.findById(request.getParcelLockerFromId());
+        ParcelLocker receiverParcelLocker = parcelLockerService.findById(request.getParcelLockerToId());
+        StringResponse response = new StringResponse();
+        User user = userService.findByEmailAddress(request.getSenderEmailAddress());
+
         return null;
     }
 

@@ -275,19 +275,18 @@ const SendParcelComponent = () => {
                         )
                         }
                         {
-                            senderParcelLockerFull && (
+                            senderParcelLockerFull ? (
                                 <Box>
                                     <Typography sx={{ color: 'red' }}>Ez a feladási automata jelenleg tele van. Nem tudsz csomagot feladni</Typography>
                                 </Box>
-                            )
+                            ) :
+                                (
+                                    <Box>
+                                        <Button disabled={!formik.isValid} type='submit'>Küldés</Button>
+                                    </Box>
+                                )
                         }
-                        {
-                            senderParcelLockerFull === false && (
-                                <Box>
-                                    <Button disabled={!formik.isValid} type='submit'>Küldés</Button>
-                                </Box>
-                            )
-                        }
+
                     </Box>
                 </Box>
             </form >

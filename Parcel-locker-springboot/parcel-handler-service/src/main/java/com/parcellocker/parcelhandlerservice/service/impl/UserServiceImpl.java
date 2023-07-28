@@ -51,5 +51,11 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok("User hozzáadva az adatbázishoz");
     }
 
+    //Keresés email cím alapján
+    @Override
+    public User findByEmailAddress(String emailAddress) {
+        return userRepository.findByEmailAddress(emailAddress);
+    }
+
 
 }
