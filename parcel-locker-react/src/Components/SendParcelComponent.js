@@ -16,6 +16,7 @@ const SendParcelComponent = () => {
     const [smallBoxesFull, setSmallBoxesFull] = useState(false);
     const [mediumBoxesFull, setMediumBoxesFull] = useState(false);
     const [largeBoxesFull, setLargeBoxesFull] = useState(false);
+    const [sendingMessage, setSendingMessage] = useState("");
 
 
 
@@ -51,9 +52,79 @@ const SendParcelComponent = () => {
             size: Yup.string()
                 .required("Válassz csomag méretet"),
             parcelLockerFromId: Yup.string()
-                .required("Válassz feladási automatát"),
+                .required("Válassz feladási automatát")
+                //Ellenőrzöm, hogy a feladási automata tele van-e
+                //Saját validáció
+                .test(
+                    'isFull',
+                    'A feladási automata tele van',
+                    function (parcelLockerFromId) {
+                        //Feladási automata tele van?
+                        ParcelLockerService.isParcelLockerFull(parcelLockerFromId).then(
+                            (response) => {
+                                if (response.data.message === "full") {
+                                    setSenderParcelLockerFull(true);
+                                }
+                                if (response.data.message === "notfull") {
+                                    setSenderParcelLockerFull(false);
+                                }
+                                //Ha az automata nincs tele, akkor ellenőrzöm a kis, közepes és nagy rekeszek telítettségét.
+                                if (senderParcelLockerFull === false) {
+                                    //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
+                                    ParcelLockerService.areBoxesFull(parcelLockerFromId).then(
+                                        (response) => {
+                                            //Kicsi rekeszek
+                                            if (response.data[0].message === "full") {
+                                                setSmallBoxesFull(true);
+                                            }
+                                            if (response.data[0].message === "notfull") {
+                                                setSmallBoxesFull(false);
+                                            }
+                                            //Közepes rekeszek
+                                            if (response.data[1].message === "full") {
+                                                setMediumBoxesFull(true);
+                                            }
+                                            if (response.data[1].message === "notfull") {
+                                                setMediumBoxesFull(false);
+                                            }
+                                            //Nagy rekeszek
+                                            if (response.data[2].message === "full") {
+                                                setLargeBoxesFull(true);
+                                            }
+                                            if (response.data[2].message === "notfull") {
+                                                setLargeBoxesFull(false);
+                                            }
+                                        },
+                                        (error) => {
+
+                                        }
+                                    )
+
+                                }
+                            },
+                            (error) => {
+
+                            }
+                        )
+
+                        //Ha a feladási automata tele van, akkor true
+                        //Viszont a formik validátor akkor ad hibát, ha a függvény false-al tér vissza
+                        //Ezért meg kell negálni az értéket
+                        return !senderParcelLockerFull;
+                    }
+                ),
             parcelLockerToId: Yup.string()
-                .required("Válassz érkezési automatát"),
+                .required("Válassz érkezési automatát")
+                //A feladási és az érkezési automata nem egyezhet meg
+                //Saját validáció
+                .test(
+                    'not-same-parcel-locker',
+                    'A feladási és érkezési automata nem lehet azonos',
+                    function (value) {
+                        const parcelLockerFromId = this.resolve(Yup.ref('parcelLockerFromId'));
+                        return value !== parcelLockerFromId;
+                    }
+                ),
             receiverName: Yup.string()
                 .required("Add meg az átvevő nevét"),
             receiverEmailAddress: Yup.string()
@@ -62,10 +133,14 @@ const SendParcelComponent = () => {
             receiverPhoneNumber: Yup.string()
                 .required("Add meg az átvevő telefonszámát")
         }),
-        onSubmit: values => {
+        onSubmit: (values) => {
             //Csomagfeladás
             ParcelService.sendParcelWithCodeFromWebpage(values).then(
                 (respone) => {
+                    if (respone.data.message === "successSending") {
+                        setSendingMessage("Sikeres előzetes csomagfeladás. A feladási kódodat megtalálod az email értesítőben" +
+                            " és a csomagjaim meüpontban.");
+                    }
 
                 },
                 (error) => {
@@ -74,63 +149,6 @@ const SendParcelComponent = () => {
             )
         }
     })
-
-    //Esemény az érkezési automata kiválasztása után. Ekkor már biztosan ki van választva a feladási automata
-    const areBoxesFull = () => {
-
-        //Feladási automata tele van?
-        ParcelLockerService.isParcelLockerFull(formik.values.parcelLockerFromId).then(
-            (response) => {
-                if (response.data.message === "full") {
-                    setSenderParcelLockerFull(true);
-                }
-                if (response.data.message === "notfull") {
-                    setSenderParcelLockerFull(false);
-                }
-            },
-            (error) => {
-
-            }
-        )
-
-        //Ha az automata nincs tele, akkor ellenőrzöm a kis, közepes és nagy rekeszek telítettségét.
-        if (senderParcelLockerFull === false) {
-            //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
-            ParcelLockerService.areBoxesFull(formik.values.parcelLockerFromId).then(
-                (response) => {
-                    //Kicsi rekeszek
-                    if (response.data[0].message === "full") {
-                        setSmallBoxesFull(true);
-                    }
-                    if (response.data[0].message === "notfull") {
-                        setSmallBoxesFull(false);
-                    }
-                    //Közepes rekeszek
-                    if (response.data[1].message === "full") {
-                        setMediumBoxesFull(true);
-                    }
-                    if (response.data[1].message === "notfull") {
-                        setMediumBoxesFull(false);
-                    }
-                    //Nagy rekeszek
-                    if (response.data[2].message === "full") {
-                        setLargeBoxesFull(true);
-                    }
-                    if (response.data[2].message === "notfull") {
-                        setLargeBoxesFull(false);
-                    }
-                },
-                (error) => {
-
-                }
-            )
-
-        }
-
-
-
-    }
-
 
     return (
         <div>
@@ -167,7 +185,6 @@ const SendParcelComponent = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             fullWidth
-                            onClick={areBoxesFull}
                         >
                             {
                                 parcelLockers.map((parcelLocker) => (
@@ -286,6 +303,9 @@ const SendParcelComponent = () => {
                                     </Box>
                                 )
                         }
+                        <Box>
+                            <Typography>{sendingMessage}</Typography>
+                        </Box>
 
                     </Box>
                 </Box>
