@@ -30,6 +30,9 @@ public class KafkaTopicConfig {
     //Kafka topic neve. Csomag átvételi email értesítés küldése a csomag átvevőjének.
     //Csomag átvételekor
     private String topic6 = "parcelPickingUpNotificationForReceiver";
+    //Kafka topic neve. Csomag feladása a weboldalról. Email értesítés küldése a csomag feladójának.
+    //Ezt az email csak a feladó kapja meg. Ez tartalmazza a feladási kódot
+    private String topic7 = "parcelSendingFromWebPageNotification";
 
     //Topic objektum létrehozása
     @Bean
@@ -70,6 +73,13 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic topic6(){
         return TopicBuilder.name(topic6)
+                .build();
+    }
+
+    //Topic objektum létrehozása
+    @Bean
+    public NewTopic topic7(){
+        return TopicBuilder.name(topic7)
                 .build();
     }
 

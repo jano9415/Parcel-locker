@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingNotification;
 import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelPickingUpNotification;
+import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelSendingFromWebPageNotification;
 import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelShippingNotification;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -43,6 +44,9 @@ public class Producer {
     private NewTopic topic6;
 
     @Autowired
+    private NewTopic topic7;
+
+    @Autowired
     private KafkaTemplate<String, ParcelSendingNotification> kafkaTemplate1;
 
     @Autowired
@@ -59,6 +63,10 @@ public class Producer {
 
     @Autowired
     private KafkaTemplate<String, ParcelPickingUpNotification> kafkaTemplate6;
+
+    @Autowired
+    private KafkaTemplate<String, ParcelSendingFromWebPageNotification> kafkaTemplate7;
+
 
     //String -> Object, Object -> String
     ObjectMapper objectMapper = new ObjectMapper();
@@ -196,6 +204,30 @@ public class Producer {
                 .setHeader(KafkaHeaders.TOPIC , topic6.name())
                 .build();
         kafkaTemplate6.send(message);
+
+    }
+
+    //Email értesítés küldése, miután a felhasználó feladta a csomagját a weboldalról
+    //Ez az email tartalmazza a feladási kódot
+    public void parcelSendingFromWebPageNotification(ParcelSendingFromWebPageNotification notification){
+
+        //Objektum konvertálása string-be
+        String jsonString;
+
+        try {
+            jsonString = objectMapper.writeValueAsString(notification);
+        }
+        catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        //Üzenet küldése a topic-nak
+
+        Message<String> message = MessageBuilder
+                .withPayload(jsonString)
+                .setHeader(KafkaHeaders.TOPIC , topic7.name())
+                .build();
+        kafkaTemplate7.send(message);
 
     }
 }

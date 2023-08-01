@@ -5,6 +5,7 @@ import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
 import com.parcellocker.parcelhandlerservice.payload.ParcelLockerDTO;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.GetSaturationDatasResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -29,4 +30,7 @@ public interface ParcelLockerService {
 
     //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
     ResponseEntity<List<StringResponse>> areBoxesFull(Long senderParcelLockerId);
+
+    //Automata telítettségi adatok lekérése
+    ResponseEntity<GetSaturationDatasResponse> getSaturationDatas(Long parcelLockerId);
 }

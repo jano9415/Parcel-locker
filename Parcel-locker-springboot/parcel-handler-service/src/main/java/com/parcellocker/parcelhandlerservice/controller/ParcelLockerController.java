@@ -3,6 +3,7 @@ package com.parcellocker.parcelhandlerservice.controller;
 import com.parcellocker.parcelhandlerservice.payload.ParcelLockerDTO;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.GetSaturationDatasResponse;
 import com.parcellocker.parcelhandlerservice.service.impl.ParcelLockerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,5 +38,12 @@ public class ParcelLockerController {
     public ResponseEntity<List<StringResponse>> areBoxesFull(@PathVariable Long senderParcelLockerId){
 
         return parcelLockerService.areBoxesFull(senderParcelLockerId);
+    }
+
+    //Automata telítettségi adatok lekérése
+    //Nem szükséges jwt token
+    @GetMapping("/getsaturationdatas/{parcelLockerId}")
+    public ResponseEntity<GetSaturationDatasResponse> getSaturationDatas(@PathVariable Long parcelLockerId){
+        return parcelLockerService.getSaturationDatas(parcelLockerId);
     }
 }

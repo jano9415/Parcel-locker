@@ -5,6 +5,7 @@ import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
 import com.parcellocker.parcelhandlerservice.payload.ParcelLockerDTO;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.GetSaturationDatasResponse;
 import com.parcellocker.parcelhandlerservice.repository.ParcelLockerRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelLockerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +85,29 @@ public class ParcelLockerServiceImpl implements ParcelLockerService {
         return ResponseEntity.ok(stringResponses);
     }
 
+    //Automata telítettségi adatok lekérése
+    @Override
+    public ResponseEntity<GetSaturationDatasResponse> getSaturationDatas(Long parcelLockerId) {
+
+        ParcelLocker parcelLocker = findById(parcelLockerId);
+        GetSaturationDatasResponse response = new GetSaturationDatasResponse();
+
+        //A tömb első eleme a kicsi teli rekeszek száma
+        //A tömb második eleme a közepes teli rekeszek száma
+        //A tömb harmadik eleme a nagy teli rekeszek száma
+        int[] amounts = fullBoxesNumber(parcelLockerId);
+
+        response.setAmountOfBoxes(parcelLocker.getAmountOfBoxes());
+        response.setAmountOfSmallBoxes(parcelLocker.getAmountOfSmallBoxes());
+        response.setAmountOfMediumBoxes(parcelLocker.getAmountOfMediumBoxes());
+        response.setAmountOfLargeBoxes(parcelLocker.getAmountOfLargeBoxes());
+        response.setAmountOfFullSmallBoxes(amounts[0]);
+        response.setAmountOfFullMediumBoxes(amounts[1]);
+        response.setAmountOfFullLargeBoxes(amounts[2]);
+
+        return ResponseEntity.ok(response);
+    }
+
     //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
     public StringResponse checkBoxes(String size, Long senderParcelLockerId){
 
@@ -138,4 +162,36 @@ public class ParcelLockerServiceImpl implements ParcelLockerService {
         stringResponse.setMessage("notfull");
         return stringResponse;
     }
+
+    //Teli rekeszek számának ellenőrzése. Kicsi, közepes vagy nagy rekeszek
+    public int[] fullBoxesNumber(Long parcelLockerId){
+
+        ParcelLocker parcelLocker = findById(parcelLockerId);
+        //A tömb első eleme a kicsi teli rekeszek száma
+        //A tömb második eleme a közepes teli rekeszek száma
+        //A tömb harmadik eleme a nagy teli rekeszek száma
+        int[] amounts = new int[3];
+        int smallCounter = 0;
+        int mediumCounter = 0;
+        int largeCounter = 0;
+
+        for(Parcel parcel : parcelLocker.getParcels()){
+            if(parcel.getBox().getSize().equals("small")){
+                smallCounter++;
+            }
+            if(parcel.getBox().getSize().equals("medium")){
+                mediumCounter++;
+            }
+            if(parcel.getBox().getSize().equals("large")){
+                largeCounter++;
+            }
+        }
+
+        amounts[0] = smallCounter;
+        amounts[1] = mediumCounter;
+        amounts[2] = largeCounter;
+
+        return  amounts;
+    }
+
 }
