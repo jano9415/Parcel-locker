@@ -6,10 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -133,4 +131,19 @@ public class Parcel {
     private String pickingUpCode;
 
     private String sendingCode;
+
+    @Column(nullable = false)
+    private LocalDate pickingUpExpirationDate;
+
+    @Column(nullable = false)
+    private LocalTime pickingUpExpirationTime;
+
+    @Column(nullable = false)
+    private boolean isPickingUpExpired;
+
+    private LocalDate sendingExpirationDate;
+
+    private LocalTime sendingExpirationTime;
+
+    private boolean isSendingExpired;
 }

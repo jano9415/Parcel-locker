@@ -80,13 +80,8 @@ const logOut = () => {
 }
 
 //Új futár létrehozása
-const createCourier = (uniqueCourierId, password, firstName, lastName) => {
-  return axios.post(API_URL + "createcourier", {
-    uniqueCourierId,
-    password,
-    firstName,
-    lastName,
-  },
+const createCourier = (formValues) => {
+  return axios.post(API_URL + "createcourier", formValues,
     { headers: authHeader() });
 };
 

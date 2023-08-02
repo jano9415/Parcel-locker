@@ -13,4 +13,6 @@ public class CreateCourierDTO {
     private String firstName;
 
     private String lastName;
+
+    private Long storeId;
 }

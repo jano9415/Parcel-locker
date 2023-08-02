@@ -218,6 +218,19 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(response);
         }
 
+        //Kérés küldése a parcel-handler-service-nek
+        //Ha a kérésben érkező automata store id és a futár store id nem egyezik meg,
+        //akkor a futár nem jogosult bejelentekzni ahhoz az automatához
+        /*
+        if(){
+            response.setMessage("notEligible");
+            return ResponseEntity.ok(response);
+        }
+
+         */
+
+
+
         String token = jwtUtil.generateToken(user.getEmailAddress());
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setUserId(user.getId());
@@ -286,11 +299,12 @@ public class UserServiceImpl implements UserService {
         user.setPassword(sha256Password);
 
         //CourierDTO objektum létrehozása. Ezt az objektumot külöm a parcel-handler service-nek.
-        //Ez az objektum már nem tartalmaz jelszót, viszont tartalmaz vezeték és kereszt nevet
+        //Ez az objektum már nem tartalmaz jelszót, viszont tartalmaz vezeték és kereszt nevet és store id-t
         CourierDTO courierToParcelHandlerService = new CourierDTO();
         courierToParcelHandlerService.setUniqueCourierId(courierDTO.getUniqueCourierId());
         courierToParcelHandlerService.setFirstName(courierDTO.getFirstName());
         courierToParcelHandlerService.setLastName(courierDTO.getLastName());
+        courierToParcelHandlerService.setStoreId(courierDTO.getStoreId());
 
         //Futár küldése a parcel handler service-nek
         webClientBuilder.build().post()

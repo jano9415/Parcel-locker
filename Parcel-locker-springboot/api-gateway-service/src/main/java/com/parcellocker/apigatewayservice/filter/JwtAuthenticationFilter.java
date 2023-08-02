@@ -60,7 +60,10 @@ public class JwtAuthenticationFilter implements GatewayFilter {
                 //Csomag keresés feladási kód szerint
                 "/parcelhandler/parcel/getparcelforsendingwithcode",
                 //Csomag feladása feladási kóddal
-                "/parcelhandler/parcel/sendparcelwithcode"
+                "/parcelhandler/parcel/sendparcelwithcode",
+                //Automata telítettségi adatok lekérése
+                "/parcelhandler/parcellocker/getsaturationdatas"
+
         );
 
         Predicate<ServerHttpRequest> isApiSecured = r -> apiEndpoints.stream()

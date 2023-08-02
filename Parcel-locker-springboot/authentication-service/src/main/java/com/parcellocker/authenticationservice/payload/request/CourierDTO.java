@@ -10,4 +10,6 @@ public class CourierDTO {
     private String firstName;
 
     private String lastName;
+
+    private Long storeId;
 }

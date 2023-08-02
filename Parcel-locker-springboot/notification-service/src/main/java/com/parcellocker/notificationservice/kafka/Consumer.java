@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parcellocker.notificationservice.payload.ParcelSendingNotification;
 import com.parcellocker.notificationservice.payload.SignUpActivationDTO;
 import com.parcellocker.notificationservice.payload.kafka.ParcelPickingUpNotification;
+import com.parcellocker.notificationservice.payload.kafka.ParcelSendingFromWebPageNotification;
 import com.parcellocker.notificationservice.payload.kafka.ParcelShippingNotification;
 import com.parcellocker.notificationservice.service.EmailService;
 
@@ -159,6 +160,25 @@ public class Consumer {
         }
 
         emailService.sendPickingUpNotificationForSender(jsonObject);
+    }
+
+    //Feliratkozok a topic-ra. A group-id az application.properties-ből jön
+    //Group-id: notification-service
+    //Topic név: parcelSendingFromWebPageNotification
+    //Csomagfeladás a weboldalról értesítés
+    @KafkaListener(topics = "parcelSendingFromWebPageNotification", groupId = "${spring.kafka.consumer.group-id}")
+    public void parcelSendingFromWebPageNotification(String notification){
+
+        //String konvertálása objektumba
+        ParcelSendingFromWebPageNotification jsonObject;
+
+        try {
+            jsonObject = objectMapper.readValue(notification, ParcelSendingFromWebPageNotification.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        emailService.parcelSendingFromWebPageNotification(jsonObject);
     }
 
 

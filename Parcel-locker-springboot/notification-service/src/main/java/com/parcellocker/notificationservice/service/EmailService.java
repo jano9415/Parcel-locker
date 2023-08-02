@@ -5,6 +5,7 @@ package com.parcellocker.notificationservice.service;
 import com.parcellocker.notificationservice.payload.ParcelSendingNotification;
 import com.parcellocker.notificationservice.payload.SignUpActivationDTO;
 import com.parcellocker.notificationservice.payload.kafka.ParcelPickingUpNotification;
+import com.parcellocker.notificationservice.payload.kafka.ParcelSendingFromWebPageNotification;
 import com.parcellocker.notificationservice.payload.kafka.ParcelShippingNotification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -194,6 +195,35 @@ public class EmailService {
                     + " " + notification.getReceiverParcelLockerStreet() + "\n"
                     + "A csomag címzettje: " + notification.getReceiverName() + "\n"
             );
+            javaMailSender.send(message);
+
+        }
+        catch (Exception e){
+            System.out.println("Email server error.");
+        }
+    }
+
+    //Email értesítés, mután a felhasználó feladta a csomagját a weboldalról
+    //Ez az email tartalmazza a feladási kódot
+    public void parcelSendingFromWebPageNotification(ParcelSendingFromWebPageNotification notification) {
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+
+            message.setFrom("${spring.mail.username}");
+            message.setTo(notification.getSenderEmailAddress());
+            message.setSubject("Csomagfeladás weboldalról");
+            message.setText("Kedves " + notification.getSenderName() + "\n\n"
+                    + "Ön " + notification.getSendingDate() + " " + notification.getSendingTime() + "-kor " +
+                    "sikeresen feladta a(z) " + notification.getUniqueParcelId() + " azonosítójú csomagját.\n"
+                    + "Ez még csak egy előzetes feladás. A végleges feladáshoz, kérjük fáradjon el a feladási automatához és" +
+                    " válassza a csomagfeladás feladási kóddal lehetőséget.\n"
+                    + "A feladáshoz szükséges kód: " + notification.getSendingCode() + "\n"
+                    + "A csomag feladási díját az automatánál tudja kifizetni bakkártyával.\n"
+                    + "Itt tudja feladni a csomagot: " + notification.getSenderParcelLockerPostCode() + " " + notification.getSenderParcelLockerCity()
+                    + " " + notification.getSenderParcelLockerStreet() + "\n"
+                    + "Ide fog megérkezni: " + notification.getReceiverParcelLockerPostCode() + " " + notification.getReceiverParcelLockerCity()
+                    + " " + notification.getReceiverParcelLockerStreet() + "\n");
             javaMailSender.send(message);
 
         }

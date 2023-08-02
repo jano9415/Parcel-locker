@@ -1,6 +1,7 @@
 package com.parcellocker.parcelhandlerservice.service.impl;
 
 import com.parcellocker.parcelhandlerservice.model.Courier;
+import com.parcellocker.parcelhandlerservice.model.Store;
 import com.parcellocker.parcelhandlerservice.payload.CreateCourierDTO;
 import com.parcellocker.parcelhandlerservice.repository.CourierRepository;
 import com.parcellocker.parcelhandlerservice.service.CourierService;
@@ -15,6 +16,9 @@ public class CourierServiceImpl implements CourierService {
 
     @Autowired
     private CourierRepository courierRepository;
+
+    @Autowired
+    private StoreServiceImpl storeService;
 
     @Override
     public List<Courier> findAll() {
@@ -37,14 +41,16 @@ public class CourierServiceImpl implements CourierService {
     @Override
     public ResponseEntity<String> createCourier(CreateCourierDTO courierDTO) {
         Courier courier = new Courier();
+        Store store = storeService.findById(courierDTO.getStoreId());
 
         courier.setUniqueCourierId(courierDTO.getUniqueCourierId());
         courier.setFirstName(courierDTO.getFirstName());
         courier.setLastName(courierDTO.getLastName());
+        courier.setArea(store);
 
         save(courier);
 
-        return ResponseEntity.ok("Új futár hozzáadva az adatbázishoz");
+        return ResponseEntity.ok("SuccesCreation");
     }
 
     //Keresés egyedi futár azonosító alapján

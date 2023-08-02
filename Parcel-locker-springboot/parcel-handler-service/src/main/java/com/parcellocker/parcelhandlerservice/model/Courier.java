@@ -46,4 +46,9 @@ public class Courier {
     //Kapcsolat a Parcel és a Courier között
     @OneToMany(mappedBy = "courier")
     private Set<Parcel> parcels = new HashSet<>();
+
+    //Kapcsolat a Courier és a Store között
+    //Ez az osztály a birtokos
+    @ManyToOne
+    private Store area;
 }

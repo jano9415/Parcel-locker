@@ -36,4 +36,10 @@ public class Store {
     //A Parcel locker osztály a birtokos
     @OneToMany(mappedBy = "store")
     private Set<ParcelLocker> parcelLockers = new HashSet<>();
+
+    //Opcionális adat
+    //Kapcsolat a Courier és a Store között
+    //A Courier osztály a birtokos
+    @OneToMany(mappedBy = "area")
+    private Set<Courier> couriers = new HashSet<>();
 }
