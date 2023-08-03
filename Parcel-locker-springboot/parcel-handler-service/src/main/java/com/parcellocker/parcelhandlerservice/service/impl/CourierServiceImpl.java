@@ -1,8 +1,10 @@
 package com.parcellocker.parcelhandlerservice.service.impl;
 
 import com.parcellocker.parcelhandlerservice.model.Courier;
+import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
 import com.parcellocker.parcelhandlerservice.model.Store;
 import com.parcellocker.parcelhandlerservice.payload.CreateCourierDTO;
+import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.repository.CourierRepository;
 import com.parcellocker.parcelhandlerservice.service.CourierService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class CourierServiceImpl implements CourierService {
 
     @Autowired
     private StoreServiceImpl storeService;
+
+    @Autowired
+    private ParcelLockerServiceImpl parcelLockerService;
 
     @Override
     public List<Courier> findAll() {
@@ -57,5 +62,24 @@ public class CourierServiceImpl implements CourierService {
     @Override
     public Courier findByUniqueCourierId(String uniqueCourierId) {
         return courierRepository.findByUniqueCourierId(uniqueCourierId);
+    }
+
+    //Futár jogosultságának ellenőrzése az automatához
+    //Csak a saját körzetében lévő automatákba tud bejelentkezni
+    @Override
+    public ResponseEntity<StringResponse> isCourierEligible(Long parcelLockerId, String uniqueCourierId) {
+
+        Courier courier = findByUniqueCourierId(uniqueCourierId);
+        ParcelLocker parcelLocker = parcelLockerService.findById(parcelLockerId);
+
+        StringResponse response = new StringResponse();
+
+        if(courier.getArea().getId().equals(parcelLocker.getStore().getId())){
+            response.setMessage("eligible");
+            return ResponseEntity.ok(response);
+        }
+
+        response.setMessage("notEligible");
+        return ResponseEntity.ok(response);
     }
 }

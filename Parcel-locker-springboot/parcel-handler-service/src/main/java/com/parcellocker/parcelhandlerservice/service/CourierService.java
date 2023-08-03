@@ -3,6 +3,7 @@ package com.parcellocker.parcelhandlerservice.service;
 import com.parcellocker.parcelhandlerservice.model.Address;
 import com.parcellocker.parcelhandlerservice.model.Courier;
 import com.parcellocker.parcelhandlerservice.payload.CreateCourierDTO;
+import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -23,4 +24,8 @@ public interface CourierService {
 
     //Keresés egyedi futár azonosító alapján
     Courier findByUniqueCourierId(String uniqueCourierId);
+
+    //Futár jogosultságának ellenőrzése az automatához
+    //Csak a saját körzetében lévő automatákba tud bejelentkezni
+    ResponseEntity<StringResponse> isCourierEligible(Long parcelLockerId, String uniqueCourierId);
 }

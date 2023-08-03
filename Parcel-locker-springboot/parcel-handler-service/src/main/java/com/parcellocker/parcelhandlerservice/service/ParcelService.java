@@ -69,4 +69,11 @@ public interface ParcelService {
     //A végleges csomagfeladás az automatánál történik
     //Jwt token szükséges
     ResponseEntity<StringResponse> sendParcelWithCodeFromWebpage(SendParcelWithCodeFromWebpageRequest request);
+
+    //Csomag követése
+    //Nem szükséges jwt token
+    ResponseEntity<FollowParcelResponse> followParcel(String uniqueParcelId);
+
+    //Keresés egyedi csomagazonosító szerint
+    Parcel findByUniqueParcelId(String uniqueParcelId);
 }

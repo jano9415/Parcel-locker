@@ -24,4 +24,7 @@ public interface ParcelRepository extends CrudRepository<Parcel, Long> {
 
     //Keresés feladási kód szerint
     Parcel findBySendingCode(String sendingCode);
+
+    //Keresés egyedi csomagazonosító szerint
+    Parcel findByUniqueParcelId(String uniqueParcelId);
 }

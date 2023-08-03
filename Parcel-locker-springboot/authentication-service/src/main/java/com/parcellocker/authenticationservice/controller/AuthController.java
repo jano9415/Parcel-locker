@@ -28,10 +28,11 @@ public class AuthController {
         return userService.signUp(signUpRequest);
     }
 
-    //Futár bejelentkezés
-    @PostMapping("/courierlogin")
-    public ResponseEntity<?> courierLogin(@RequestBody LoginCourier request){
-        return userService.courierLogin(request);
+    //Futár bejelentkezése az automatánál
+    @PostMapping("/courierlogin/{parcelLockerId}")
+    public ResponseEntity<?> courierLogin(@RequestBody LoginCourier request,
+                                          @PathVariable Long parcelLockerId){
+        return userService.courierLogin(request, parcelLockerId);
     }
 
     //Regisztráció aktiválása

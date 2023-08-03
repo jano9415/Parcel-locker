@@ -677,6 +677,15 @@ public class ParcelServiceImpl implements ParcelService {
         //Átvételi kód
         parcel.setPickingUpCode(generateRandomString(5));
 
+        //Csomag lejárati idők
+        parcel.setPickingUpDate(null);
+        parcel.setPickingUpTime(null);
+        parcel.setPickedUp(false);
+
+        parcel.setSendingExpirationDate(null);
+        parcel.setSendingExpirationTime(null);
+        parcel.setSendingExpired(false);
+
         //Csomag és csomag automata összerendlése
         senderParcelLocker.getParcels().add(parcel);
         parcel.setParcelLocker(senderParcelLocker);
@@ -711,6 +720,67 @@ public class ParcelServiceImpl implements ParcelService {
 
         response.setMessage("successSending");
         return ResponseEntity.ok(response);
+    }
+
+    //Csomag követése
+    //Nem szükséges jwt token
+    @Override
+    public ResponseEntity<FollowParcelResponse> followParcel(String uniqueParcelId) {
+        Parcel parcel = findByUniqueParcelId(uniqueParcelId);
+        FollowParcelResponse response = new FollowParcelResponse();
+
+        if(parcel == null){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
+        }
+
+        response.setShippingFromPostCode(parcel.getShippingFrom().getLocation().getPostCode());
+        response.setShippingFromCounty(parcel.getShippingFrom().getLocation().getCounty());
+        response.setShippingFromCity(parcel.getShippingFrom().getLocation().getCity());
+        response.setShippingFromStreet(parcel.getShippingFrom().getLocation().getStreet());
+
+        response.setShippingToPostCode(parcel.getShippingTo().getLocation().getPostCode());
+        response.setShippingToCounty(parcel.getShippingTo().getLocation().getCounty());
+        response.setShippingToCity(parcel.getShippingTo().getLocation().getCity());
+        response.setShippingToCity(parcel.getShippingTo().getLocation().getCity());
+
+        if(parcel.getStore() != null){
+            response.setStorePostCode(parcel.getStore().getAddress().getPostCode());
+            response.setStoreCounty(parcel.getStore().getAddress().getCounty());
+            response.setStoreCity(parcel.getStore().getAddress().getCity());
+            response.setStoreStreet(parcel.getStore().getAddress().getStreet());
+        }
+
+        response.setShipped(parcel.isShipped());
+        response.setPickedUp(parcel.isPickedUp());
+
+        response.setSendingDate(parcel.getSendingDate().toString());
+        response.setSendingTime(parcel.getSendingTime().toString());
+
+        response.setPickingUpDate(parcel.getPickingUpDate().toString());
+        response.setPickingUpTime(parcel.getPickingUpTime().toString());
+
+        response.setShippingDate(parcel.getShippingDate().toString());
+        response.setShippingTime(parcel.getShippingTime().toString());
+
+        response.setPlaced(parcel.isPlaced());
+        response.setPaid(parcel.isPaid());
+
+        response.setPickingUpExpirationDate(parcel.getPickingUpExpirationDate().toString());
+        response.setPickingUpExpirationTime(parcel.getPickingUpExpirationTime().toString());
+        response.setPickedUp(parcel.isPickedUp());
+
+        response.setSendingExpirationDate(parcel.getSendingExpirationDate().toString());
+        response.setSendingExpirationTime(parcel.getSendingExpirationTime().toString());
+        response.setSendingExpired(parcel.isSendingExpired());
+
+        return ResponseEntity.ok(response);
+    }
+
+    //Keresés egyedi csomagazonosító szerint
+    @Override
+    public Parcel findByUniqueParcelId(String uniqueParcelId) {
+        return parcelRepository.findByUniqueParcelId(uniqueParcelId);
     }
 
     //Random string generálása

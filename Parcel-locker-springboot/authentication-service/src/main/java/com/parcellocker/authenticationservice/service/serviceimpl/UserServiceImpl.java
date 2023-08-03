@@ -205,7 +205,7 @@ public class UserServiceImpl implements UserService {
     //Ez az objektum tartalmazza: jwt token (ami tartalmazza a futár egyedi azonosítóját), id,
     // egyedi azonosító újra (ez nem biztos, hogy kelleni fog) és a szerepkörök
     @Override
-    public ResponseEntity<?> courierLogin(LoginCourier request) {
+    public ResponseEntity<?> courierLogin(LoginCourier request, Long parcelLockerId) {
 
         String sha256Password = sha256Encode(request.getPassword());
 
@@ -218,17 +218,24 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(response);
         }
 
+
         //Kérés küldése a parcel-handler-service-nek
         //Ha a kérésben érkező automata store id és a futár store id nem egyezik meg,
         //akkor a futár nem jogosult bejelentekzni ahhoz az automatához
-        /*
-        if(){
+        StringResponse responseFromParcelHandlerService;
+        responseFromParcelHandlerService = webClientBuilder.build().get()
+                .uri("http://parcel-handler-service/parcelhandler/courier/iscouriereligible/" +
+                        parcelLockerId + "/" + user.getEmailAddress())
+                .retrieve()
+                .bodyToMono(StringResponse.class)
+                .block();
+
+
+        //Ha nem jogosult a futár a bejelentkezésre
+        if(responseFromParcelHandlerService.getMessage().equals("notEligible")){
             response.setMessage("notEligible");
             return ResponseEntity.ok(response);
         }
-
-         */
-
 
 
         String token = jwtUtil.generateToken(user.getEmailAddress());

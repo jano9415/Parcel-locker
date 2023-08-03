@@ -109,4 +109,11 @@ public class ParcelController {
     public ResponseEntity<StringResponse> sendParcelWithCodeFromWebpage(@RequestBody SendParcelWithCodeFromWebpageRequest request){
         return parcelService.sendParcelWithCodeFromWebpage(request);
     }
+
+    //Csomag követése
+    //Nem szükséges jwt token
+    @GetMapping("/followparcel/{uniqueParcelId}")
+    public ResponseEntity<FollowParcelResponse> followParcel(@PathVariable String uniqueParcelId){
+        return parcelService.followParcel(uniqueParcelId);
+    }
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Form, useFormik } from 'formik';
 import { Box, Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from '@mui/material';
 import * as Yup from 'yup';
+import ParcelService from '../Service/ParcelService';
 
 
 
@@ -23,6 +24,16 @@ const FollowParcelComponent = () => {
 
     }),
     onSubmit: (values) => {
+
+      //Csomag követése
+      ParcelService.followParcel(values.uniqueParcelId).then((response) => {
+
+        console.log(response.data);
+
+      },
+        (error) => {
+
+        })
 
     }
   });

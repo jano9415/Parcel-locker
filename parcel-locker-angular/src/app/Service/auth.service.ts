@@ -10,7 +10,15 @@ export class AuthService {
 
   private API_URL = "http://localhost:8080/auth/";
 
+  private senderParcelLockerId: string = "";
+
   constructor(private httpClient: HttpClient) { }
+
+  //Feladási automata id lekérése local storage-ról
+  getSenderParcelLockerId() {
+    const senderParcelLockerId = localStorage.getItem('senderParcelLockerId');
+    this.senderParcelLockerId = senderParcelLockerId !== null ? senderParcelLockerId : '';
+  }
 
 
   /*
@@ -33,9 +41,8 @@ export class AuthService {
   //Futár bejelentkezés
   //Rfid uid: 07 6205 26
   courierLogin(password: string): Observable<any> {
-
-
-    return this.httpClient.post<any>(`${this.API_URL + "courierlogin"}`, {password});
+    this.getSenderParcelLockerId();
+    return this.httpClient.post<any>(`${this.API_URL + "courierlogin"}/${this.senderParcelLockerId}`, { password });
   }
-  
+
 }

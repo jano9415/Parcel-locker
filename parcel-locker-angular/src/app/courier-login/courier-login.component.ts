@@ -39,13 +39,17 @@ export class CourierLoginComponent {
 
       this.authService.courierLogin(this.password).subscribe({
         next: (response) => {
-
+          //Hibás azonosító
           if (response.message === "notFound") {
             this.message = "Hibás azonosító. Kattints a kezdőlapra, frissítsd az oldalt, majd kattints a bejelentkezésre" +
-             " és próbálj meg újra bejelentkezni.";
+              " és próbálj meg újra bejelentkezni.";
           }
-          else {
-
+          //Nincs jogosultság az automatához
+          if (response.message === "notEligible") {
+            this.message = "Nincs jogosultságod ehhez az automatához.";
+          }
+          //Sikeres bejelentkezés
+          if (response.token) {
             const currentCourier = {
               token: response.token,
               tokenType: response.tokenType,
@@ -60,16 +64,14 @@ export class CourierLoginComponent {
             const serializedCourier = JSON.stringify(currentCourier);
             this.cookieService.set("currentCourier", serializedCourier);
 
-            //Futár objektum kiolvasása cookie-ből és visszaalakítás
-            const deserializedCourier = JSON.parse(this.cookieService.get("currentCourier"));
-
             //Navigáció a home oldalra és oldal frissítése
             this.router.navigateByUrl("courierhome", { skipLocationChange: false }).then(() => {
               window.location.reload();
             });
-
+          
 
           }
+
 
         },
         error: (error) => {

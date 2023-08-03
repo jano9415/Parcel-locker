@@ -132,10 +132,8 @@ public class Parcel {
 
     private String sendingCode;
 
-    @Column(nullable = false)
     private LocalDate pickingUpExpirationDate;
 
-    @Column(nullable = false)
     private LocalTime pickingUpExpirationTime;
 
     @Column(nullable = false)

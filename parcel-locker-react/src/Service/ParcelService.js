@@ -20,10 +20,16 @@ const sendParcelWithCodeFromWebpage = (formValues) => {
         { headers: authHeader() });
 };
 
+//Csomag követése
+const followParcel = (uniqueParcelId) => {
+    return axios.get(API_URL + "followparcel/" + uniqueParcelId);
+}
+
 
 
 const ParcelService = {
     sendParcelWithCodeFromWebpage,
+    followParcel,
 
 };
 

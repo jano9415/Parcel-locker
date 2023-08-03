@@ -37,7 +37,7 @@ public interface UserService {
     boolean existsByEmailAddressAndPassword(String emailAddress, String password);
 
     //Futár bejelentkezés
-    ResponseEntity<?> courierLogin(LoginCourier request);
+    ResponseEntity<?> courierLogin(LoginCourier request, Long parcelLockerId);
 
     //Regisztráció aktiválása
     ResponseEntity<?> signUpActivation(String activationCode);

@@ -145,7 +145,7 @@ export class ParcelSendingWithoutcodeComponent {
     if (size === "small") {
       return this.smallBoxesFull
     }
-    if (size === "small") {
+    if (size === "medium") {
       return this.mediumBoxesFull
     }
     return this.largeBoxesFull
