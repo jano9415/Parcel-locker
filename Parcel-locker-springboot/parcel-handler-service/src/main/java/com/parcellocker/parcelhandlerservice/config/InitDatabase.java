@@ -53,7 +53,7 @@ public class InitDatabase {
 
         address1.setCity("Veszprém");
         address1.setCounty("Veszprém");
-        address1.setPostCode(8100);
+        address1.setPostCode(8200);
         address1.setStreet("Dózsa György utca 11");
         addressService.save(address1);
 
@@ -84,13 +84,13 @@ public class InitDatabase {
         //Veszprém megyei automaták
         address6.setCity("Veszprém");
         address6.setCounty("Veszprém");
-        address6.setPostCode(8100);
+        address6.setPostCode(8200);
         address6.setStreet("Pápai út 32");
         addressService.save(address6);
 
         address7.setCity("Veszprém");
         address7.setCounty("Veszprém");
-        address7.setPostCode(8100);
+        address7.setPostCode(8200);
         address7.setStreet("Jutasi út 4");
         addressService.save(address7);
 
@@ -115,32 +115,32 @@ public class InitDatabase {
 
         address11.setCity("Zámoly");
         address11.setCounty("Fejér");
-        address11.setPostCode(8000);
+        address11.setPostCode(8081);
         address11.setStreet("Nefelejcs utca 21");
         addressService.save(address11);
 
         address12.setCity("Lovasberény");
         address12.setCounty("Fejér");
-        address12.setPostCode(8000);
+        address12.setPostCode(8093);
         address12.setStreet("Zrínyi utca 1");
         addressService.save(address12);
 
         address13.setCity("Velence");
         address13.setCounty("Fejér");
-        address13.setPostCode(8000);
+        address13.setPostCode(2481);
         address13.setStreet("Ősz utca 13/a");
         addressService.save(address13);
 
         //Zala megyei automaták
         address14.setCity("Lenti");
         address14.setCounty("Zala");
-        address14.setPostCode(8900);
+        address14.setPostCode(8960);
         address14.setStreet("Béke utca 20");
         addressService.save(address14);
 
         address15.setCity("Zalavár");
         address15.setCounty("Zala");
-        address15.setPostCode(8900);
+        address15.setPostCode(8392);
         address15.setStreet("József Attila utca 17");
         addressService.save(address15);
 
@@ -152,26 +152,26 @@ public class InitDatabase {
 
         address17.setCity("Teskánd");
         address17.setCounty("Zala");
-        address17.setPostCode(8900);
+        address17.setPostCode(8991);
         address17.setStreet("Rózsa utca 9");
         addressService.save(address17);
 
         //Somogy megyei automaták
         address18.setCity("Marcali");
         address18.setCounty("Somogy");
-        address18.setPostCode(7400);
+        address18.setPostCode(8700);
         address18.setStreet("Nagypincei út 15");
         addressService.save(address18);
 
         address19.setCity("Fonyód");
         address19.setCounty("Somogy");
-        address19.setPostCode(7400);
+        address19.setPostCode(8640);
         address19.setStreet("Domb utca 27");
         addressService.save(address19);
 
         address20.setCity("Igal");
         address20.setCounty("Somogy");
-        address20.setPostCode(7400);
+        address20.setPostCode(7275);
         address20.setStreet("Szent István út 8");
         addressService.save(address20);
 
@@ -190,19 +190,19 @@ public class InitDatabase {
 
         address23.setCity("Sárvár");
         address23.setCounty("Vas");
-        address23.setPostCode(9700);
+        address23.setPostCode(9600);
         address23.setStreet("Székely út 13");
         addressService.save(address23);
 
         address24.setCity("Körmend");
         address24.setCounty("Vas");
-        address24.setPostCode(9700);
+        address24.setPostCode(9900);
         address24.setStreet("Dankó Pista utca 24");
         addressService.save(address24);
 
         address25.setCity("Szentgotthárd");
         address25.setCounty("Vas");
-        address25.setPostCode(9700);
+        address25.setPostCode(9955);
         address25.setStreet("Zöld mező utca 5");
         addressService.save(address25);
     }

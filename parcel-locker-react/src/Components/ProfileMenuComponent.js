@@ -10,13 +10,17 @@ import Tooltip from '@mui/material/Tooltip';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { Tab } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import postlogo from '../postlogo.png'
 import AuthService from '../Service/AuthService';
 
 const ProfileMenuComponent = () => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const navigate = useNavigate();
+
+
+
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -25,8 +29,8 @@ const ProfileMenuComponent = () => {
         setAnchorEl(null);
     };
 
-    const profile = () => {
-        console.log("fdsf");
+    const myProfile = () => {
+        navigate('/myparcels');
     }
 
     return (
@@ -99,7 +103,7 @@ const ProfileMenuComponent = () => {
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
-                        <MenuItem onClick={profile}>
+                        <MenuItem onClick={myProfile}>
                             <Avatar /> Profilom
                         </MenuItem>
                         <Divider />

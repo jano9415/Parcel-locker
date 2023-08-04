@@ -13,6 +13,7 @@ import com.parcellocker.parcelhandlerservice.payload.response.*;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -330,8 +331,9 @@ public class ParcelServiceImpl implements ParcelService {
         List<Parcel> parcelsForParcelLocker = new ArrayList<>();
 
         for(Parcel parcel : parcelsOfCourier){
-            //Ha a csomag érkezési helye ez az automata
-            if(parcel.getShippingTo().getId() == senderParcelLockerId){
+            //Ha a csomag érkezési helye ez az automata és a csomag átvételi ideje még nem járt le.
+            //Így elkerülhető, hogy olyan csomagot tegyen be, amit már a központi raktárba kellene szállítani
+            if(parcel.getShippingTo().getId() == senderParcelLockerId && parcel.isPickingUpExpired() == false){
 
                 //Automata csomagjai
                 Set<Parcel> parcelsInSenderParcelLocker = senderParcelLocker.getParcels();
@@ -359,12 +361,19 @@ public class ParcelServiceImpl implements ParcelService {
                 if(!emptyBoxes.isEmpty()){
 
                     //Csomag paramétereinek frissítése
+                    //Csomag el van helyezve
+                    //Elhelyezési dátum és időpont
                     parcel.setShipped(true);
                     LocalDate currentDate = LocalDate.now();
                     parcel.setShippingDate(currentDate);
 
                     LocalTime currentTime = LocalTime.now();
                     parcel.setShippingTime(currentTime);
+
+                    //Átvételi lejárati dátum. Amikor a futár elhelyezi a csomagot az automatába + három nap
+                    parcel.setPickingUpExpirationDate(currentDate.plusDays(3));
+                    //Átvételi lejárati időpont. Megegyezik az elhelyezési időponttal
+                    parcel.setPickingUpExpirationTime(currentTime);
 
 
                     //Csomag és automata összerendlése
@@ -677,13 +686,17 @@ public class ParcelServiceImpl implements ParcelService {
         //Átvételi kód
         parcel.setPickingUpCode(generateRandomString(5));
 
-        //Csomag lejárati idők
+
+        //Átvételi lejárati dátum és idő. Ez majd akkor lesz megadva, amikor a futár elhelyezi az automatába
         parcel.setPickingUpDate(null);
         parcel.setPickingUpTime(null);
         parcel.setPickedUp(false);
 
-        parcel.setSendingExpirationDate(null);
-        parcel.setSendingExpirationTime(null);
+        //Feladási lejárati dátum és idő
+        //A dátum a feladási dátum + három nap
+        parcel.setSendingExpirationDate(currentDate.plusDays(3));
+        //Megegyezik a feladási időpnttal
+        parcel.setSendingExpirationTime(currentTime);
         parcel.setSendingExpired(false);
 
         //Csomag és csomag automata összerendlése
@@ -754,24 +767,39 @@ public class ParcelServiceImpl implements ParcelService {
         response.setShipped(parcel.isShipped());
         response.setPickedUp(parcel.isPickedUp());
 
-        response.setSendingDate(parcel.getSendingDate().toString());
-        response.setSendingTime(parcel.getSendingTime().toString());
+        if(parcel.getSendingDate() != null){
+            response.setSendingDate(parcel.getSendingDate().toString());
+            response.setSendingTime(parcel.getSendingTime().toString());
+        }
 
-        response.setPickingUpDate(parcel.getPickingUpDate().toString());
-        response.setPickingUpTime(parcel.getPickingUpTime().toString());
 
-        response.setShippingDate(parcel.getShippingDate().toString());
-        response.setShippingTime(parcel.getShippingTime().toString());
+        if(parcel.getPickingUpDate() != null){
+            response.setPickingUpDate(parcel.getPickingUpDate().toString());
+            response.setPickingUpTime(parcel.getPickingUpTime().toString());
+        }
+
+        if(parcel.getShippingDate() != null){
+            response.setShippingDate(parcel.getShippingDate().toString());
+            response.setShippingTime(parcel.getShippingTime().toString());
+        }
+
+
 
         response.setPlaced(parcel.isPlaced());
         response.setPaid(parcel.isPaid());
 
-        response.setPickingUpExpirationDate(parcel.getPickingUpExpirationDate().toString());
-        response.setPickingUpExpirationTime(parcel.getPickingUpExpirationTime().toString());
+        if(parcel.getPickingUpExpirationDate() != null){
+            response.setPickingUpExpirationDate(parcel.getPickingUpExpirationDate().toString());
+            response.setPickingUpExpirationTime(parcel.getPickingUpExpirationTime().toString());
+        }
+
         response.setPickedUp(parcel.isPickedUp());
 
-        response.setSendingExpirationDate(parcel.getSendingExpirationDate().toString());
-        response.setSendingExpirationTime(parcel.getSendingExpirationTime().toString());
+        if(parcel.getSendingExpirationDate() != null){
+            response.setSendingExpirationDate(parcel.getSendingExpirationDate().toString());
+            response.setSendingExpirationTime(parcel.getSendingExpirationTime().toString());
+        }
+
         response.setSendingExpired(parcel.isSendingExpired());
 
         return ResponseEntity.ok(response);
@@ -814,6 +842,8 @@ public class ParcelServiceImpl implements ParcelService {
 
     //Automatában megtalálható csomagok keresése. Ezek a csomagok készen állnak az elszállításra
     //Még nincs leszállítva, el van helyezve, nincs átvéve, a csomag érkezési automatája nem ez az automata
+    //Azok a csomagok is átkerülnek a futárhoz, ami már ahhoz az automatához le lett szállítva,
+    //de az ügyfél nem vette át. Tehát lejárt az átvételi időpont
     public List<Parcel> getReadyParcelsForShipping(Long senderParcelLockerId){
 
         ParcelLocker senderParcelLocker = parcelLockerService.findById(senderParcelLockerId);
@@ -823,9 +853,32 @@ public class ParcelServiceImpl implements ParcelService {
         List<Parcel> readyParcels = new ArrayList<>();
 
         for(Parcel parcel : parcels){
+
+            //Csomagok, amiket el kell szállítani majd az érkezési automatához
             if(parcel.isShipped() == false && parcel.isPlaced() == true && parcel.isPickedUp() == false
             && parcel.getShippingTo().getId() != senderParcelLockerId){
                 readyParcels.add(parcel);
+            }
+
+            //Csomag ami már ide lett szállítva, de lejárt az átvételi dátum
+            LocalDate currentDate = LocalDate.now();
+            LocalTime currentTime = LocalTime.now();
+            LocalDate expirationDate = parcel.getPickingUpExpirationDate();
+            LocalTime expirationTime = parcel.getPickingUpExpirationTime();
+
+            //Ha a csomag már le van szállítva
+            if(parcel.isShipped() && parcel.getPickingUpExpirationDate() != null && parcel.getPickingUpExpirationTime() != null){
+                //Ha a jelenlegi dátum és a lejárati dátum megegyezik, akkor az időpontokat kell megvizsgálni
+                if(currentDate.isEqual(expirationDate) && currentTime.isAfter(expirationTime)){
+                    readyParcels.add(parcel);
+                    parcel.setPickingUpExpired(true);
+                }
+                //Ha a jelenlegi dátum nagyobb, mint a lejárati dátum
+                if(currentDate.isAfter(expirationDate)){
+                    readyParcels.add(parcel);
+                    parcel.setPickingUpExpired(true);
+                }
+
             }
         }
         return readyParcels;

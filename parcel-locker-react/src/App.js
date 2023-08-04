@@ -15,6 +15,7 @@ import EventBus from './Service/EventBus';
 import SendParcelComponent from './Components/SendParcelComponent';
 import FollowParcelComponent from './Components/FollowParcelComponent';
 import ParcelLockersComponent from './Components/ParcelLockersComponent';
+import MyParcelsComponent from './Components/MyParcelsComponent';
 
 
 const App = () => {
@@ -74,6 +75,7 @@ const App = () => {
             <Route path='/parcelsending' element={<SendParcelComponent />} />
             <Route path='/followparcel' element={<FollowParcelComponent />} />
             <Route path='/parcellockers' element={<ParcelLockersComponent />} />
+            <Route path='/myparcels' element={<MyParcelsComponent />} />
 
           </Routes>
         </div>
