@@ -884,7 +884,7 @@ public class ParcelServiceImpl implements ParcelService {
         return readyParcels;
     }
 
-    //Csomag átvétele utáni adatbázis frissítése
+    //Csomag átvétele utáni adatbázis frissítés
     public void updateDbAfterPickUpParcel(String pickingUpCode, Long senderParcelLockerId){
 
         Parcel parcel = findByPickingUpCode(pickingUpCode);

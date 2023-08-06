@@ -2,10 +2,13 @@ package com.example.parcel_locker_android;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.parcel_locker_android.activity.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         loginActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("valami", "valamiszöveg");
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
             }
         });
         //Regisztrációs oldal

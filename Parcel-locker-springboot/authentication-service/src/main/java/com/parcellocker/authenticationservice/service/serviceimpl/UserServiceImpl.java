@@ -68,7 +68,10 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setEnable(false);
         user.setEmailAddress(signUpRequest.getEmailAddress());
-        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        //user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        String sha256Password = sha256Encode(signUpRequest.getPassword());
+        user.setPassword(sha256Password);
+
 
         //Regisztrációhoz szükséges kód generálása
         user.setActivationCode(generateRandomStringForActivationCode());
@@ -138,7 +141,15 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(response);
         }
 
+        String sha256Password = sha256Encode(logInRequest.getPassword());
+
+        /*
         if(!passwordEncoder.matches(logInRequest.getPassword(), user.getPassword())){
+            response.setMessage("passwordError");
+            return ResponseEntity.ok(response);
+        }*/
+
+        if(!user.getPassword().equals(sha256Password)){
             response.setMessage("passwordError");
             return ResponseEntity.ok(response);
         }
@@ -198,7 +209,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.existsByEmailAddressAndPassword(emailAddress, password);
     }
 
-    //Futár bejelentkezés
+    //Futár bejelentkezés rfid kártyával az automatánál
     //Csak jelszó érkezik a kérésbe
     //Futár keresése jelszó szerint
     //Sikeres bejelentkezés esetén visszatérés egy loginResponse objektummal
