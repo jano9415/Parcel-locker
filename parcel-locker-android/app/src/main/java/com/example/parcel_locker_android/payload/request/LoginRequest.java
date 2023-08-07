@@ -1,10 +1,9 @@
 package com.example.parcel_locker_android.payload.request;
 
 
-import lombok.Data;
-import lombok.Setter;
 
-@Data
+
+
 public class LoginRequest {
 
     private String emailAddress;

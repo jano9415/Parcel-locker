@@ -13,7 +13,6 @@ import com.parcellocker.parcelhandlerservice.payload.response.*;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +40,9 @@ public class ParcelServiceImpl implements ParcelService {
 
     @Autowired
     private UserServiceImpl userService;
+
+    @Autowired
+    private StoreServiceImpl storeService;
 
 
     @Override
@@ -809,6 +811,69 @@ public class ParcelServiceImpl implements ParcelService {
     @Override
     public Parcel findByUniqueParcelId(String uniqueParcelId) {
         return parcelRepository.findByUniqueParcelId(uniqueParcelId);
+    }
+
+    //Futár lead egy csomagot a központi raktárban
+    //Jwt token szükséges
+    @Override
+    public ResponseEntity<StringResponse> handParcelToStore(String uniqueCourierId, String uniqueParcelId) {
+
+        Courier courier = courierService.findByUniqueCourierId(uniqueCourierId);
+        Parcel parcel = findByUniqueParcelId(uniqueParcelId);
+        Store store = courier.getArea();
+
+        StringResponse response = new StringResponse();
+
+        //Csomag nem található
+        if(parcel == null){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
+        }
+
+        //Csomag leadása
+        //Csomag és futár összerendelés megszüntetése. Kapcsolótábla frissítése
+        parcel.setCourier(null);
+        //Csomag és raktár összerendelése. Kapcsolótábla frissítése
+        parcel.setStore(store);
+        store.getParcels().add(parcel);
+        save(parcel);
+        storeService.save(store);
+
+        response.setMessage("successHand");
+
+        return ResponseEntity.ok(response);
+    }
+
+    //Futár felvesz egy csomagot a központi raktárból
+    //Jwt token szükséges
+    @Override
+    public ResponseEntity<StringResponse> pickUpParcelFromStore(String uniqueCourierId, String uniqueParcelId) {
+
+        Courier courier = courierService.findByUniqueCourierId(uniqueCourierId);
+        Parcel parcel = findByUniqueParcelId(uniqueParcelId);
+        Store store = courier.getArea();
+
+        StringResponse response = new StringResponse();
+
+        //Csomag nem található
+        if(parcel == null){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
+        }
+
+        //Csomag felvétele
+        //Futár és csomag összerendelése. Kapcsolótábla frissítése
+        parcel.setCourier(courier);
+        courier.getParcels().add(parcel);
+        //Raktár és csomag összerendelés megszüntetése. Kapcsolótábla frissítése
+        parcel.setStore(null);
+        save(parcel);
+        courierService.save(courier);
+
+
+        response.setMessage("successPickUp");
+
+        return ResponseEntity.ok(response);
     }
 
     //Random string generálása

@@ -139,8 +139,6 @@ public class LoginActivity extends AppCompatActivity {
             jsonObject.put("tokenType", loginResponse.getTokenType());
             jsonObject.put("userId", loginResponse.getUserId());
             jsonObject.put("emailAddress", loginResponse.getEmailAddress());
-            jsonObject.put("firstName", loginResponse.getFirstName());
-            jsonObject.put("lastName", loginResponse.getLastName());
             jsonObject.put("roles", loginResponse.getRoles());
             return jsonObject.toString();
         } catch (JSONException e) {

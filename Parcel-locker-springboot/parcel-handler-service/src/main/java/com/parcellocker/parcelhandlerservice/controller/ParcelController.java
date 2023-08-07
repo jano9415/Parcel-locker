@@ -116,4 +116,20 @@ public class ParcelController {
     public ResponseEntity<FollowParcelResponse> followParcel(@PathVariable String uniqueParcelId){
         return parcelService.followParcel(uniqueParcelId);
     }
+
+    //Futár lead egy csomagot a központi raktárban
+    //Jwt token szükséges
+    @GetMapping("/handparceltostore/{uniqueCourierId}/{uniqueParcelId}")
+    public ResponseEntity<StringResponse> handParcelToStore(@PathVariable String uniqueCourierId,
+                                                            @PathVariable String uniqueParcelId){
+        return parcelService.handParcelToStore(uniqueCourierId, uniqueParcelId);
+    }
+
+    //Futár felvesz egy csomagot a központi raktárból
+    //Jwt token szükséges
+    @GetMapping("/pickupparcelfromstore/{uniqueCourierId}/{uniqueParcelId}")
+    public ResponseEntity<StringResponse> pickUpParcelFromStore(@PathVariable String uniqueCourierId,
+                                                            @PathVariable String uniqueParcelId){
+        return parcelService.pickUpParcelFromStore(uniqueCourierId, uniqueParcelId);
+    }
 }

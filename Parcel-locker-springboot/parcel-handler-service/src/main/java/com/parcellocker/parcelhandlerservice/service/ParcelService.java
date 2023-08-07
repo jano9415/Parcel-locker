@@ -76,4 +76,12 @@ public interface ParcelService {
 
     //Keresés egyedi csomagazonosító szerint
     Parcel findByUniqueParcelId(String uniqueParcelId);
+
+    //Futár lead egy csomagot a központi raktárban
+    //Jwt token szükséges
+    ResponseEntity<StringResponse> handParcelToStore(String uniqueCourierId, String uniqueParcelId);
+
+    //Futár felvesz egy csomagot a központi raktárból
+    //Jwt token szükséges
+    ResponseEntity<StringResponse> pickUpParcelFromStore(String uniqueCourierId, String uniqueParcelId);
 }

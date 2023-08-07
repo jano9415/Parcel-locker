@@ -3,6 +3,7 @@ package com.example.parcel_locker_android.payload;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.example.parcel_locker_android.payload.response.LoginResponse;
 
@@ -25,17 +26,15 @@ public class CurrentUser {
                 String tokenType = jsonToObject.getString("tokenType");
                 String userId = jsonToObject.getString("userId");
                 String emailAddress = jsonToObject.getString("emailAddress");
-                String firstName = jsonToObject.getString("emailAddress");
-                String lastName = jsonToObject.getString("lastName");
 
-                JSONArray jsonArray = jsonToObject.getJSONArray("roles");
+                //JSONArray jsonArray = jsonToObject.getJSONArray("roles");
                 List<String> roles = new ArrayList<>();
-                for(int i = 0; i < jsonArray.length(); i++){
+                /*for(int i = 0; i < jsonArray.length(); i++){
                     roles.add(jsonArray.getString(i));
-                }
-                return new LoginResponse("null", token, tokenType, userId, emailAddress, firstName, lastName, roles);
+                }*/
+                return new LoginResponse("null", token, tokenType, userId, emailAddress, roles);
             }catch(JSONException e) {
-
+                Log.d("hiba", e.toString());
             }
         }
         return null;
