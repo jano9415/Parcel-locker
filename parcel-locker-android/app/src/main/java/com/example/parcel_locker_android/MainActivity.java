@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.parcel_locker_android.activity.LoginActivity;
+import com.example.parcel_locker_android.activity.ParcelLockersActivity;
+import com.example.parcel_locker_android.activity.SignUpActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         signUpActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, SignUpActivity.class));
 
             }
         });
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         parcelLockersActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ParcelLockersActivity.class));
 
             }
         });

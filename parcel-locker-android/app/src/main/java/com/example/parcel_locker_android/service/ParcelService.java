@@ -13,8 +13,15 @@ public interface ParcelService {
 
     String API_URL = "parcelhandler/parcel/";
 
+    //Csomag leadása a központi raktárba
     @GET(API_URL + "handparceltostore/{uniqueCourierId}/{uniqueParcelId}")
     Call<StringResponse> handParcelToStore(@Path("uniqueCourierId") String uniqueCourierId,
+                                           @Path("uniqueParcelId") String uniqueParcelId,
+                                           @Header("Authorization") String jwtToken);
+
+    //Csomag felvétele a központi raktárból
+    @GET(API_URL + "pickupparcelfromstore/{uniqueCourierId}/{uniqueParcelId}")
+    Call<StringResponse> pickUpParcelFromStore(@Path("uniqueCourierId") String uniqueCourierId,
                                            @Path("uniqueParcelId") String uniqueParcelId,
                                            @Header("Authorization") String jwtToken);
 }

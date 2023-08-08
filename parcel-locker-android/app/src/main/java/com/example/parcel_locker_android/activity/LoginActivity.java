@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.parcel_locker_android.R;
 import com.example.parcel_locker_android.config.ApiConfig;
@@ -30,7 +31,6 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText loginEmailAddressEt, loginPasswordEt;
-    private TextView loginMessageTv;
     private Button loginButton;
 
     private Context context;
@@ -44,10 +44,9 @@ public class LoginActivity extends AppCompatActivity {
         loginEmailAddressEt = findViewById(R.id.loginEmailAddressEt);
         loginPasswordEt = findViewById(R.id.loginPasswordEt);
         loginButton = findViewById(R.id.loginButton);
-        loginMessageTv = findViewById(R.id.loginMessageTv);
 
         LoginRequest loginRequest = new LoginRequest();
-        loginMessageTv.setText("");
+
 
         //Bejelentkezés
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -69,15 +68,21 @@ public class LoginActivity extends AppCompatActivity {
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
 
                             if (response.body().getMessage() != null && response.body().getMessage().equals("emailError")) {
-                                loginMessageTv.setText("Hibás email cím");
+                                Toast.makeText(LoginActivity.this ,
+                                        "Hibás email cím",
+                                        Toast.LENGTH_LONG).show();
 
                             }
                             if (response.body().getMessage() != null && response.body().getMessage().equals("passwordError")) {
-                                loginMessageTv.setText("Hibás jelszó");
+                                Toast.makeText(LoginActivity.this ,
+                                        "Hibás jelszó",
+                                        Toast.LENGTH_LONG).show();
 
                             }
                             if (response.body().getMessage() != null && response.body().getMessage().equals("notActivated")) {
-                                loginMessageTv.setText("Még nem aktiváltad a felhasználói fiókodat");
+                                Toast.makeText(LoginActivity.this ,
+                                        "Még nem aktiváltad a felhasználói fiókodat",
+                                        Toast.LENGTH_LONG).show();
 
                             }
                             //Ha a válasz egy login response jwt tokennel
@@ -87,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                                 if(response.body().getRoles().contains("user")){
                                     saveObjectInSharedPreferences(response.body());
                                     startActivity(new Intent(LoginActivity.this, UserHomeActivity.class));
+
                                 }
                                 //Ha futár
                                 if(response.body().getRoles().contains("courier")){

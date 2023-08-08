@@ -56,8 +56,6 @@ public class HandParcelToStoreActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
 
-                            Log.d("valami", response.toString());
-                            /*
                             if(response.body().getMessage().equals("notFound")){
                                 Toast.makeText(HandParcelToStoreActivity.this ,
                                         "Csomag nem található",
@@ -67,9 +65,8 @@ public class HandParcelToStoreActivity extends AppCompatActivity {
                                 Toast.makeText(HandParcelToStoreActivity.this ,
                                         "Sikeresen leadtad a csomagot",
                                         Toast.LENGTH_LONG).show();
+                                handUniqueParcelIdEt.setText("");
                             }
-                            */
-
                         }
 
                         @Override

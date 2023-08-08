@@ -8,8 +8,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.parcel_locker_android.R;
+import com.example.parcel_locker_android.config.ApiConfig;
+import com.example.parcel_locker_android.payload.CurrentUser;
+import com.example.parcel_locker_android.payload.response.StringResponse;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PickUpParcelFromStoreActivity extends AppCompatActivity {
 
@@ -35,7 +43,35 @@ public class PickUpParcelFromStoreActivity extends AppCompatActivity {
                 String uniqueParcelId = pickUpUniqueParcelIdEt.getText().toString().trim();
 
                 if(validateData(uniqueParcelId)){
-                    Log.d("valami", uniqueParcelId);
+                    Call<StringResponse> call = ApiConfig.getInstance().parcelService()
+                            .pickUpParcelFromStore(
+                                    CurrentUser.getCurrentUser(context).getEmailAddress(),
+                                    uniqueParcelId,
+                                    CurrentUser.getCurrentUser(context).getToken()
+                            );
+
+                    call.enqueue(new Callback<StringResponse>() {
+                        @Override
+                        public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+
+                            if(response.body().getMessage().equals("notFound")){
+                                Toast.makeText(PickUpParcelFromStoreActivity.this ,
+                                        "Csomag nem található",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                            if(response.body().getMessage().equals("successPickUp")){
+                                Toast.makeText(PickUpParcelFromStoreActivity.this ,
+                                        "Sikeresen felvetted a csomagot",
+                                        Toast.LENGTH_LONG).show();
+                                pickUpUniqueParcelIdEt.setText("");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<StringResponse> call, Throwable t) {
+
+                        }
+                    });
 
                 }
 

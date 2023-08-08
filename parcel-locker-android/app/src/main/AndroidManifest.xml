@@ -19,6 +19,12 @@
         android:theme="@style/Theme.Parcellockerandroid"
         tools:targetApi="31">
         <activity
+            android:name=".activity.ParcelLockersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SignUpActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.PickUpParcelFromStoreActivity"
             android:exported="false" />
         <activity
