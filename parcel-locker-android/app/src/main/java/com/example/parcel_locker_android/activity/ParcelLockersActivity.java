@@ -1,18 +1,26 @@
 package com.example.parcel_locker_android.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.parcel_locker_android.R;
+import com.example.parcel_locker_android.config.ApiConfig;
 import com.example.parcel_locker_android.listadapter.ParcelLockersRvAdapter;
 import com.example.parcel_locker_android.payload.response.GetParcelLockersResponse;
+import com.example.parcel_locker_android.payload.response.GetSaturationDatasResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ParcelLockersActivity extends AppCompatActivity {
 
@@ -21,6 +29,8 @@ public class ParcelLockersActivity extends AppCompatActivity {
     private RecyclerView parcelLockersRv;
 
     private ParcelLockersRvAdapter adapter;
+
+    private List<GetParcelLockersResponse> parcelLockers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,25 +42,62 @@ public class ParcelLockersActivity extends AppCompatActivity {
 
         parcelLockersRv.setLayoutManager(new LinearLayoutManager(this));
 
-        GetParcelLockersResponse pelda1 = new GetParcelLockersResponse();
-        pelda1.setPostCode(8100);
-        pelda1.setCity("Várpalota");
-        pelda1.setStreet("Körmöcbánya utca 9");
+        //Csomag automaták lekérése
+        Call<List<GetParcelLockersResponse>> call = ApiConfig.getInstance().parcelLockerService()
+                .getParcelLockersForChoice();
 
-        List<GetParcelLockersResponse> parcelLockers = new ArrayList<>();
-        parcelLockers.add(pelda1);
-        parcelLockers.add(pelda1);
-        parcelLockers.add(pelda1);
-        parcelLockers.add(pelda1);
-        parcelLockers.add(pelda1);
-        parcelLockers.add(pelda1);
-        parcelLockers.add(pelda1);
-        parcelLockers.add(pelda1);
-        parcelLockers.add(pelda1);
-        parcelLockers.add(pelda1);
+        call.enqueue(new Callback<List<GetParcelLockersResponse>>() {
+            @Override
+            public void onResponse(Call<List<GetParcelLockersResponse>> call, Response<List<GetParcelLockersResponse>> response) {
+                parcelLockers = response.body();
+                adapter = new ParcelLockersRvAdapter(parcelLockers);
+                parcelLockersRv.setAdapter(adapter);
 
-        adapter = new ParcelLockersRvAdapter(parcelLockers);
-        parcelLockersRv.setAdapter(adapter);
+                //Kattintási esemény a lista egyik elemére
+                adapter.setOnItemClickListener(new ParcelLockersRvAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(GetParcelLockersResponse parcelLocker) {
+
+                        //Kiválasztott automata telítettségi adatok lekérdezése
+                        Call<GetSaturationDatasResponse> call2 = ApiConfig.getInstance().parcelLockerService()
+                                .getSaturationDatas(parcelLocker.getId());
+
+                        call2.enqueue(new Callback<GetSaturationDatasResponse>() {
+                            @Override
+                            public void onResponse(Call<GetSaturationDatasResponse> call, Response<GetSaturationDatasResponse> response) {
+
+                                //Telítettségi adatok modal
+                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                builder.setTitle("Telítettségi adatok")
+                                        .setMessage(
+                                                "Szabad kicsi rekeszek száma: " +
+                                                        (response.body().getAmountOfSmallBoxes() - response.body().getAmountOfFullSmallBoxes()) +
+                                                        "\n" + "Szabad közepes rekeszek száma: " +
+                                                        (response.body().getAmountOfMediumBoxes() - response.body().getAmountOfFullMediumBoxes()) +
+                                                        "\n" + "Szabad nagy rekeszek száma: " +
+                                                        (response.body().getAmountOfLargeBoxes() - response.body().getAmountOfFullLargeBoxes())
+                                        )
+                                        .show();
+                            }
+
+                            @Override
+                            public void onFailure(Call<GetSaturationDatasResponse> call, Throwable t) {
+
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Call<List<GetParcelLockersResponse>> call, Throwable t) {
+
+            }
+        });
+
+
+
+
 
     }
 }

@@ -28,20 +28,36 @@ public class ParcelLockersRvAdapter extends RecyclerView.Adapter<ParcelLockersRv
         public TextView streetTextView;
 
 
+
+        //Szövegmezők, amik a megjelenítőn vannak elhelyezve
         public ViewHolder(View view) {
             super(view);
-            postCodeTextView = view.findViewById(R.id.item_post_code);
-            cityTextView = view.findViewById(R.id.item_city);
-            streetTextView = view.findViewById(R.id.item_street);
+            postCodeTextView = view.findViewById(R.id.parcelLockerPostCodeTv);
+            cityTextView = view.findViewById(R.id.parcelLockerCityTv);
+            streetTextView = view.findViewById(R.id.parcelLockerStreetTv);
         }
     }
 
+    //Adapter és megjelenítő összekapcsolása
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.parcel_locker_rv_item, parent, false);
         return new ViewHolder(view);
     }
 
+    //Kattintási eseményhez változók
+    public interface OnItemClickListener {
+        void onItemClick(GetParcelLockersResponse parcelLocker);
+    }
+
+    private OnItemClickListener itemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.itemClickListener = listener;
+    }
+
+    //Megjelenítőn található szövegmezők feltöltése az objektum lista változóival
+    //Kattintási esemény az adott objektumra
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         GetParcelLockersResponse parcelLocker = parcelLockerList.get(position);
@@ -49,8 +65,20 @@ public class ParcelLockersRvAdapter extends RecyclerView.Adapter<ParcelLockersRv
         holder.postCodeTextView.setText(parcelLocker.getPostCode() + "");
         holder.cityTextView.setText(parcelLocker.getCity());
         holder.streetTextView.setText(parcelLocker.getStreet());
+
+        //Kattintási esemény
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(itemClickListener != null){
+                    itemClickListener.onItemClick(parcelLocker);
+                }
+
+            }
+        });
     }
 
+    //Elemek megszámlálása
     @Override
     public int getItemCount() {
         return parcelLockerList.size();
