@@ -1,0 +1,232 @@
+package com.example.parcel_locker_android.activity;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.example.parcel_locker_android.R;
+import com.example.parcel_locker_android.config.ApiConfig;
+import com.example.parcel_locker_android.payload.CurrentUser;
+import com.example.parcel_locker_android.payload.request.SendParcelWithCodeFromWebpageRequest;
+import com.example.parcel_locker_android.payload.response.GetParcelLockersResponse;
+import com.example.parcel_locker_android.payload.response.StringResponse;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class SendParcelActivity extends AppCompatActivity {
+
+    private Context context;
+
+    private Spinner parcelLockerFromSpinner, parcelLockerToSpinner;
+
+    private RadioGroup parcelSizeRg;
+
+    private EditText priceEt, receiverNameEt, receiverEmailAddressEt, receiverPhoneNumberEt;
+
+    private Button sendParcelBtn;
+
+    private List<GetParcelLockersResponse> parcelLockers;
+
+    private Long parcelLockerFromId, parcelLockerToId;
+
+    private String parcelSize = "";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_send_parcel);
+
+        context = this;
+
+        parcelLockerFromSpinner = findViewById(R.id.parcelLockerFromSpinner);
+        parcelLockerToSpinner = findViewById(R.id.parcelLockerToSpinner);
+        parcelSizeRg = findViewById(R.id.parcelSizeRg);
+        priceEt = findViewById(R.id.priceEt);
+        //Az ár alapértéke 0
+        priceEt.setText("0");
+        receiverNameEt = findViewById(R.id.receiverNameEt);
+        receiverEmailAddressEt = findViewById(R.id.receiverEmailAddressEt);
+        receiverPhoneNumberEt = findViewById(R.id.receiverPhoneNumberEt);
+        sendParcelBtn = findViewById(R.id.sendParcelBtn);
+
+        //Automaták lekérése a select tag számára
+        Call<List<GetParcelLockersResponse>> call = ApiConfig.getInstance().parcelLockerService()
+                .getParcelLockersForChoice();
+
+        call.enqueue(new Callback<List<GetParcelLockersResponse>>() {
+            @Override
+            public void onResponse(Call<List<GetParcelLockersResponse>> call, Response<List<GetParcelLockersResponse>> response) {
+
+                parcelLockers = response.body();
+
+                //Adapter létrehozása a kettő spinner-hez
+                ArrayAdapter<GetParcelLockersResponse> adapter = new ArrayAdapter<>(context,
+                        android.R.layout.simple_spinner_item,parcelLockers);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                parcelLockerFromSpinner.setAdapter(adapter);
+                parcelLockerToSpinner.setAdapter(adapter);
+
+                //Elem kiválasztása a parcelLockerFromSpinner-ből
+                parcelLockerFromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        GetParcelLockersResponse parcelLocker = (GetParcelLockersResponse) adapterView.getItemAtPosition(i);
+                        parcelLockerFromId = parcelLocker.getId();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+                //Elem kiválasztása a parcelLockerToSpinner-ből
+                parcelLockerToSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        GetParcelLockersResponse parcelLocker = (GetParcelLockersResponse) adapterView.getItemAtPosition(i);
+                        parcelLockerToId = parcelLocker.getId();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onFailure(Call<List<GetParcelLockersResponse>> call, Throwable t) {
+
+            }
+        });
+
+        //Radio gombok kezelése
+        //Méret kiválasztása
+        parcelSizeRg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton radioButton = findViewById(i);
+                if(radioButton != null){
+                    if(radioButton.getText().toString().equals("Kicsi")){
+                        parcelSize = "small";
+                    }
+                    if(radioButton.getText().toString().equals("Közepes")){
+                        parcelSize = "medium";
+                    }
+                    if(radioButton.getText().toString().equals("Nagy")){
+                        parcelSize = "large";
+                    }
+                }
+            }
+        });
+
+        //Csomag küldése
+        sendParcelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String price = priceEt.getText().toString().trim();
+                String receiverName = receiverNameEt.getText().toString().trim();
+                String receiverEmailAddress = receiverEmailAddressEt.getText().toString().trim();
+                String receiverPhoneNumber = receiverPhoneNumberEt.getText().toString().trim();
+
+                if(validateDatas(parcelLockerFromId, parcelLockerToId, parcelSize,
+                        price, receiverName, receiverEmailAddress, receiverPhoneNumber)){
+
+                    Toast.makeText(context, parcelLockerFromId + " " + parcelLockerToId, Toast.LENGTH_SHORT).show();
+                    //Kérés összeállítása
+                    SendParcelWithCodeFromWebpageRequest request = new SendParcelWithCodeFromWebpageRequest();
+                    request.setParcelLockerFromId(parcelLockerFromId);
+                    request.setParcelLockerToId(parcelLockerToId);
+                    request.setSize(parcelSize);
+                    request.setPrice(Integer.parseInt(price));
+                    request.setReceiverName(receiverName);
+                    request.setReceiverEmailAddress(receiverEmailAddress);
+                    request.setReceiverPhoneNumber(receiverPhoneNumber);
+                    request.setSenderEmailAddress(CurrentUser.getCurrentUser(context).getEmailAddress());
+
+                    //Kérés küldése
+                    Call<StringResponse> call1 = ApiConfig.getInstance().parcelService()
+                            .sendParcelWithCodeFromWebpage(request,CurrentUser.getCurrentUser(context).getToken());
+
+                    call1.enqueue(new Callback<StringResponse>() {
+                        @Override
+                        public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+                            Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onFailure(Call<StringResponse> call, Throwable t) {
+
+                        }
+                    });
+
+                }
+
+            }
+        });
+
+    }
+
+    //Adatok validációja
+    private boolean validateDatas(Long parcelLockerFromId, Long parcelLockerToId, String parcelSize,
+                                  String price, String receiverName, String receiverEmailAddress, String receiverPhoneNumber){
+
+        if(parcelLockerFromId == parcelLockerToId){
+            Toast.makeText(context, "A feladási és érkezési automata nem lehet azonos", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(parcelSize.isEmpty()){
+            Toast.makeText(context, "Válassz csomagméretet", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(receiverName.isEmpty()){
+            receiverNameEt.setError("Add meg az átvevő nevét");
+            receiverNameEt.requestFocus();
+            return false;
+        }
+        if(receiverEmailAddress.isEmpty()){
+            receiverEmailAddressEt.setError("Add meg az átvevő email címét");
+            receiverEmailAddressEt.requestFocus();
+            return false;
+        }
+
+        String emailPattern = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(emailPattern);
+        Matcher matcher = pattern.matcher(receiverEmailAddress);
+
+        if(!matcher.matches()){
+            receiverEmailAddressEt.setError("Helytelen email formátum");
+            receiverEmailAddressEt.requestFocus();
+            return false;
+        }
+
+        if(receiverPhoneNumber.isEmpty()){
+            receiverPhoneNumberEt.setError("Add meg az átvevő telefonszámát");
+            receiverPhoneNumberEt.requestFocus();
+            return false;
+        }
+        return true;
+
+    }
+}

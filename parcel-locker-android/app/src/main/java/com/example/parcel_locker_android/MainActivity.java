@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.parcel_locker_android.activity.FollowParcelActivity;
 import com.example.parcel_locker_android.activity.LoginActivity;
 import com.example.parcel_locker_android.activity.ParcelLockersActivity;
 import com.example.parcel_locker_android.activity.SignUpActivity;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         followParcelActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, FollowParcelActivity.class));
 
             }
         });

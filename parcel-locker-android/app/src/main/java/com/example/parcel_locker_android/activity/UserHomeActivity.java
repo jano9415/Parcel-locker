@@ -15,7 +15,7 @@ import com.example.parcel_locker_android.R;
 
 public class UserHomeActivity extends AppCompatActivity {
 
-    private Button userLogOutBtn;
+    private Button userLogOutBtn, sendParcelActivityBtn;
 
     private Context context;
 
@@ -26,6 +26,15 @@ public class UserHomeActivity extends AppCompatActivity {
 
         context = this;
         userLogOutBtn = findViewById(R.id.userLogOutBtn);
+        sendParcelActivityBtn = findViewById(R.id.sendParcelActivityBtn);
+
+        //Csomagfeladás
+        sendParcelActivityBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(UserHomeActivity.this, SendParcelActivity.class));
+            }
+        });
 
         //Kijelentkezés
         userLogOutBtn.setOnClickListener(new View.OnClickListener() {
@@ -42,5 +51,6 @@ public class UserHomeActivity extends AppCompatActivity {
                 startActivity(new Intent(UserHomeActivity.this, MainActivity.class));
             }
         });
+
     }
 }

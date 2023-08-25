@@ -73,4 +73,9 @@ public class GetParcelLockersResponse {
     public void setAmountOfBoxes(int amountOfBoxes) {
         this.amountOfBoxes = amountOfBoxes;
     }
+
+    @Override
+    public String toString() {
+        return postCode + " " + city + " " + street;
+    }
 }
