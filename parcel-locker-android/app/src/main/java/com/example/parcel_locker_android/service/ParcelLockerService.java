@@ -2,6 +2,7 @@ package com.example.parcel_locker_android.service;
 
 import com.example.parcel_locker_android.payload.response.GetParcelLockersResponse;
 import com.example.parcel_locker_android.payload.response.GetSaturationDatasResponse;
+import com.example.parcel_locker_android.payload.response.StringResponse;
 
 import java.util.List;
 
@@ -22,4 +23,17 @@ public interface ParcelLockerService {
     //Nem szükséges jwt token
     @GET(API_URL + "getsaturationdatas/{parcelLockerId}")
     Call<GetSaturationDatasResponse> getSaturationDatas(@Path("parcelLockerId") Long parcelLockerId);
+
+    //Automata tele van?
+    //Nem szükséges jwt token
+    @GET(API_URL + "isparcellockerfull/{senderParcelLockerId}")
+    Call<StringResponse> isParcelLockerFull(@Path("senderParcelLockerId") Long senderParcelLockerId);
+
+    //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
+    //Nem szükséges jwt token
+    @GET(API_URL + "areboxesfull/{senderParcelLockerId}")
+    Call<List<StringResponse>> areBoxesFull(@Path("senderParcelLockerId") Long senderParcelLockerId);
+
+
+
 }

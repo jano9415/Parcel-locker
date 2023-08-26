@@ -96,8 +96,13 @@
 
     <Button
         android:id="@+id/sendParcelBtn"
-        android:layout_width="match_parent"
+        android:layout_width="400px"
         android:layout_height="wrap_content"
-        android:text="Küldés" />
+        android:layout_gravity="center"
+        android:backgroundTint="#0996D6"
+        android:text="Küldés"
+        android:textSize="18dp"
+
+        android:textStyle="bold" />
 
 </LinearLayout>

@@ -3,6 +3,7 @@ package com.example.parcel_locker_android.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +40,8 @@ public class SendParcelActivity extends AppCompatActivity {
 
     private RadioGroup parcelSizeRg;
 
+    private RadioButton smallSizeRb, mediumSizeRb, largeSizeRb;
+
     private EditText priceEt, receiverNameEt, receiverEmailAddressEt, receiverPhoneNumberEt;
 
     private Button sendParcelBtn;
@@ -49,6 +52,8 @@ public class SendParcelActivity extends AppCompatActivity {
 
     private String parcelSize = "";
 
+    private boolean senderParcelLockerFull, smallBoxesFull, mediumBoxesFull, largeBoxesFull;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,14 +63,24 @@ public class SendParcelActivity extends AppCompatActivity {
 
         parcelLockerFromSpinner = findViewById(R.id.parcelLockerFromSpinner);
         parcelLockerToSpinner = findViewById(R.id.parcelLockerToSpinner);
+
         parcelSizeRg = findViewById(R.id.parcelSizeRg);
+        smallSizeRb = findViewById(R.id.smallSizeRb);
+        mediumSizeRb = findViewById(R.id.mediumSizeRb);
+        largeSizeRb = findViewById(R.id.largeSizeRb);
         priceEt = findViewById(R.id.priceEt);
+
         //Az ár alapértéke 0
         priceEt.setText("0");
         receiverNameEt = findViewById(R.id.receiverNameEt);
         receiverEmailAddressEt = findViewById(R.id.receiverEmailAddressEt);
         receiverPhoneNumberEt = findViewById(R.id.receiverPhoneNumberEt);
         sendParcelBtn = findViewById(R.id.sendParcelBtn);
+
+        senderParcelLockerFull = false;
+        smallBoxesFull = false;
+        mediumBoxesFull = false;
+        largeBoxesFull = false;
 
         //Automaták lekérése a select tag számára
         Call<List<GetParcelLockersResponse>> call = ApiConfig.getInstance().parcelLockerService()
@@ -90,6 +105,79 @@ public class SendParcelActivity extends AppCompatActivity {
                     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                         GetParcelLockersResponse parcelLocker = (GetParcelLockersResponse) adapterView.getItemAtPosition(i);
                         parcelLockerFromId = parcelLocker.getId();
+
+                        //Ellenőrzöm, hogy a feladási automata tele van-e
+                        Call<StringResponse> call1 = ApiConfig.getInstance().parcelLockerService()
+                                .isParcelLockerFull(parcelLockerFromId);
+
+                        call1.enqueue(new Callback<StringResponse>() {
+                            @Override
+                            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+                                //Ha tele van, nem látszik a küldés gomb
+                                if (response.body().getMessage().equals("full")) {
+                                    senderParcelLockerFull = true;
+                                    sendParcelBtn.setVisibility(View.INVISIBLE);
+                                    Toast.makeText(context, "Ez a feladási automata jelenleg tele van. Nem tudsz csomagot feladni",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                                if (response.body().getMessage().equals("notfull")) {
+                                    senderParcelLockerFull = false;
+                                    sendParcelBtn.setVisibility(View.VISIBLE);
+
+                                }
+
+                                //Ha az automata nincs tele, akkor ellenőrzöm a kis, közepes és nagy rekeszek telítettségét.
+                                if(senderParcelLockerFull == false){
+
+                                    Call<List<StringResponse>> call2 = ApiConfig.getInstance().parcelLockerService()
+                                            .areBoxesFull(parcelLockerFromId);
+
+                                    call2.enqueue(new Callback<List<StringResponse>>() {
+                                        @Override
+                                        public void onResponse(Call<List<StringResponse>> call, Response<List<StringResponse>> response) {
+                                            //Kicsi rekeszek
+                                            if (response.body().get(0).getMessage().equals("full")) {
+                                                smallBoxesFull = true;
+                                                smallSizeRb.setEnabled(false);
+                                            }
+                                            if (response.body().get(0).getMessage().equals("notfull"))  {
+                                                smallBoxesFull = false;
+                                                smallSizeRb.setEnabled(true);
+                                            }
+                                            //Közepes rekeszek
+                                            if (response.body().get(1).getMessage().equals("full")) {
+                                                mediumBoxesFull = true;
+                                                mediumSizeRb.setEnabled(false);
+                                            }
+                                            if (response.body().get(1).getMessage().equals("notfull"))  {
+                                                mediumBoxesFull = false;
+                                                mediumSizeRb.setEnabled(true);
+                                            }
+                                            //Nagy rekeszek
+                                            if (response.body().get(2).getMessage().equals("full")) {
+                                                largeBoxesFull = true;
+                                                largeSizeRb.setEnabled(false);
+                                            }
+                                            if (response.body().get(2).getMessage().equals("notfull"))  {
+                                                largeBoxesFull = false;
+                                                largeSizeRb.setEnabled(true);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<List<StringResponse>> call, Throwable t) {
+
+                                        }
+                                    });
+
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<StringResponse> call, Throwable t) {
+
+                            }
+                        });
                     }
 
                     @Override
@@ -172,7 +260,12 @@ public class SendParcelActivity extends AppCompatActivity {
                     call1.enqueue(new Callback<StringResponse>() {
                         @Override
                         public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
-                            Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            if(response.body().getMessage().equals("successSending")){
+                                startActivity(new Intent(SendParcelActivity.this, SendParcelActivity.class));
+                                Toast.makeText(context, "Sikeres előzetes csomagfeladás. A feladási kódodat megtalálod az email értesítőben" +
+                                        " és a csomagjaim meüpontban.", Toast.LENGTH_SHORT).show();
+                            }
+
                         }
 
                         @Override
