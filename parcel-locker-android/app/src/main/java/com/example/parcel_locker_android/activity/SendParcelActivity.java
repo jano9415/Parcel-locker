@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.parcel_locker_android.R;
@@ -44,6 +45,8 @@ public class SendParcelActivity extends AppCompatActivity {
 
     private EditText priceEt, receiverNameEt, receiverEmailAddressEt, receiverPhoneNumberEt;
 
+    private TextView backBtn5;
+
     private Button sendParcelBtn;
 
     private List<GetParcelLockersResponse> parcelLockers;
@@ -69,6 +72,7 @@ public class SendParcelActivity extends AppCompatActivity {
         mediumSizeRb = findViewById(R.id.mediumSizeRb);
         largeSizeRb = findViewById(R.id.largeSizeRb);
         priceEt = findViewById(R.id.priceEt);
+        backBtn5 = findViewById(R.id.backBtn5);
 
         //Az ár alapértéke 0
         priceEt.setText("0");
@@ -99,111 +103,111 @@ public class SendParcelActivity extends AppCompatActivity {
                 parcelLockerFromSpinner.setAdapter(adapter);
                 parcelLockerToSpinner.setAdapter(adapter);
 
-                //Elem kiválasztása a parcelLockerFromSpinner-ből
-                parcelLockerFromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        GetParcelLockersResponse parcelLocker = (GetParcelLockersResponse) adapterView.getItemAtPosition(i);
-                        parcelLockerFromId = parcelLocker.getId();
-
-                        //Ellenőrzöm, hogy a feladási automata tele van-e
-                        Call<StringResponse> call1 = ApiConfig.getInstance().parcelLockerService()
-                                .isParcelLockerFull(parcelLockerFromId);
-
-                        call1.enqueue(new Callback<StringResponse>() {
-                            @Override
-                            public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
-                                //Ha tele van, nem látszik a küldés gomb
-                                if (response.body().getMessage().equals("full")) {
-                                    senderParcelLockerFull = true;
-                                    sendParcelBtn.setVisibility(View.INVISIBLE);
-                                    Toast.makeText(context, "Ez a feladási automata jelenleg tele van. Nem tudsz csomagot feladni",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                                if (response.body().getMessage().equals("notfull")) {
-                                    senderParcelLockerFull = false;
-                                    sendParcelBtn.setVisibility(View.VISIBLE);
-
-                                }
-
-                                //Ha az automata nincs tele, akkor ellenőrzöm a kis, közepes és nagy rekeszek telítettségét.
-                                if(senderParcelLockerFull == false){
-
-                                    Call<List<StringResponse>> call2 = ApiConfig.getInstance().parcelLockerService()
-                                            .areBoxesFull(parcelLockerFromId);
-
-                                    call2.enqueue(new Callback<List<StringResponse>>() {
-                                        @Override
-                                        public void onResponse(Call<List<StringResponse>> call, Response<List<StringResponse>> response) {
-                                            //Kicsi rekeszek
-                                            if (response.body().get(0).getMessage().equals("full")) {
-                                                smallBoxesFull = true;
-                                                smallSizeRb.setEnabled(false);
-                                            }
-                                            if (response.body().get(0).getMessage().equals("notfull"))  {
-                                                smallBoxesFull = false;
-                                                smallSizeRb.setEnabled(true);
-                                            }
-                                            //Közepes rekeszek
-                                            if (response.body().get(1).getMessage().equals("full")) {
-                                                mediumBoxesFull = true;
-                                                mediumSizeRb.setEnabled(false);
-                                            }
-                                            if (response.body().get(1).getMessage().equals("notfull"))  {
-                                                mediumBoxesFull = false;
-                                                mediumSizeRb.setEnabled(true);
-                                            }
-                                            //Nagy rekeszek
-                                            if (response.body().get(2).getMessage().equals("full")) {
-                                                largeBoxesFull = true;
-                                                largeSizeRb.setEnabled(false);
-                                            }
-                                            if (response.body().get(2).getMessage().equals("notfull"))  {
-                                                largeBoxesFull = false;
-                                                largeSizeRb.setEnabled(true);
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onFailure(Call<List<StringResponse>> call, Throwable t) {
-
-                                        }
-                                    });
-
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<StringResponse> call, Throwable t) {
-
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-
-                //Elem kiválasztása a parcelLockerToSpinner-ből
-                parcelLockerToSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        GetParcelLockersResponse parcelLocker = (GetParcelLockersResponse) adapterView.getItemAtPosition(i);
-                        parcelLockerToId = parcelLocker.getId();
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-
             }
 
             @Override
             public void onFailure(Call<List<GetParcelLockersResponse>> call, Throwable t) {
+
+            }
+        });
+
+        //Elem kiválasztása a parcelLockerFromSpinner-ből
+        parcelLockerFromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                GetParcelLockersResponse parcelLocker = (GetParcelLockersResponse) adapterView.getItemAtPosition(i);
+                parcelLockerFromId = parcelLocker.getId();
+
+                //Ellenőrzöm, hogy a feladási automata tele van-e
+                Call<StringResponse> call1 = ApiConfig.getInstance().parcelLockerService()
+                        .isParcelLockerFull(parcelLockerFromId);
+
+                call1.enqueue(new Callback<StringResponse>() {
+                    @Override
+                    public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+                        //Ha tele van, nem látszik a küldés gomb
+                        if (response.body().getMessage().equals("full")) {
+                            senderParcelLockerFull = true;
+                            sendParcelBtn.setVisibility(View.INVISIBLE);
+                            Toast.makeText(context, "Ez a feladási automata jelenleg tele van. Nem tudsz csomagot feladni",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        if (response.body().getMessage().equals("notfull")) {
+                            senderParcelLockerFull = false;
+                            sendParcelBtn.setVisibility(View.VISIBLE);
+
+                        }
+
+                        //Ha az automata nincs tele, akkor ellenőrzöm a kis, közepes és nagy rekeszek telítettségét.
+                        if(senderParcelLockerFull == false){
+
+                            Call<List<StringResponse>> call2 = ApiConfig.getInstance().parcelLockerService()
+                                    .areBoxesFull(parcelLockerFromId);
+
+                            call2.enqueue(new Callback<List<StringResponse>>() {
+                                @Override
+                                public void onResponse(Call<List<StringResponse>> call, Response<List<StringResponse>> response) {
+                                    //Kicsi rekeszek
+                                    if (response.body().get(0).getMessage().equals("full")) {
+                                        smallBoxesFull = true;
+                                        smallSizeRb.setEnabled(false);
+                                    }
+                                    if (response.body().get(0).getMessage().equals("notfull"))  {
+                                        smallBoxesFull = false;
+                                        smallSizeRb.setEnabled(true);
+                                    }
+                                    //Közepes rekeszek
+                                    if (response.body().get(1).getMessage().equals("full")) {
+                                        mediumBoxesFull = true;
+                                        mediumSizeRb.setEnabled(false);
+                                    }
+                                    if (response.body().get(1).getMessage().equals("notfull"))  {
+                                        mediumBoxesFull = false;
+                                        mediumSizeRb.setEnabled(true);
+                                    }
+                                    //Nagy rekeszek
+                                    if (response.body().get(2).getMessage().equals("full")) {
+                                        largeBoxesFull = true;
+                                        largeSizeRb.setEnabled(false);
+                                    }
+                                    if (response.body().get(2).getMessage().equals("notfull"))  {
+                                        largeBoxesFull = false;
+                                        largeSizeRb.setEnabled(true);
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<List<StringResponse>> call, Throwable t) {
+
+                                }
+                            });
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<StringResponse> call, Throwable t) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        //Elem kiválasztása a parcelLockerToSpinner-ből
+        parcelLockerToSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                GetParcelLockersResponse parcelLocker = (GetParcelLockersResponse) adapterView.getItemAtPosition(i);
+                parcelLockerToId = parcelLocker.getId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
@@ -241,7 +245,6 @@ public class SendParcelActivity extends AppCompatActivity {
                 if(validateDatas(parcelLockerFromId, parcelLockerToId, parcelSize,
                         price, receiverName, receiverEmailAddress, receiverPhoneNumber)){
 
-                    Toast.makeText(context, parcelLockerFromId + " " + parcelLockerToId, Toast.LENGTH_SHORT).show();
                     //Kérés összeállítása
                     SendParcelWithCodeFromWebpageRequest request = new SendParcelWithCodeFromWebpageRequest();
                     request.setParcelLockerFromId(parcelLockerFromId);
@@ -276,6 +279,14 @@ public class SendParcelActivity extends AppCompatActivity {
 
                 }
 
+            }
+        });
+
+        //Vissza
+        backBtn5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SendParcelActivity.this, UserHomeActivity.class));
             }
         });
 

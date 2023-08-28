@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.parcel_locker_android.MainActivity;
 import com.example.parcel_locker_android.R;
 import com.example.parcel_locker_android.config.ApiConfig;
 import com.example.parcel_locker_android.payload.response.FollowParcelResponse;
@@ -24,7 +26,7 @@ public class FollowParcelActivity extends AppCompatActivity {
 
     private EditText followUniqueParcelIdEt;
 
-    private TextView notFoundTv, isPlacedTv, isSentTv, isShippedTv, isPickedUpTv;
+    private TextView notFoundTv, isPlacedTv, isSentTv, isShippedTv, isPickedUpTv, backBtn3;
 
     private Button followUniqueParcelIdBtn;
 
@@ -38,6 +40,7 @@ public class FollowParcelActivity extends AppCompatActivity {
         context = this;
         followUniqueParcelIdEt = findViewById(R.id.followUniqueParcelIdEt);
         followUniqueParcelIdBtn = findViewById(R.id.followUniqueParcelIdBtn);
+        backBtn3 = findViewById(R.id.backBtn3);
         notFoundCv = findViewById(R.id.notFoundCv);
         isPlacedCv = findViewById(R.id.isPlacedCv);
         isSentCv = findViewById(R.id.isSentCv);
@@ -146,6 +149,14 @@ public class FollowParcelActivity extends AppCompatActivity {
                     });
                 }
 
+            }
+        });
+
+        //Vissza
+        backBtn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(FollowParcelActivity.this, MainActivity.class));
             }
         });
 

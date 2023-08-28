@@ -7,6 +7,14 @@
     android:orientation="vertical"
     tools:context=".activity.ParcelLockersActivity">
 
+    <TextView
+        android:id="@+id/backBtn4"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:textSize="20dp"
+        android:textColor="#0996D6"
+        android:text="Vissza" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/parcelLockersRv"
         android:layout_width="409dp"

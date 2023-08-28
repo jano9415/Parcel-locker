@@ -11,7 +11,8 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { Tab } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import postlogo from '../postlogo.png'
+import swifpostLogo from '../swifpostLogo.jpg'
+
 import AuthService from '../Service/AuthService';
 
 const ProfileMenuComponent = () => {
@@ -37,7 +38,7 @@ const ProfileMenuComponent = () => {
         <React.Fragment>
             <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', color: 'white', backgroundColor: 'blue' }}>
                 <Link to={"/"} className='nav-link'>
-                    <img src={postlogo} alt="Logo" height="40" />
+                    <img src={swifpostLogo} alt="Logo" height="70" width="90" />
                 </Link>
                 {
                     !AuthService.getCurrentUser() && (

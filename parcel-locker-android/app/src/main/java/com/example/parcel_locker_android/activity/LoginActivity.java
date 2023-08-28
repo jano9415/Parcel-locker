@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.parcel_locker_android.MainActivity;
 import com.example.parcel_locker_android.R;
 import com.example.parcel_locker_android.config.ApiConfig;
 import com.example.parcel_locker_android.payload.CurrentUser;
@@ -33,6 +34,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText loginEmailAddressEt, loginPasswordEt;
     private Button loginButton;
 
+    private TextView backButton1;
+
     private Context context;
 
     @Override
@@ -44,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         loginEmailAddressEt = findViewById(R.id.loginEmailAddressEt);
         loginPasswordEt = findViewById(R.id.loginPasswordEt);
         loginButton = findViewById(R.id.loginButton);
+        backButton1 = findViewById(R.id.backButton1);
 
         LoginRequest loginRequest = new LoginRequest();
 
@@ -112,6 +116,14 @@ public class LoginActivity extends AppCompatActivity {
 
                 }
 
+            }
+        });
+
+        //Vissza
+        backButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
             }
         });
 

@@ -6,37 +6,47 @@
     android:layout_height="match_parent"
     tools:context=".activity.SignUpActivity">
 
-    <EditText
-        android:id="@+id/signUpEmailAddressEt"
+    <TextView
+        android:id="@+id/backBtn2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="Email cím"
-        android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        android:text="Vissza"
+        android:textSize="20dp"
+        android:textColor="#0996D6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/signUpPasswordEt"
+    <Button
+        android:id="@+id/signUpBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:backgroundTint="#0996D6"
+        android:text="Regisztráció"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signUpPhoneNumberEt" />
+
+    <EditText
+        android:id="@+id/signUpPhoneNumberEt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
         android:ems="10"
-        android:hint="Jelszó"
-        android:inputType="textPassword"
+        android:hint="Telefonszám"
+        android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signUpEmailAddressEt" />
+        app:layout_constraintTop_toBottomOf="@+id/singUpFirstNameEt" />
 
     <EditText
         android:id="@+id/signUpPasswordAgainEt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="Jelszó újra"
         android:inputType="textPassword"
@@ -46,23 +56,10 @@
         app:layout_constraintTop_toBottomOf="@+id/signUpPasswordEt" />
 
     <EditText
-        android:id="@+id/signUpLastNameEt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:hint="Vezetéknév"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signUpPasswordAgainEt" />
-
-    <EditText
         android:id="@+id/singUpFirstNameEt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="Keresztnév"
         android:inputType="text"
@@ -72,25 +69,41 @@
         app:layout_constraintTop_toBottomOf="@+id/signUpLastNameEt" />
 
     <EditText
-        android:id="@+id/signUpPhoneNumberEt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:hint="Telefonszám"
-        android:inputType="phone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/singUpFirstNameEt" />
-
-    <Button
-        android:id="@+id/signUpBtn"
+        android:id="@+id/signUpPasswordEt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
-        android:text="Regisztráció"
+        android:ems="10"
+        android:hint="Jelszó"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signUpPhoneNumberEt" />
+        app:layout_constraintTop_toBottomOf="@+id/signUpEmailAddressEt" />
+
+    <EditText
+        android:id="@+id/signUpEmailAddressEt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:ems="10"
+        android:hint="Email cím"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/signUpLastNameEt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:hint="Vezetéknév"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signUpPasswordAgainEt" />
 </androidx.constraintlayout.widget.ConstraintLayout>

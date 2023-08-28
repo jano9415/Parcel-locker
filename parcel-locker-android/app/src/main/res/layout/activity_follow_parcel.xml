@@ -8,6 +8,14 @@
     tools:context=".activity.FollowParcelActivity">
 
     <TextView
+        android:id="@+id/backBtn3"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="Vissza"
+        android:textColor="#0996D6"
+        android:textSize="20dp" />
+
+    <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,24 +24,20 @@
 
     <EditText
         android:id="@+id/followUniqueParcelIdEt"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:ems="10"
-        android:gravity="center"
         android:hint="Csomagazonosító"
         android:inputType="text" />
 
     <Button
         android:id="@+id/followUniqueParcelIdBtn"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:backgroundTint="#0996D6"
         android:text="Küldés" />
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/notFoundCv"
@@ -55,12 +59,6 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <View
-        android:id="@+id/divider6"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
-
     <androidx.cardview.widget.CardView
         android:id="@+id/isPlacedCv"
         android:layout_width="300dp"
@@ -80,12 +78,6 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
-    <View
-        android:id="@+id/divider7"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/isSentCv"
@@ -107,12 +99,6 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <View
-        android:id="@+id/divider8"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
-
     <androidx.cardview.widget.CardView
         android:id="@+id/isShippedCv"
         android:layout_width="300dp"
@@ -132,12 +118,6 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
-    <View
-        android:id="@+id/divider9"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/isPickedUpCv"

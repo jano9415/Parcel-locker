@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:text="Csomagküldés"
+        android:backgroundTint="#0996D6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,7 +23,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:text="Kijelentkezés"
+        android:backgroundTint="#0996D6"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sendParcelActivityBtn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

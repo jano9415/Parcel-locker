@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.parcel_locker_android.MainActivity;
 import com.example.parcel_locker_android.R;
 import com.example.parcel_locker_android.config.ApiConfig;
 import com.example.parcel_locker_android.payload.request.SignUpRequest;
@@ -31,6 +33,8 @@ public class SignUpActivity extends AppCompatActivity {
 
     private Button signUpBtn;
 
+    private TextView backBtn2;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +49,7 @@ public class SignUpActivity extends AppCompatActivity {
         signUpPhoneNumberEt = findViewById(R.id.signUpPhoneNumberEt);
 
         signUpBtn = findViewById(R.id.signUpBtn);
+        backBtn2 = findViewById(R.id.backBtn2);
 
         //Regisztráció
         signUpBtn.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +94,14 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+
+        //Vissza
+        backBtn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SignUpActivity.this, MainActivity.class));
             }
         });
     }

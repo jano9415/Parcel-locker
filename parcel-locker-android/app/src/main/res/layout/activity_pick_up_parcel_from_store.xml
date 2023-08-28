@@ -6,16 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".activity.PickUpParcelFromStoreActivity">
 
-    <EditText
-        android:id="@+id/pickUpUniqueParcelIdEt"
+    <TextView
+        android:id="@+id/backBtn7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:ems="10"
-        android:hint="Csomagazonosító"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Vissza"
+        android:textSize="20dp"
+        android:textColor="#0996D6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,9 +22,24 @@
         android:id="@+id/pickUpParcelFromStoreBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="#0996D6"
         android:text="Felvétel"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pickUpUniqueParcelIdEt" />
+
+    <EditText
+        android:id="@+id/pickUpUniqueParcelIdEt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:ems="10"
+        android:hint="Csomagazonosító"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

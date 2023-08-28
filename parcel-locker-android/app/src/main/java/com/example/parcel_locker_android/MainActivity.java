@@ -1,21 +1,32 @@
 package com.example.parcel_locker_android;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.parcel_locker_android.activity.FollowParcelActivity;
 import com.example.parcel_locker_android.activity.LoginActivity;
 import com.example.parcel_locker_android.activity.ParcelLockersActivity;
 import com.example.parcel_locker_android.activity.SignUpActivity;
+import com.google.android.material.tabs.TabLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button loginActivity, signUpActivity, followParcelActivity, parcelLockersActivity;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         signUpActivity = findViewById(R.id.signUpActivity);
         followParcelActivity = findViewById(R.id.followParcelActivity);
         parcelLockersActivity = findViewById(R.id.parcelLockersActivity);
+
 
         //Bejelentkezési oldal
         loginActivity.setOnClickListener(new View.OnClickListener() {
@@ -58,5 +70,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
+
+
+
 }

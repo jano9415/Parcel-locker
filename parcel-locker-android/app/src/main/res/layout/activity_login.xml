@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".activity.LoginActivity">
 
+    <TextView
+        android:id="@+id/backButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Vissza"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.046"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="20dp"
+        android:textColor="#0996D6"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/loginEmailAddressEt"
         android:layout_width="wrap_content"
@@ -35,7 +48,8 @@
         android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#0996D6"
         android:text="Bejelentkezés"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

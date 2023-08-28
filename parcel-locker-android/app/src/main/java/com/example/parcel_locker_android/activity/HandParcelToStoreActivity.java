@@ -3,6 +3,7 @@ package com.example.parcel_locker_android.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.parcel_locker_android.R;
@@ -27,6 +29,8 @@ public class HandParcelToStoreActivity extends AppCompatActivity {
 
     private EditText handUniqueParcelIdEt;
 
+    private TextView backBtn6;
+
     private Button handParcelToStoreBtn;
 
     @Override
@@ -37,6 +41,7 @@ public class HandParcelToStoreActivity extends AppCompatActivity {
         context = this;
         handParcelToStoreBtn = findViewById(R.id.handParcelToStoreBtn);
         handUniqueParcelIdEt = findViewById(R.id.handUniqueParcelIdEt);
+        backBtn6 = findViewById(R.id.backBtn6);
 
         //Csomag leadása a raktárba
         handParcelToStoreBtn.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +81,14 @@ public class HandParcelToStoreActivity extends AppCompatActivity {
                     });
 
                 }
+            }
+        });
+
+        //Vissza
+        backBtn6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(HandParcelToStoreActivity.this, CourierHomeActivity.class));
             }
         });
     }

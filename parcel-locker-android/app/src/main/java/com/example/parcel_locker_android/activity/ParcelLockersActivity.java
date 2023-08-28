@@ -6,9 +6,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
+import com.example.parcel_locker_android.MainActivity;
 import com.example.parcel_locker_android.R;
 import com.example.parcel_locker_android.config.ApiConfig;
 import com.example.parcel_locker_android.listadapter.ParcelLockersRvAdapter;
@@ -30,6 +34,8 @@ public class ParcelLockersActivity extends AppCompatActivity {
 
     private ParcelLockersRvAdapter adapter;
 
+    private TextView backBtn4;
+
     private List<GetParcelLockersResponse> parcelLockers = new ArrayList<>();
 
     @Override
@@ -39,6 +45,7 @@ public class ParcelLockersActivity extends AppCompatActivity {
 
         context = this;
         parcelLockersRv = findViewById(R.id.parcelLockersRv);
+        backBtn4 = findViewById(R.id.backBtn4);
 
         parcelLockersRv.setLayoutManager(new LinearLayoutManager(this));
 
@@ -95,7 +102,13 @@ public class ParcelLockersActivity extends AppCompatActivity {
             }
         });
 
-
+        //Vissza
+        backBtn4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ParcelLockersActivity.this, MainActivity.class));
+            }
+        });
 
 
 

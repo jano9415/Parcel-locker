@@ -8,6 +8,14 @@
     tools:context=".activity.SendParcelActivity" >
 
     <TextView
+        android:id="@+id/backBtn5"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:textSize="20dp"
+        android:textColor="#0996D6"
+        android:text="Vissza" />
+
+    <TextView
         android:id="@+id/textView7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,8 +48,9 @@
 
     <RadioGroup
         android:id="@+id/parcelSizeRg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
 
         <RadioButton
             android:id="@+id/smallSizeRb"
@@ -64,32 +73,36 @@
 
     <EditText
         android:id="@+id/priceEt"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:ems="10"
         android:hint="Csomag ára"
         android:inputType="number" />
 
     <EditText
         android:id="@+id/receiverNameEt"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:ems="10"
         android:hint="Átvevő neve"
         android:inputType="text" />
 
     <EditText
         android:id="@+id/receiverEmailAddressEt"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:ems="10"
         android:hint="Átvevő email címe"
         android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/receiverPhoneNumberEt"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:ems="10"
         android:hint="Átvevő telefonszáma"
         android:inputType="phone" />
