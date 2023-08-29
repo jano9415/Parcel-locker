@@ -24,6 +24,8 @@ const UserMenuComponent = () => {
                 }
                 <Tab label={<Link to={"/followparcel"} className='nav-link'>Csomagkövetés</Link>} />
                 <Tab label={<Link to={"/parcellockers"} className='nav-link'>Csomagautomaták</Link>} />
+                <Tab label={<Link to={"/"} className='nav-link'>Áraink</Link>} />
+                <Tab label={<Link to={"/"} className='nav-link'>Ügyfélszolgálat</Link>} />
 
             </Tabs>
         </Box>

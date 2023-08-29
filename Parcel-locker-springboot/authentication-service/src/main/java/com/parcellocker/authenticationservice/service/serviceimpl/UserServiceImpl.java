@@ -10,6 +10,7 @@ import com.parcellocker.authenticationservice.payload.response.StringResponse;
 import com.parcellocker.authenticationservice.repository.UserRepository;
 import com.parcellocker.authenticationservice.service.UserService;
 import com.parcellocker.authenticationservice.util.JwtUtil;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,14 +62,12 @@ public class UserServiceImpl implements UserService {
         if(existsByEmailAddress(signUpRequest.getEmailAddress())){
             response.setMessage("emailExists");
             return ResponseEntity.ok(response);
-            //return ResponseEntity.badRequest().body("Ez az email cím már regisztrálva van!");
         }
 
         //Új felhasználó létrehozása
         User user = new User();
         user.setEnable(false);
         user.setEmailAddress(signUpRequest.getEmailAddress());
-        //user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         String sha256Password = sha256Encode(signUpRequest.getPassword());
         user.setPassword(sha256Password);
 
@@ -142,12 +141,6 @@ public class UserServiceImpl implements UserService {
         }
 
         String sha256Password = sha256Encode(logInRequest.getPassword());
-
-        /*
-        if(!passwordEncoder.matches(logInRequest.getPassword(), user.getPassword())){
-            response.setMessage("passwordError");
-            return ResponseEntity.ok(response);
-        }*/
 
         if(!user.getPassword().equals(sha256Password)){
             response.setMessage("passwordError");
@@ -316,7 +309,7 @@ public class UserServiceImpl implements UserService {
         user.setEmailAddress(courierDTO.getUniqueCourierId());
         user.setPassword(sha256Password);
 
-        //CourierDTO objektum létrehozása. Ezt az objektumot külöm a parcel-handler service-nek.
+        //CourierDTO objektum létrehozása. Ezt az objektumot küldöm a parcel-handler service-nek.
         //Ez az objektum már nem tartalmaz jelszót, viszont tartalmaz vezeték és kereszt nevet és store id-t
         CourierDTO courierToParcelHandlerService = new CourierDTO();
         courierToParcelHandlerService.setUniqueCourierId(courierDTO.getUniqueCourierId());
@@ -356,14 +349,15 @@ public class UserServiceImpl implements UserService {
         if(existsByEmailAddress(adminDTO.getEmailAddress())){
             response.setMessage("emailExists");
             return ResponseEntity.ok(response);
-            //return ResponseEntity.badRequest().body("Ez az email cím már regisztrálva van!");
         }
+
+        String sha256Password = sha256Encode(adminDTO.getPassword());
 
         //Új admin létrehozása
         User user = new User();
         user.setEnable(true);
         user.setEmailAddress(adminDTO.getEmailAddress());
-        user.setPassword(passwordEncoder.encode(adminDTO.getPassword()));
+        user.setPassword(sha256Password);
 
         //Admin szerepköreinek beállítása
         Set<Role> roles = new HashSet<>();
@@ -377,7 +371,6 @@ public class UserServiceImpl implements UserService {
 
         response.setMessage("successAdminCreation");
         return ResponseEntity.ok(response);
-        //return ResponseEntity.ok("Új admin sikeresen hozzáadva");
     }
 
     //Random string generálása a regisztrációhoz szükséges aktivációs kód számára
@@ -432,3 +425,4 @@ public class UserServiceImpl implements UserService {
     }
 
 }
+

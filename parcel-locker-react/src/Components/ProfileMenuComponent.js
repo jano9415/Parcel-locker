@@ -34,9 +34,16 @@ const ProfileMenuComponent = () => {
         navigate('/myparcels');
     }
 
+    //Kijelentkezés
+    const logOut = () => {
+        navigate("/login");
+        AuthService.logOut();
+        window.location.reload();
+    }
+
     return (
         <React.Fragment>
-            <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', color: 'white', backgroundColor: 'blue' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', color: 'white', backgroundColor: 'blue'  }}>
                 <Link to={"/"} className='nav-link'>
                     <img src={swifpostLogo} alt="Logo" height="70" width="90" />
                 </Link>
@@ -118,7 +125,7 @@ const ProfileMenuComponent = () => {
                             <ListItemIcon>
                                 <Logout fontSize="small" />
                             </ListItemIcon>
-                            <Link to={"/login"} onClick={AuthService.logOut} className='nav-link'>Kijelentkezés</Link>
+                            <Link onClick={logOut} className='nav-link'>Kijelentkezés</Link>
                         </MenuItem>
                     </Menu>
 

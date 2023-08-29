@@ -5,8 +5,8 @@ import * as Yup from 'yup';
 import ParcelLockerService from '../Service/ParcelLockerService';
 import AuthService from '../Service/AuthService';
 import ParcelService from '../Service/ParcelService';
-import image7 from '../image7.png';
-import image8 from '../image8.png';
+import image11 from '../image11.png';
+import image12 from '../image12.png';
 
 
 
@@ -321,13 +321,13 @@ const SendParcelComponent = () => {
 
             <Box className="d-flex justify-content-center">
                 <Box>
-                    <img src={image7} alt="Logo" height="470" />
+                    <img src={image11} alt="Logo" height="470" />
                 </Box>
             </Box>
 
             <Box className="d-flex justify-content-center">
                 <Box>
-                    <img src={image8} alt="Logo" height="470" />
+                    <img src={image12} alt="Logo" height="470" />
                 </Box>
             </Box>
 

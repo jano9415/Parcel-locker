@@ -10,10 +10,12 @@ import appstore from '../appstore.png';
 import googleplay from '../googleplay.png';
 import image1 from '../image1.png';
 import image2 from '../image2.png';
-import image7 from '../image7.png';
-import image8 from '../image8.png';
-import image9 from '../image9.png';
-import image10 from '../image10.png';
+import image11 from '../image11.png';
+import image12 from '../image12.png';
+import image13 from '../image13.png';
+import image14 from '../image14.png';
+import image15 from '../image15.png';
+import image16 from '../image16.png';
 
 
 
@@ -102,13 +104,13 @@ const HomeComponent = () => {
 
       <Box className="d-flex justify-content-center">
         <Box>
-          <img src={image7} alt="Logo" height="470" />
+          <img src={image11} alt="Logo" height="470" />
         </Box>
       </Box>
 
       <Box className="d-flex justify-content-center">
         <Box>
-          <img src={image8} alt="Logo" height="470" />
+          <img src={image12} alt="Logo" height="470" />
         </Box>
       </Box>
 
@@ -121,13 +123,32 @@ const HomeComponent = () => {
 
       <Box className="d-flex justify-content-center">
         <Box>
-          <img src={image9} alt="Logo" height="470" />
+          <img src={image13} alt="Logo" height="470" />
         </Box>
       </Box>
 
       <Box className="d-flex justify-content-center">
         <Box>
-          <img src={image10} alt="Logo" height="470" />
+          <img src={image14} alt="Logo" height="470" />
+        </Box>
+      </Box>
+
+      <Box className="d-flex justify-content-center">
+        <Box>
+          <Typography sx={{ fontSize: 40 }}>Csomagátvétel</Typography>
+        </Box>
+      </Box>
+
+
+      <Box className="d-flex justify-content-center">
+        <Box>
+          <img src={image15} alt="Logo" height="470" />
+        </Box>
+      </Box>
+
+      <Box className="d-flex justify-content-center">
+        <Box>
+          <img src={image16} alt="Logo" height="470" />
         </Box>
       </Box>
 

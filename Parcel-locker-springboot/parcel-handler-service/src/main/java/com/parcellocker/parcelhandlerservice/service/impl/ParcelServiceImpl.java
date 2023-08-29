@@ -8,6 +8,7 @@ import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelPickingUpNotifi
 import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelSendingFromWebPageNotification;
 import com.parcellocker.parcelhandlerservice.payload.kafka.ParcelShippingNotification;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
+import com.parcellocker.parcelhandlerservice.payload.request.ParcelToStaticticsServiceRequest;
 import com.parcellocker.parcelhandlerservice.payload.request.SendParcelWithCodeFromWebpageRequest;
 import com.parcellocker.parcelhandlerservice.payload.response.*;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
@@ -15,6 +16,8 @@ import com.parcellocker.parcelhandlerservice.service.ParcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -43,6 +46,9 @@ public class ParcelServiceImpl implements ParcelService {
 
     @Autowired
     private StoreServiceImpl storeService;
+
+    @Autowired
+    private WebClient.Builder webClientBuilder;
 
 
     @Override
@@ -496,6 +502,18 @@ public class ParcelServiceImpl implements ParcelService {
 
         updateDbAfterPickUpParcel(pickingUpCode,senderParcelLockerId);
 
+        //Csomag objektum küldése a statictics service-nek
+        //Ezt az objektumot elmenti az adatbázisba
+        ParcelToStaticticsServiceRequest request = new ParcelToStaticticsServiceRequest();
+        StringResponse responseFromStatisticsService;
+
+        responseFromStatisticsService = webClientBuilder.build().post()
+                .uri("http://statistics-service/statistics/parcel/addparceltodb")
+                .body(Mono.just(request), ParcelToStaticticsServiceRequest.class)
+                .retrieve()
+                .bodyToMono(StringResponse.class)
+                .block();
+
         StringResponse response = new StringResponse();
         response.setMessage("pickedUp");
         return ResponseEntity.ok(response);
@@ -636,7 +654,7 @@ public class ParcelServiceImpl implements ParcelService {
 
         //Itt még meg lehetne vizsgálni, hogy az emptyBoxes lista nem üres-e.
         //De ha frontendről ideáig eljut a kérés, akkor biztos hogy van szabad rekesz
-        //Mert ha nincs, akkor neme is jelenik meg frontend oldalon
+        //Mert ha nincs, akkor nem is jelenik meg frontend oldalon
 
         //Csomaghoz rekesz hozzárendelése
         parcel.setBox(emptyBoxes.get(0));

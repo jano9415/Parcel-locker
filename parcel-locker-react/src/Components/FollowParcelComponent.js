@@ -3,6 +3,8 @@ import { Form, useFormik } from 'formik';
 import { Box, Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from '@mui/material';
 import * as Yup from 'yup';
 import ParcelService from '../Service/ParcelService';
+import image15 from '../image15.png';
+import image16 from '../image16.png';
 
 
 
@@ -121,6 +123,29 @@ const FollowParcelComponent = () => {
         </Box>
 
       </form>
+
+      <Box sx={{height: '100px'}}>
+
+      </Box>
+
+      <Box className="d-flex justify-content-center">
+        <Box>
+          <Typography sx={{ fontSize: 40 }}>Csomagátvétel</Typography>
+        </Box>
+      </Box>
+
+
+      <Box className="d-flex justify-content-center">
+        <Box>
+          <img src={image15} alt="Logo" height="470" />
+        </Box>
+      </Box>
+
+      <Box className="d-flex justify-content-center">
+        <Box>
+          <img src={image16} alt="Logo" height="470" />
+        </Box>
+      </Box>
 
 
 

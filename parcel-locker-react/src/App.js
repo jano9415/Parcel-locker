@@ -16,6 +16,7 @@ import SendParcelComponent from './Components/SendParcelComponent';
 import FollowParcelComponent from './Components/FollowParcelComponent';
 import ParcelLockersComponent from './Components/ParcelLockersComponent';
 import MyParcelsComponent from './Components/MyParcelsComponent';
+import FooterMenuComponent from './Components/FooterMenuComponent';
 
 
 const App = () => {
@@ -81,11 +82,7 @@ const App = () => {
         </div>
 
         <footer>
-          <div className="d-flex justify-content-center">
-            <div>
-              Tájékoztató footer szöveg
-            </div>
-          </div>
+          <FooterMenuComponent />
         </footer>
 
       </Router>
