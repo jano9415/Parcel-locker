@@ -13,4 +13,7 @@ public interface ParcelService {
     //Csomag hozzáadása az adatbázishoz
     //A kérés a parcel-handler-service-ből érkezik
     ResponseEntity<StringResponse> addParcelToDb(ParcelToStaticticsServiceRequest request);
+
+    //Csomag mentése
+    void save(Parcel parcel);
 }

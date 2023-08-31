@@ -22,8 +22,6 @@ public class Parcel {
 
     private String uniqueParcelId;
 
-    private User user;
-
     private ParcelLocker shippingFrom;
 
     private ParcelLocker shippingTo;

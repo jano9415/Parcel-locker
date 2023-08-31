@@ -13,6 +13,7 @@ import com.parcellocker.parcelhandlerservice.payload.request.SendParcelWithCodeF
 import com.parcellocker.parcelhandlerservice.payload.response.*;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -486,6 +487,8 @@ public class ParcelServiceImpl implements ParcelService {
 
             //Adatbázis frissítése és értesítési email küldése
             updateDbAfterPickUpParcel(pickingUpCode,senderParcelLockerId);
+            //Csomag objektum küldése a statictics service-nek
+            sendParcelToStatisticsService(parcel);
 
             return ResponseEntity.ok(response);
         }
@@ -500,19 +503,14 @@ public class ParcelServiceImpl implements ParcelService {
     @Override
     public ResponseEntity<StringResponse> pickUpParcelAfterPayment(String pickingUpCode, Long senderParcelLockerId) {
 
+        Parcel parcel = findByPickingUpCode(pickingUpCode);
+
+
+        //Csomagadatok frissítése az adatbázisban
         updateDbAfterPickUpParcel(pickingUpCode,senderParcelLockerId);
 
         //Csomag objektum küldése a statictics service-nek
-        //Ezt az objektumot elmenti az adatbázisba
-        ParcelToStaticticsServiceRequest request = new ParcelToStaticticsServiceRequest();
-        StringResponse responseFromStatisticsService;
-
-        responseFromStatisticsService = webClientBuilder.build().post()
-                .uri("http://statistics-service/statistics/parcel/addparceltodb")
-                .body(Mono.just(request), ParcelToStaticticsServiceRequest.class)
-                .retrieve()
-                .bodyToMono(StringResponse.class)
-                .block();
+        sendParcelToStatisticsService(parcel);
 
         StringResponse response = new StringResponse();
         response.setMessage("pickedUp");
@@ -1011,4 +1009,71 @@ public class ParcelServiceImpl implements ParcelService {
 
         save(parcel);
     }
+
+    //Csomag objektum küldése a statistics service-nek
+    //Ezt az objektumot elmenti az adatbázisba
+    public void sendParcelToStatisticsService(Parcel parcel){
+
+        //Kérés objektum
+        ParcelToStaticticsServiceRequest request = new ParcelToStaticticsServiceRequest();
+        request.setUniqueParcelId(parcel.getUniqueParcelId());
+        //Ha a csomagnak van user objektuma
+        if(parcel.getUser() != null){
+            request.setSenderEmailAddress(parcel.getUser().getEmailAddress());
+            request.setSenderName(parcel.getUser().getLastName() + " " +  parcel.getUser().getFirstName());
+        }
+        else{
+            request.setSenderName(parcel.getSenderName());
+            request.setSenderEmailAddress(parcel.getSenderEmailAddress());
+
+        }
+        //Feladási automata
+        request.setSenderParcelLockerPostCode(parcel.getShippingFrom().getLocation().getPostCode());
+        request.setSenderParcelLockerCounty(parcel.getShippingFrom().getLocation().getCounty());
+        request.setSenderParcelLockerCity(parcel.getShippingFrom().getLocation().getCity());
+        request.setSenderParcelLockerStreet(parcel.getShippingFrom().getLocation().getStreet());
+        //Érkezési automata
+        request.setReceiverParcelLockerPostCode(parcel.getShippingTo().getLocation().getPostCode());
+        request.setReceiverParcelLockerCounty(parcel.getShippingTo().getLocation().getCounty());
+        request.setReceiverParcelLockerCity(parcel.getShippingTo().getLocation().getCity());
+        request.setReceiverParcelLockerStreet(parcel.getShippingTo().getLocation().getStreet());
+
+        request.setSize(parcel.getSize());
+        request.setPrice(parcel.getPrice());
+        request.setReceiverName(parcel.getReceiverName());
+        request.setReceiverEmailAddress(parcel.getReceiverEmailAddress());
+
+        request.setShipped(parcel.isShipped());
+        request.setPickedUp(parcel.isPickedUp());
+        request.setSendingDate(parcel.getSendingDate().toString());
+        request.setSendingTime(parcel.getSendingTime().toString());
+
+        request.setPickingUpDate(parcel.getPickingUpDate().toString());
+        request.setPickingUpTime(parcel.getPickingUpTime().toString());
+        request.setShippingDate(parcel.getShippingDate().toString());
+        request.setShippingTime(parcel.getShippingTime().toString());
+
+        request.setPlaced(parcel.isPlaced());
+        request.setPaid(parcel.isPaid());
+        request.setPickingUpExpirationDate(parcel.getPickingUpExpirationDate().toString());
+        request.setPickingUpExpirationTime(parcel.getPickingUpExpirationTime().toString());
+
+        request.setPickedUp(parcel.isPickedUp());
+        if(parcel.getSendingExpirationDate() != null){
+            request.setSendingExpirationDate(parcel.getSendingExpirationDate().toString());
+            request.setSendingExpirationTime(parcel.getSendingExpirationTime().toString());
+        }
+
+
+        //Válasz objektum
+        StringResponse responseFromStatisticsService;
+
+        responseFromStatisticsService = webClientBuilder.build().post()
+                .uri("http://statistics-service/statistics/parcel/addparceltodb")
+                .body(Mono.just(request), ParcelToStaticticsServiceRequest.class)
+                .retrieve()
+                .bodyToMono(StringResponse.class)
+                .block();
+    }
+
 }

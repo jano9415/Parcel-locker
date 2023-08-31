@@ -152,6 +152,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(response);
         }
 
+        //Itt még át kéne adni a szerepköröket is
         String token = jwtUtil.generateToken(logInRequest.getEmailAddress());
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setUserId(user.getId());
@@ -210,6 +211,9 @@ public class UserServiceImpl implements UserService {
     // egyedi azonosító újra (ez nem biztos, hogy kelleni fog) és a szerepkörök
     @Override
     public ResponseEntity<?> courierLogin(LoginCourier request, Long parcelLockerId) {
+
+        System.out.println(request + "----------------" + parcelLockerId);
+        System.out.println("Ez a jelszó:" + request.getPassword());
 
         String sha256Password = sha256Encode(request.getPassword());
 

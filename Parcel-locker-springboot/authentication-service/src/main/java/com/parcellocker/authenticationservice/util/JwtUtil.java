@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Component
 public class JwtUtil {
@@ -30,8 +32,11 @@ public class JwtUtil {
     }
 
     //Token generálása
-    public String generateToken(String id) {
+    //Email cím elhelyezése a token subject mezőjében
+    //Még a szerepköröket is el kell helyezni
+    public String generateToken(String id /*, List<String> roles*/) {
         Claims claims = Jwts.claims().setSubject(id);
+        //Felhasználó szerepköreinek átadása a jwt tokennek
         long nowMillis = System.currentTimeMillis();
         long expMillis = nowMillis + tokenValidity;
         Date exp = new Date(expMillis);
