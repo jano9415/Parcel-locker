@@ -22,6 +22,7 @@ public class CourierController {
 
     //Futár jogosultságának ellenőrzése az automatához
     //Csak a saját körzetében lévő automatákba tud bejelentkezni
+    //Az authentication service hívja meg ezt a kérést
     @GetMapping("/iscouriereligible/{parcelLockerId}/{uniqueCourierId}")
     public ResponseEntity<StringResponse> isCourierEligible(@PathVariable Long parcelLockerId,
                                                             @PathVariable String uniqueCourierId){

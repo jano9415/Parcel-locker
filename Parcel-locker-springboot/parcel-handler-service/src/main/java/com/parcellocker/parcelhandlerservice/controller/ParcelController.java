@@ -21,7 +21,7 @@ public class ParcelController {
     private ParcelServiceImpl parcelService;
 
     //Csomag küldése feladási kód nélkül
-    //Autentikációhoz nem szükséges ehhez a végponthoz
+    //Nem szükséges jwt token
     @PostMapping("/sendparcelwithoutcode/{senderParcelLockerId}")
     public ResponseEntity<?> sendParcelWithoutCode(@RequestBody ParcelSendingWithoutCodeRequest request,
                                                    @PathVariable Long senderParcelLockerId) {
@@ -30,7 +30,8 @@ public class ParcelController {
     }
 
     //Csomagok lekérése, amik készen állnak az elszállításra
-    //Autentikációhoz szükséges ehhez a végponthoz
+    //Jwt token szükséges
+    //Courier szerepkör szükséges
     @GetMapping("/getparcelsforshipping/{senderParcelLockerId}")
     public ResponseEntity<List<GetParcelsForShippingResponse>> getParcelsForShipping(@PathVariable Long senderParcelLockerId) {
 
@@ -39,6 +40,7 @@ public class ParcelController {
 
     //Automata kiürítése. Elszállításra váró csomagok átkerülnek a futárhoz
     //Jwt token szükséges
+    //Courier szerepkör szükséges
     @PostMapping("/emptyparcellocker")
     public ResponseEntity<List<EmptyParcelLockerResponse>> emptyParcelLocker(@RequestBody EmptyParcelLockerRequest request){
         return parcelService.emptyParcelLocker(request);
@@ -46,6 +48,7 @@ public class ParcelController {
 
     //Futárnál lévő csomagok lekérése. Csak olyan csomagok, amik az adott automatához tartoznak és van nekik szabad rekesz
     //Jwt token szükséges
+    //Courier szerepkör szükséges
     @GetMapping("/getparcelsforparcellocker/{senderParcelLockerId}/{uniqueCourierId}")
     public ResponseEntity<List<GetParcelsForParcelLockerResponse>> getParcelsForParcelLocker(@PathVariable Long senderParcelLockerId,
                                                                                              @PathVariable String uniqueCourierId){
@@ -54,6 +57,7 @@ public class ParcelController {
 
     //Automata feltöltése
     //Jwt token szükséges
+    //Courier szerepkör szükséges
     @GetMapping("/fillparcellocker/{senderParcelLockerId}/{uniqueCourierId}")
     public ResponseEntity<List<FillParcelLockerResponse>> fillParcelLocker(@PathVariable Long senderParcelLockerId,
                                                                                     @PathVariable String uniqueCourierId){
@@ -105,6 +109,7 @@ public class ParcelController {
     //Ez még csak egy előzetes csomagfeladás. A felhasználó megkapja email-ben a csomagfeladási kódot
     //A végleges csomagfeladás az automatánál történik
     //Jwt token szükséges
+    //User szerepkör szükséges
     @PostMapping("/sendparcelwithcodefromwebpage")
     public ResponseEntity<StringResponse> sendParcelWithCodeFromWebpage(@RequestBody SendParcelWithCodeFromWebpageRequest request){
         return parcelService.sendParcelWithCodeFromWebpage(request);
@@ -119,6 +124,7 @@ public class ParcelController {
 
     //Futár lead egy csomagot a központi raktárban
     //Jwt token szükséges
+    //Courier szerepkör szükséges
     @GetMapping("/handparceltostore/{uniqueCourierId}/{uniqueParcelId}")
     public ResponseEntity<StringResponse> handParcelToStore(@PathVariable String uniqueCourierId,
                                                             @PathVariable String uniqueParcelId){
@@ -127,6 +133,7 @@ public class ParcelController {
 
     //Futár felvesz egy csomagot a központi raktárból
     //Jwt token szükséges
+    //Courier szerepkör szükséges
     @GetMapping("/pickupparcelfromstore/{uniqueCourierId}/{uniqueParcelId}")
     public ResponseEntity<StringResponse> pickUpParcelFromStore(@PathVariable String uniqueCourierId,
                                                             @PathVariable String uniqueParcelId){

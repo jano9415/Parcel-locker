@@ -21,6 +21,8 @@ public class JwtUtil {
     @Value("${jwt.token.validity}")
     private long tokenValidity;
 
+    //Jwt token body részének lekérése
+    //A body rész tartalmazza a subject mezőt és a claim mezőket, amiből több is lehet
     public Claims getClaims(final String token) {
         try {
             Claims body = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
@@ -33,13 +35,22 @@ public class JwtUtil {
 
     //Token generálása
     //Email cím elhelyezése a token subject mezőjében
-    //Még a szerepköröket is el kell helyezni
-    public String generateToken(String id /*, List<String> roles*/) {
-        Claims claims = Jwts.claims().setSubject(id);
+    //Szerepkörök elhelyezése a token body részében, azon belül a claim részben
+    public String generateToken(String emailAddress, List<String> roles) {
+        //Felhasználó email cím átadása a jwt tokennek. Ez a subject
+        //Jwt token body része
+        Claims claims = Jwts.claims().setSubject(emailAddress);
         //Felhasználó szerepköreinek átadása a jwt tokennek
+        //Jwt token body része
+        //Bármennyi objektumot, változót át lehet neki adni a 'claim' részben
+        claims.put("roles", roles);
+
+        //Mostani idő
         long nowMillis = System.currentTimeMillis();
+        //Lejárati idő
         long expMillis = nowMillis + tokenValidity;
         Date exp = new Date(expMillis);
+        //Token összeállítása
         return Jwts.builder().setClaims(claims).setIssuedAt(new Date(nowMillis)).setExpiration(exp)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
     }

@@ -17,6 +17,8 @@ import FollowParcelComponent from './Components/FollowParcelComponent';
 import ParcelLockersComponent from './Components/ParcelLockersComponent';
 import MyParcelsComponent from './Components/MyParcelsComponent';
 import FooterMenuComponent from './Components/FooterMenuComponent';
+import PricesComponent from './Components/PricesComponent';
+import StatisticsComponent from './Components/StatisticsComponent';
 
 
 const App = () => {
@@ -77,6 +79,8 @@ const App = () => {
             <Route path='/followparcel' element={<FollowParcelComponent />} />
             <Route path='/parcellockers' element={<ParcelLockersComponent />} />
             <Route path='/myparcels' element={<MyParcelsComponent />} />
+            <Route path='/prices' element={<PricesComponent />} />
+            <Route path='/statistics' element={<StatisticsComponent />} />
 
           </Routes>
         </div>

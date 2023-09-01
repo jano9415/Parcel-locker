@@ -152,15 +152,19 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(response);
         }
 
+        //User szerepkörei
+        List<String> roles = user.getRoles().stream().map(item -> item.getRoleName())
+                .collect(Collectors.toList());
+
         //Itt még át kéne adni a szerepköröket is
-        String token = jwtUtil.generateToken(logInRequest.getEmailAddress());
+        String token = jwtUtil.generateToken(logInRequest.getEmailAddress(), roles);
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setUserId(user.getId());
         loginResponse.setEmailAddress(user.getEmailAddress());
         loginResponse.setToken(token);
 
-        List<String> roles = user.getRoles().stream().map(item -> item.getRoleName())
-                .collect(Collectors.toList());
+        /*List<String> roles = user.getRoles().stream().map(item -> item.getRoleName())
+                .collect(Collectors.toList());*/
         loginResponse.setRoles(roles);
 
         return ResponseEntity.ok(loginResponse);
@@ -245,15 +249,19 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(response);
         }
 
+        //Futár szerepkörei
+        List<String> roles = user.getRoles().stream().map(item -> item.getRoleName())
+                .collect(Collectors.toList());
 
-        String token = jwtUtil.generateToken(user.getEmailAddress());
+        //Email cím és szerepkörök átadása a jwt tokennek
+        String token = jwtUtil.generateToken(user.getEmailAddress(), roles);
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setUserId(user.getId());
         loginResponse.setEmailAddress(user.getEmailAddress());
         loginResponse.setToken(token);
 
-        List<String> roles = user.getRoles().stream().map(item -> item.getRoleName())
-                .collect(Collectors.toList());
+        /*List<String> roles = user.getRoles().stream().map(item -> item.getRoleName())
+                .collect(Collectors.toList());*/
         loginResponse.setRoles(roles);
 
         return ResponseEntity.ok(loginResponse);

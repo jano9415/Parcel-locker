@@ -26,6 +26,7 @@ const CreateAdminComponent = () => {
 
     useEffect(() => {
 
+
     }, [])
 
     const signUp = (e) => {
@@ -38,7 +39,6 @@ const CreateAdminComponent = () => {
 
                 }
                 if (response.data.message === "successAdminCreation") {
-                    navigate("/login");
                     window.location.reload();
                 }
 
@@ -132,7 +132,7 @@ const CreateAdminComponent = () => {
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '16px' }}>
-            <Typography variant="h4" sx={{ marginBottom: '16px' }}>Új admin hozzáadása</Typography>
+            <Typography sx={{ marginBottom: '16px', fontSize: 40 }}>Új admin hozzáadása</Typography>
             <TextField
                 type="email"
                 label="Email cím"

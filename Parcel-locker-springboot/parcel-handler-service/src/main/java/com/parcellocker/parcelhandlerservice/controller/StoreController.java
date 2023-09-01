@@ -19,6 +19,7 @@ public class StoreController {
 
     //Központi raktárak lekérése
     //Jwt token szükséges
+    //Admin szerepkör szükséges
     @GetMapping("/getstores")
     public ResponseEntity<List<GetStoresResponse>> getStores(){
         return storeService.getStores();

@@ -19,12 +19,14 @@ public class AuthController {
 
     //Bejelentkezés
     //Jwt token generálása
+    //Nem szükséges jwt token
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LogInRequest logInRequest) {
         return userService.logIn(logInRequest);
     }
 
     //Regisztráció
+    //Nem szükséges jwt token
     @PostMapping("/signup")
     public ResponseEntity<?> signUp(@RequestBody SignUpRequest signUpRequest) {
 
@@ -32,6 +34,7 @@ public class AuthController {
     }
 
     //Futár bejelentkezése az automatánál
+    //Nem szükséges jwt token
     @PostMapping("/courierlogin/{parcelLockerId}")
     public ResponseEntity<?> courierLogin(@RequestBody LoginCourier request,
                                           @PathVariable Long parcelLockerId){
@@ -39,18 +42,23 @@ public class AuthController {
     }
 
     //Regisztráció aktiválása
+    //Nem szükséges jwt token
     @GetMapping("/activation/{signUpActivationCode}")
     public ResponseEntity<?> signUpActivation(@PathVariable String signUpActivationCode) {
         return userService.signUpActivation(signUpActivationCode);
     }
 
     //Új futár létrehozása
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
     @PostMapping("/createcourier")
     public ResponseEntity<?> createCourier(@RequestBody CreateCourierDTO courierDTO){
         return userService.createCourier(courierDTO);
     }
 
     //Új admin létrehozása
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
     @PostMapping("/createadmin")
     public ResponseEntity<?> createAdmin(@RequestBody CreateAdminDTO adminDTO){
         return userService.createAdmin(adminDTO);

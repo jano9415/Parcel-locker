@@ -28,12 +28,14 @@ public class ParcelLockerController {
     }
 
     //Feladási automata tele van?
+    //Nem szükséges jwt token
     @GetMapping("/isparcellockerfull/{senderParcelLockerId}")
     public ResponseEntity<StringResponse> isParcelLockerFull(@PathVariable Long senderParcelLockerId){
         return parcelLockerService.isParcelLockerFull(senderParcelLockerId);
     }
 
-    //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
+    //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése
+    //Nem szükséges jwt token
     @GetMapping("/areboxesfull/{senderParcelLockerId}")
     public ResponseEntity<List<StringResponse>> areBoxesFull(@PathVariable Long senderParcelLockerId){
 

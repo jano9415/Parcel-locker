@@ -21,7 +21,7 @@ const AdminMenuComponent = () => {
                 <Tab label={<Link to={"/createcourier"} className='nav-link'>Futár hozzáadása</Link>} />
                 <Tab label={<Link to={"/createadmin"} className='nav-link'>Admin hozzáadása</Link>} />
                 <Tab label={<Link to={"/createadmin"} className='nav-link'>Csomagtörlés</Link>} />
-                <Tab label={<Link to={"/createadmin"} className='nav-link'>Statisztikák</Link>} />
+                <Tab label={<Link to={"/statistics"} className='nav-link'>Statisztikák</Link>} />
                 <Tab label={<Link to={"/createadmin"} className='nav-link'>Csomagok</Link>} />
             </Tabs>
             

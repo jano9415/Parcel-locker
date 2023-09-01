@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -32,7 +33,7 @@ public class JwtAuthenticationFilter implements GatewayFilter {
 
 
         ServerHttpRequest request = (ServerHttpRequest) exchange.getRequest();
-
+        System.out.println("Ez az uri: " + request.getURI().getPath());
 
 
         //Ezekhez az végpontokhoz nem szükséges autentikáció. Ezeket bárki elérheti
@@ -43,8 +44,6 @@ public class JwtAuthenticationFilter implements GatewayFilter {
                 "/auth/activation",
                 //Felhasználói bejelentkezés
                 "/auth/login",
-                //Teszt
-                "/notification/test1",
                 //Futár bejelentkezés
                 "/auth/courierlogin",
                 //Csomag automaták lekérése
@@ -70,10 +69,12 @@ public class JwtAuthenticationFilter implements GatewayFilter {
         Predicate<ServerHttpRequest> isApiSecured = r -> apiEndpoints.stream()
                 .noneMatch(uri -> r.getURI().getPath().contains(uri));
 
+
         //A kérés header része tartalmazza a jwt tokent az alábbi formába
         //Key -> Authorization         Value -> jwt token
         if (isApiSecured.test(request)) {
             //Jwt token nélküli kérések
+            //A végponthoz token szükséges, de a kérés head részében hiányzik
             if (!request.getHeaders().containsKey("Authorization")) {
                 ServerHttpResponse response = exchange.getResponse();
                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
@@ -85,8 +86,9 @@ public class JwtAuthenticationFilter implements GatewayFilter {
             final String token = request.getHeaders().getOrEmpty("Authorization").get(0);
 
             //Token validációja
+            //Végpont ellenőrzése, hogy az adott szerepkör elérheti-e
             try {
-                jwtUtil.validateToken(token);
+                jwtUtil.validateToken(token, request);
             } catch (JwtTokenMalformedException | JwtTokenMissingException e) {
 
                 ServerHttpResponse response = exchange.getResponse();
