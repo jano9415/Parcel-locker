@@ -5,10 +5,9 @@ import com.parcellocker.statisticsservice.payload.response.StringResponse;
 import com.parcellocker.statisticsservice.service.serviceimpl.ParcelServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/statistics/parcel")
@@ -25,32 +24,115 @@ public class ParcelController {
     }
 
     //Összes kézbesített csomagok száma
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/numberofparcels")
+    public ResponseEntity<StringResponse> numberOfParcels(){
+        return parcelService.numberOfParcels();
+    }
 
-    //Automaták telítettségi diagramon
+    //Automaták telítettsége diagramon
 
     //Leggyakoribb méretű csomagok: kicsi, közepes vagy nagy
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/mostcommonparcelsize")
+    public ResponseEntity<StringResponse> mostCommonParcelSize(){
+        return parcelService.mostCommonParcelSize();
+    }
+
+    //Csomagok száma méret szerint
+    //Lista első eleme: kicsi csomagok száma
+    //Lista második eleme: közepes csomagok száma
+    //Lista harmadik eleme: nagy csomagok száma
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/numberofparcelsbysize")
+    public ResponseEntity<List<StringResponse>> numberOfParcelsBySize(){
+        return parcelService.numberOfParcelsBySize();
+    }
 
     //Összes bevétel a kézbesített csomagokból
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/totalrevenue")
+    public ResponseEntity<StringResponse> totalRevenue(){
+        return parcelService.totalRevenue();
+    }
+
+    //Bevétel a kicsi, közepes és nagy csomagokból
+
+    //Kicsi, közepes vagy nagy csomagból származik a legnagyobb bevétel?
 
     //Csomagok értékének átlaga forintban
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/averageparcelvalue")
+    public ResponseEntity<StringResponse> averageParcelValue(){
+        return parcelService.averageParcelValue();
+    }
 
     //Feladott csomagok száma aszerint, hogy automatából vagy online adják fel
+    //Lista első eleme: automatából
+    //Lista második eleme: online
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/amountofparcelsfromonlineandparcellocker")
+    public ResponseEntity<List<StringResponse>> amountOfParcelsFromOnlineAndParcelLocker(){
+        return parcelService.amountOfParcelsFromOnlineAndParcelLocker();
+    }
 
     //Honnan adják fel a legtöbb csomagot?
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/mostcommonsendinglocation")
+    public ResponseEntity<StringResponse> mostCommonSendingLocation(){
+        return parcelService.mostCommonSendingLocation();
+    }
 
     //Hova érkezik a legtöbb csomag?
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/mostcommonreceivinglocation")
+    public ResponseEntity<StringResponse> mostCommonReceivingLocation(){
+        return parcelService.mostCommonReceivingLocation();
+    }
 
     //Mennyi csomagot fizetnek ki előre? Mennyit fizetnek ki az automatánál?
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/paymentdatas")
+    public ResponseEntity<List<StringResponse>> paymentDatas(){
+        return parcelService.paymentDatas();
+    }
 
     //Átlagos szállítási idő
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/averageshippingtime")
+    public ResponseEntity<StringResponse> averageShippingTime(){
+        return parcelService.averageShippingTime();
+    }
 
     //Átlagos szállítási idő adott x automatától y automatához
 
     //Átlagos szállítási idő x városból x városba
 
     //Leggyorsabb szállítási idő
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/mostfastshippingtime")
+    public ResponseEntity<StringResponse> mostFastShippingTime(){
+        return parcelService.mostFastShippingTime();
+    }
 
     //Leglassabb szállítási idő
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/slowestshippingtime")
+    public ResponseEntity<StringResponse> slowestShippingTime(){
+        return parcelService.slowestShippingTime();
+    }
 
     //Mikor adják fel a legtöbb csomagot? Hétköznap? Hétvégén? Melyik nap?
 

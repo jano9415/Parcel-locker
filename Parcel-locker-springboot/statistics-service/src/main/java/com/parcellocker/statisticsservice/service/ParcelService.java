@@ -5,6 +5,8 @@ import com.parcellocker.statisticsservice.payload.request.ParcelToStaticticsServ
 import com.parcellocker.statisticsservice.payload.response.StringResponse;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface ParcelService {
 
     //Keresés id szerint
@@ -16,4 +18,49 @@ public interface ParcelService {
 
     //Csomag mentése
     void save(Parcel parcel);
+
+    //Összes kézbesített csomagok száma
+    ResponseEntity<StringResponse> numberOfParcels();
+
+    //Leggyakoribb méretű csomagok: kicsi, közepes vagy nagy
+    ResponseEntity<StringResponse> mostCommonParcelSize();
+
+    //Számlálás csomagméret szerint
+    int countBySize(String size);
+
+    //Számlálás feladási automata utcanév szerint
+    int countByShippingFromStreet(String street);
+
+    //Számlálás érkezési automata utcanév szerint
+    int countByShippingToStreet(String street);
+
+    //Csomagok száma méret szerint
+    ResponseEntity<List<StringResponse>> numberOfParcelsBySize();
+
+    //Összes bevétel a kézbesített csomagokból
+    ResponseEntity<StringResponse> totalRevenue();
+
+    //Csomagok értékének átlaga forintban
+    ResponseEntity<StringResponse> averageParcelValue();
+
+    //Feladott csomagok száma aszerint, hogy automatából vagy online adják fel
+    ResponseEntity<List<StringResponse>> amountOfParcelsFromOnlineAndParcelLocker();
+
+    //Honnan adják fel a legtöbb csomagot?
+    ResponseEntity<StringResponse> mostCommonSendingLocation();
+
+    //Hova érkezik a legtöbb csomag?
+    ResponseEntity<StringResponse> mostCommonReceivingLocation();
+
+    //Mennyi csomagot fizetnek ki előre? Mennyit fizetnek ki az automatánál?
+    ResponseEntity<List<StringResponse>> paymentDatas();
+
+    //Átlagos szállítási idő
+    ResponseEntity<StringResponse> averageShippingTime();
+
+    //Leggyorsabb szállítási idő
+    ResponseEntity<StringResponse> mostFastShippingTime();
+
+    //Leglassabb szállítási idő
+    ResponseEntity<StringResponse> slowestShippingTime();
 }

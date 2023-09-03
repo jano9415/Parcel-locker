@@ -46,8 +46,23 @@ public class JwtUtil {
             //Új futár létrehozása
             "/auth/createcourier",
             //Központi raktárak lekérése
-            "/parcelhandler/store/getstores"
-
+            "/parcelhandler/store/getstores",
+            //Összes kézbesített csomagok száma
+            "/statistics/parcel/numberofparcels",
+            //Leggyakoribb méretű csomagok: kicsi, közepes vagy nagy,
+            "/statistics/parcel/mostcommonparcelsize",
+            //Csomagok száma méret szerint
+            "/statistics/parcel/numberofparcelsbysize",
+            //Összes bevétel a kézbesített csomagokból
+            "/statistics/parcel/totalrevenue",
+            //Csomagok értékének átlaga forintban
+            "/statistics/parcel/averageparcelvalue",
+            //Feladott csomagok száma aszerint, hogy automatából vagy online adják fel
+            "/statistics/parcel/amountofparcelsfromonlineandparcellocker",
+            //Honnan adják fel a legtöbb csomagot?
+            "/statistics/parcel/mostcommonsendinglocation",
+            //Hova érkezik a legtöbb csomag?
+            "/statistics/parcel/mostcommonreceivinglocation"
     );
 
     //Jwt token body részének lekérése

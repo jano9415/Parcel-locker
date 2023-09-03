@@ -260,8 +260,6 @@ public class UserServiceImpl implements UserService {
         loginResponse.setEmailAddress(user.getEmailAddress());
         loginResponse.setToken(token);
 
-        /*List<String> roles = user.getRoles().stream().map(item -> item.getRoleName())
-                .collect(Collectors.toList());*/
         loginResponse.setRoles(roles);
 
         return ResponseEntity.ok(loginResponse);
