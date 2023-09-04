@@ -62,7 +62,11 @@ public class JwtUtil {
             //Honnan adják fel a legtöbb csomagot?
             "/statistics/parcel/mostcommonsendinglocation",
             //Hova érkezik a legtöbb csomag?
-            "/statistics/parcel/mostcommonreceivinglocation"
+            "/statistics/parcel/mostcommonreceivinglocation",
+            //Mennyi csomagot fizetnek ki előre? Mennyit fizetnek ki az automatánál?
+            "/statistics/parcel/paymentdatas",
+            //Szállítási idők
+            "/statistics/parcel/averageminmaxshippingtime"
     );
 
     //Jwt token body részének lekérése

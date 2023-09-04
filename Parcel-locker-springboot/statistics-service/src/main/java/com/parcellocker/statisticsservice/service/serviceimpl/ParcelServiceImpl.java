@@ -9,11 +9,14 @@ import com.parcellocker.statisticsservice.repository.ParcelRepository;
 import com.parcellocker.statisticsservice.service.ParcelService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +49,7 @@ public class ParcelServiceImpl implements ParcelService {
 
         parcel.setUniqueParcelId(request.getUniqueParcelId());
         parcel.setSenderEmailAddress(request.getSenderEmailAddress());
-        parcel.setSenderName(parcel.getSenderName());
+        parcel.setSenderName(request.getSenderName());
 
         //Feladási automata
         senderParcelLocker.setPostCode(request.getSenderParcelLockerPostCode());
@@ -279,25 +282,95 @@ public class ParcelServiceImpl implements ParcelService {
     //Mennyi csomagot fizetnek ki előre? Mennyit fizetnek ki az automatánál?
     @Override
     public ResponseEntity<List<StringResponse>> paymentDatas() {
-        return null;
+
+        int onlinePayment = 0;
+        int paymentAtParcelLocker = 0;
+        StringResponse responseObj1 = new StringResponse();
+        StringResponse responseObj2 = new StringResponse();
+        List<StringResponse> response = new ArrayList<>();
+
+        for(Parcel parcel : parcelRepository.findAll()){
+            if(parcel.getPrice() == 0){
+                onlinePayment++;
+            }
+            if(parcel.getPrice() > 0){
+                paymentAtParcelLocker++;
+            }
+        }
+
+        responseObj1.setMessage(String.valueOf(onlinePayment));
+        responseObj2.setMessage(String.valueOf(paymentAtParcelLocker));
+        response.add(responseObj1);
+        response.add(responseObj2);
+
+        return ResponseEntity.ok(response);
     }
 
-    //Átlagos szállítási idő
+    //Átlagos szállítási idő - response lista első objektuma
+    //Leggyorsabb szállítási idő - response lista második objektuma
+    //Leglassabb szállítási idő - response lista harmadik objektuma
     @Override
-    public ResponseEntity<StringResponse> averageShippingTime() {
-        return null;
-    }
+    public ResponseEntity<List<StringResponse>> averageMinMaxShippingTime() {
 
-    //Leggyorsabb szállítási idő
-    @Override
-    public ResponseEntity<StringResponse> mostFastShippingTime() {
-        return null;
-    }
+        List<Duration> differences = new ArrayList<>();
+        StringResponse responseObj1 = new StringResponse();
+        StringResponse responseObj2 = new StringResponse();
+        StringResponse responseObj3 = new StringResponse();
+        List<StringResponse> response = new ArrayList<>();
 
-    //Leglassabb szállítási idő
-    @Override
-    public ResponseEntity<StringResponse> slowestShippingTime() {
-        return null;
+        for(Parcel parcel : parcelRepository.findAll()){
+            //Dátum és idő konvertálása
+            LocalDateTime sendingDateTime = LocalDateTime.of(parcel.getSendingDate(), parcel.getSendingTime());
+            LocalDateTime shippingDateTime = LocalDateTime.of(parcel.getShippingDate(), parcel.getShippingTime());
+
+            //A két időpont közötti különbség
+            Duration difference = Duration.between(sendingDateTime, shippingDateTime);
+
+            differences.add(difference);
+        }
+
+        //Legkisebb idő
+        Duration minTime = differences.get(0);
+        //Legnagyobb idő
+        Duration maxTime = differences.get(0);
+        //Összes idő
+        Duration totalTime = Duration.ZERO;
+
+        //Összes idő, min és max kiszámítása
+        for(Duration duration : differences){
+
+            //Legkisebb idő
+            if(duration.compareTo(minTime) < 0){
+                minTime = duration;
+            }
+            //Legnagyobb idő
+            if(duration.compareTo(maxTime) > 0){
+                maxTime = duration;
+            }
+
+            //Összes idő kiszámítása
+            totalTime = totalTime.plus(duration);
+        }
+
+        //Átlag kiszámítása
+        float averageTimeInMinutes = totalTime.toMinutes() / differences.size();
+        float averageTimeInDays = averageTimeInMinutes / (24 * 60);
+        float averageTimeInHours = (averageTimeInMinutes % (24 * 60)) / 60;
+
+        //Minimum idő órában nem kerekítve
+        float minTimeInHours = (float) (minTime.toHours() / 60.0);
+        //Maximum idő órában nem kerekítve
+        float maxTimeInHours = (float) (maxTime.toHours() / 60.0);
+
+        responseObj1.setMessage(String.valueOf(averageTimeInHours));
+        responseObj2.setMessage(String.valueOf(maxTimeInHours));
+        responseObj3.setMessage(String.valueOf(minTimeInHours));
+
+        response.add(responseObj1);
+        response.add(responseObj2);
+        response.add(responseObj3);
+
+        return ResponseEntity.ok(response);
     }
 
     //Csomagautomaták lekérése a parcel handler service-ből
@@ -351,6 +424,62 @@ public class ParcelServiceImpl implements ParcelService {
 
         return mostCommonStreet;
     }
+
+
+    /*
+    public void valami(){
+        Parcel parcel = new Parcel();
+        ParcelLocker senderParcelLocker = new ParcelLocker();
+        ParcelLocker receiverParcelLocker = new ParcelLocker();
+
+        parcel.setUniqueParcelId("fdsfds");
+        parcel.setSenderEmailAddress("fdsfdsgfd");
+        parcel.setSenderName("Nagy László");
+
+        //Feladási automata
+        senderParcelLocker.setPostCode(8100);
+        senderParcelLocker.setCounty("aaaa");
+        senderParcelLocker.setCity("dsfhgj");
+        senderParcelLocker.setStreet("jhgbd");
+        parcel.setShippingFrom(senderParcelLocker);
+        //Érkezési automata
+        receiverParcelLocker.setPostCode(5600);
+        receiverParcelLocker.setCounty("lllhh");
+        receiverParcelLocker.setCity("sasasc");
+        receiverParcelLocker.setStreet("hhtzt");
+        parcel.setShippingTo(receiverParcelLocker);
+
+        parcel.setSize("large");
+        parcel.setPrice(9000);
+        parcel.setReceiverName("Kovács Nóra");
+        parcel.setReceiverEmailAddress("gfgfd");
+
+        parcel.setShipped(true);
+        parcel.setPickedUp(true);
+        parcel.setSendingDate(LocalDate.parse("2023-09-04"));
+        parcel.setSendingTime(LocalTime.parse("13:40:20"));
+
+        parcel.setPickingUpDate(LocalDate.parse("2023-09-08"));
+        parcel.setPickingUpTime(LocalTime.parse("10:41:10"));
+        parcel.setShippingDate(LocalDate.parse("2023-09-07"));
+        parcel.setShippingTime(LocalTime.parse("8:41:13"));
+
+        parcel.setPlaced(true);
+        parcel.setPaid(true);
+        parcel.setPickingUpExpirationDate(LocalDate.parse("2023-09-10"));
+        parcel.setPickingUpExpirationTime(LocalTime.parse("16:30:44"));
+
+        parcel.setPickedUp(true);
+
+        parcel.setSendingExpirationDate(LocalDate.parse("2023-09-05"));
+        parcel.setSendingExpirationTime(LocalTime.parse("12:30:20"));
+
+        save(parcel);
+    }
+
+     */
+
+
 
 
 }

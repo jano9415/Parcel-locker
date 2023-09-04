@@ -55,12 +55,9 @@ public interface ParcelService {
     //Mennyi csomagot fizetnek ki előre? Mennyit fizetnek ki az automatánál?
     ResponseEntity<List<StringResponse>> paymentDatas();
 
-    //Átlagos szállítási idő
-    ResponseEntity<StringResponse> averageShippingTime();
+    //Átlagos szállítási idő - response lista első objektuma
+    //Leggyorsabb szállítási idő - response lista második objektuma
+    //Leglassabb szállítási idő - response lista harmadik objektuma
+    ResponseEntity<List<StringResponse>> averageMinMaxShippingTime();
 
-    //Leggyorsabb szállítási idő
-    ResponseEntity<StringResponse> mostFastShippingTime();
-
-    //Leglassabb szállítási idő
-    ResponseEntity<StringResponse> slowestShippingTime();
 }

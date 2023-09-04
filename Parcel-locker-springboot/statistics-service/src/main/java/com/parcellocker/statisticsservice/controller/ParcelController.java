@@ -99,6 +99,8 @@ public class ParcelController {
     }
 
     //Mennyi csomagot fizetnek ki előre? Mennyit fizetnek ki az automatánál?
+    //Online - lista első objektuma
+    //Automatánál - lista második objektuma
     //Jwt token szükséges
     //Admin szerepkör szükséges
     @GetMapping("/paymentdatas")
@@ -106,33 +108,19 @@ public class ParcelController {
         return parcelService.paymentDatas();
     }
 
-    //Átlagos szállítási idő
+    //Átlagos szállítási idő - response lista első objektuma
+    //Leggyorsabb szállítási idő - response lista második objektuma
+    //Leglassabb szállítási idő - response lista harmadik objektuma
     //Jwt token szükséges
     //Admin szerepkör szükséges
-    @GetMapping("/averageshippingtime")
-    public ResponseEntity<StringResponse> averageShippingTime(){
-        return parcelService.averageShippingTime();
+    @GetMapping("/averageminmaxshippingtime")
+    public ResponseEntity<List<StringResponse>> averageMinMaxShippingTime(){
+        return parcelService.averageMinMaxShippingTime();
     }
 
     //Átlagos szállítási idő adott x automatától y automatához
 
     //Átlagos szállítási idő x városból x városba
-
-    //Leggyorsabb szállítási idő
-    //Jwt token szükséges
-    //Admin szerepkör szükséges
-    @GetMapping("/mostfastshippingtime")
-    public ResponseEntity<StringResponse> mostFastShippingTime(){
-        return parcelService.mostFastShippingTime();
-    }
-
-    //Leglassabb szállítási idő
-    //Jwt token szükséges
-    //Admin szerepkör szükséges
-    @GetMapping("/slowestshippingtime")
-    public ResponseEntity<StringResponse> slowestShippingTime(){
-        return parcelService.slowestShippingTime();
-    }
 
     //Mikor adják fel a legtöbb csomagot? Hétköznap? Hétvégén? Melyik nap?
 

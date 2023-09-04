@@ -7,6 +7,10 @@ import AverageParcelValue from "../StatisticsComponents/AverageParcelValue";
 import AmountOfParcelsFromOnlineAndParcelLocker from "../StatisticsComponents/AmountOfParcelsFromOnlineAndParcelLocker";
 import MostCommonSendingLocation from "../StatisticsComponents/MostCommonSendingLocation";
 import MostCommonReceivingLocation from "../StatisticsComponents/MostCommonReceivingLocation";
+import PaymentDatas from "../StatisticsComponents/PaymentDatas";
+import AverageMinMaxShippingTime from "../StatisticsComponents/AverageMinMaxShippingTime";
+import TotalSendingByLocations from "../StatisticsComponents/TotalSendingByLocations";
+import TotalPickingUpByLocations from "../StatisticsComponents/TotalPickingUpByLocations";
 
 const StatisticsComponent = () => {
 
@@ -18,7 +22,7 @@ const StatisticsComponent = () => {
                 </Box>
             </Box>
 
-            <Box sx={{textAlign: 'center'}} className="d-flex justify-content-center">
+            <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
                 <Paper elevation={5} className="m-2">
                     <Typography sx={{ fontSize: 20 }}>Összes kézbesített csomag</Typography>
                     <NumberOfParcels></NumberOfParcels>
@@ -33,7 +37,7 @@ const StatisticsComponent = () => {
                 </Paper>
             </Box>
 
-            <Box sx={{textAlign: 'center'}} className="d-flex justify-content-center">
+            <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
                 <Paper elevation={5} className="m-2">
                     <Typography sx={{ fontSize: 20 }}>Összes bevétel a kézbesített csomagokból</Typography>
                     <TotalRevenue></TotalRevenue>
@@ -48,7 +52,18 @@ const StatisticsComponent = () => {
                 </Paper>
             </Box>
 
-            <Box sx={{textAlign: 'center'}} className="d-flex justify-content-center">
+            <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
+                <Paper elevation={5} className="m-2">
+                    <Typography sx={{ fontSize: 20 }}>Csomagfeladási számok</Typography>
+                    <TotalSendingByLocations></TotalSendingByLocations>
+                </Paper>
+                <Paper elevation={5} className="m-2">
+                    <Typography sx={{ fontSize: 20 }}>Csomagátvételi számok</Typography>
+                    <TotalPickingUpByLocations></TotalPickingUpByLocations>
+                </Paper>
+            </Box>
+
+            <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
                 <Paper elevation={5} className="m-2">
                     <Typography sx={{ fontSize: 20 }}>Innen adják fel a legtöbb csomagot</Typography>
                     <MostCommonSendingLocation></MostCommonSendingLocation>
@@ -59,6 +74,21 @@ const StatisticsComponent = () => {
                 </Paper>
                 <Paper elevation={5} className="m-2">
                     <Typography sx={{ fontSize: 20 }}>Fizetések száma</Typography>
+                    <PaymentDatas></PaymentDatas>
+                </Paper>
+            </Box>
+
+            <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
+                <Paper elevation={5} className="m-2">
+                    <Typography sx={{ fontSize: 20 }}>Szállítási idők</Typography>
+                    <AverageMinMaxShippingTime></AverageMinMaxShippingTime>
+                </Paper>
+                <Paper elevation={5} className="m-2">
+                    <Typography sx={{ fontSize: 20 }}></Typography>
+                    <TotalSendingByLocations></TotalSendingByLocations>
+                </Paper>
+                <Paper elevation={5} className="m-2">
+                    <Typography sx={{ fontSize: 20 }}></Typography>
                 </Paper>
             </Box>
 
