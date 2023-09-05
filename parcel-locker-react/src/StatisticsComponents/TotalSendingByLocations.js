@@ -3,6 +3,7 @@ import { BarChart } from '@mui/x-charts';
 import { useEffect, useState } from "react";
 import ParcelStatistcsService from '../Service/ParcelStatistcsService';
 
+
 const chartSetting = {
   xAxis: [
     {
@@ -12,37 +13,34 @@ const chartSetting = {
   width: 500,
   height: 400,
 };
-const dataset = [
-  {
-    seoul: 21,
-    month: 'Várpalota Veszprémi út 5',
-  },
-  {
-    seoul: 21,
-    month: 'Várpalota Veszprémi út 7',
-  },
-  {
-    seoul: 41,
-    month: 'Mar',
-  },
-  {
-    seoul: 73,
-    month: 'Apr',
-  }
-];
 
-const valueFormatter = (value) => `${value}darab`;
-
+const valueFormatter = (value) => `${value} darab`;
 
 
 const TotalSendingByLocations = () => {
+
+  const [dataSet1, setDataSet1] = useState([{}]);
+  const [dataSet2, setDataSet2] = useState([{}]);
 
   useEffect(() => {
 
     //Csomagfeladások száma automaták szerint
     ParcelStatistcsService.totalSendingByLocations().then(
       (response) => {
-        console.log(response.data);
+
+        const datas = [];
+        const datas2 = [];
+
+        for (let i = 0; i <= 9; i++) {
+          datas.push(response.data[i]);
+        }
+        setDataSet1(datas);
+
+        for (let i = 10; i <= 19; i++) {
+          datas2.push(response.data[i]);
+        }
+        setDataSet2(datas2);
+
       },
       (error) => {
 
@@ -54,13 +52,26 @@ const TotalSendingByLocations = () => {
 
   return (
     <Box>
-      <BarChart
-        dataset={dataset}
-        yAxis={[{ scaleType: 'band', dataKey: 'month' }]}
-        series={[{ dataKey: 'seoul', label: 'Feladott csomagok száma', valueFormatter }]}
-        layout="horizontal"
-        {...chartSetting}
-      />
+      <Box sx={{ textAlign: 'center'}} className="d-flex justify-content-center">
+        <Box className="m-2" >
+          <BarChart
+            dataset={dataSet1}
+            yAxis={[{ scaleType: 'band', dataKey: 'location'}]}
+            series={[{ dataKey: 'amount', label: 'Feladott csomagok száma', valueFormatter }]}
+            layout="horizontal"
+            {...chartSetting}
+          />
+        </Box>
+        <Box className="m-2">
+          <BarChart
+            dataset={dataSet2}
+            yAxis={[{ scaleType: 'band', dataKey: 'location' }]}
+            series={[{ dataKey: 'amount', label: 'Feladott csomagok száma', valueFormatter }]}
+            layout="horizontal"
+            {...chartSetting}
+          />
+        </Box>
+      </Box>
 
     </Box>
   );

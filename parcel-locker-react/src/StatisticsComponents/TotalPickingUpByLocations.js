@@ -4,66 +4,77 @@ import { useEffect, useState } from "react";
 import ParcelStatistcsService from '../Service/ParcelStatistcsService';
 
 const chartSetting = {
-    xAxis: [
-      {
-        label: 'darabszám',
-      },
-    ],
-    width: 500,
-    height: 400,
-  };
-  const dataset = [
+  xAxis: [
     {
-      seoul: 21,
-      month: 'Várpalota Veszprémi út 5',
+      label: 'darabszám',
     },
-    {
-        seoul: 21,
-        month: 'Várpalota Veszprémi út 7',
-    },
-    {
-      seoul: 41,
-      month: 'Mar',
-    },
-    {
-      seoul: 73,
-      month: 'Apr',
-    }
-  ];
-  
-  const valueFormatter = (value) => `${value}darab`;
-  
+  ],
+  width: 500,
+  height: 400,
+};
+
+
+const valueFormatter = (value) => `${value}darab`;
+
 
 
 const TotalPickingUpByLocations = () => {
 
-    useEffect(() => {
+  const [dataSet1, setDataSet1] = useState([{}]);
+  const [dataSet2, setDataSet2] = useState([{}]);
 
-        //Csomagátvételek száma automaták szerint
-        ParcelStatistcsService.totalPickingUpByLocations().then(
-          (response) => {
-            console.log(response.data);
-          },
-          (error) => {
-    
-          }
-        )
-    
-      }, [])
+  useEffect(() => {
+
+    //Csomagátvételek száma automaták szerint
+    ParcelStatistcsService.totalPickingUpByLocations().then(
+      (response) => {
+        const datas = [];
+        const datas2 = [];
+
+        for (let i = 0; i <= 9; i++) {
+          datas.push(response.data[i]);
+        }
+        setDataSet1(datas);
+
+        for (let i = 10; i <= 19; i++) {
+          datas2.push(response.data[i]);
+        }
+        setDataSet2(datas2);
+
+      },
+      (error) => {
+
+      }
+    )
+
+  }, [])
 
 
-    return (
-        <Box>
-            <BarChart
-                dataset={dataset}
-                yAxis={[{ scaleType: 'band', dataKey: 'month' }]}
-                series={[{ dataKey: 'seoul', label: 'Feladott csomagok száma', valueFormatter }]}
-                layout="horizontal"
-                {...chartSetting}
-                />
-
+  return (
+    <Box>
+      <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
+        <Box className="m-2" >
+          <BarChart
+            dataset={dataSet1}
+            yAxis={[{ scaleType: 'band', dataKey: 'location' }]}
+            series={[{ dataKey: 'amount', label: 'Átvett csomagok száma', valueFormatter }]}
+            layout="horizontal"
+            {...chartSetting}
+          />
         </Box>
-    );
+        <Box className="m-2">
+          <BarChart
+            dataset={dataSet2}
+            yAxis={[{ scaleType: 'band', dataKey: 'location' }]}
+            series={[{ dataKey: 'amount', label: 'Átvett csomagok száma', valueFormatter }]}
+            layout="horizontal"
+            {...chartSetting}
+          />
+        </Box>
+      </Box>
+
+    </Box>
+  );
 }
 
 export default TotalPickingUpByLocations;

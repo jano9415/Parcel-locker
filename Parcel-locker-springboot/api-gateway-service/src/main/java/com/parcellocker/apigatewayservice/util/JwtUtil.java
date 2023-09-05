@@ -66,7 +66,11 @@ public class JwtUtil {
             //Mennyi csomagot fizetnek ki előre? Mennyit fizetnek ki az automatánál?
             "/statistics/parcel/paymentdatas",
             //Szállítási idők
-            "/statistics/parcel/averageminmaxshippingtime"
+            "/statistics/parcel/averageminmaxshippingtime",
+            //Csomagfeladások száma automaták szerint
+            "/statistics/parcel/totalsendingbylocations",
+            //Csomagátvételek száma automaták szerint
+            "/statistics/parcel/totalpickingupbylocations"
     );
 
     //Jwt token body részének lekérése

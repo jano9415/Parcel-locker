@@ -57,6 +57,9 @@ const StatisticsComponent = () => {
                     <Typography sx={{ fontSize: 20 }}>Csomagfeladási számok</Typography>
                     <TotalSendingByLocations></TotalSendingByLocations>
                 </Paper>
+            </Box>
+
+            <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
                 <Paper elevation={5} className="m-2">
                     <Typography sx={{ fontSize: 20 }}>Csomagátvételi számok</Typography>
                     <TotalPickingUpByLocations></TotalPickingUpByLocations>
@@ -85,7 +88,6 @@ const StatisticsComponent = () => {
                 </Paper>
                 <Paper elevation={5} className="m-2">
                     <Typography sx={{ fontSize: 20 }}></Typography>
-                    <TotalSendingByLocations></TotalSendingByLocations>
                 </Paper>
                 <Paper elevation={5} className="m-2">
                     <Typography sx={{ fontSize: 20 }}></Typography>

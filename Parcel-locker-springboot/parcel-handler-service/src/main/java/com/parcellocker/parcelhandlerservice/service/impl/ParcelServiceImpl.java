@@ -68,6 +68,13 @@ public class ParcelServiceImpl implements ParcelService {
 
     }
 
+    //Csomag törlése
+    @Override
+    public void delete(Parcel parcel) {
+
+        parcelRepository.delete(parcel);
+    }
+
     //Keresés átvételi kód szerint
     @Override
     public Parcel findByPickingUpCode(String pickingUpCode) {
@@ -944,11 +951,13 @@ public class ParcelServiceImpl implements ParcelService {
             //Csomag ami már ide lett szállítva, de lejárt az átvételi dátum
             LocalDate currentDate = LocalDate.now();
             LocalTime currentTime = LocalTime.now();
-            LocalDate expirationDate = parcel.getPickingUpExpirationDate();
-            LocalTime expirationTime = parcel.getPickingUpExpirationTime();
+
 
             //Ha a csomag már le van szállítva
             if(parcel.isShipped() && parcel.getPickingUpExpirationDate() != null && parcel.getPickingUpExpirationTime() != null){
+
+                LocalDate expirationDate = parcel.getPickingUpExpirationDate();
+                LocalTime expirationTime = parcel.getPickingUpExpirationTime();
                 //Ha a jelenlegi dátum és a lejárati dátum megegyezik, akkor az időpontokat kell megvizsgálni
                 if(currentDate.isEqual(expirationDate) && currentTime.isAfter(expirationTime)){
                     readyParcels.add(parcel);

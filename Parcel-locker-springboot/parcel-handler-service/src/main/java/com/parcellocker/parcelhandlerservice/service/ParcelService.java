@@ -22,6 +22,9 @@ public interface ParcelService {
     //Csomag mentése
     void save(Parcel parcel);
 
+    //Csomag törlése
+    void delete(Parcel parcel);
+
     //Keresés átvételi kód szerint
     Parcel findByPickingUpCode(String pickingUpCode);
 

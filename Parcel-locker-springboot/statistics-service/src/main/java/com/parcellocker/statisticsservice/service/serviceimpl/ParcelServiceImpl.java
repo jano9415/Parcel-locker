@@ -5,6 +5,7 @@ import com.parcellocker.statisticsservice.model.ParcelLocker;
 import com.parcellocker.statisticsservice.payload.request.ParcelToStaticticsServiceRequest;
 import com.parcellocker.statisticsservice.payload.response.GetParcelLockersResponse;
 import com.parcellocker.statisticsservice.payload.response.StringResponse;
+import com.parcellocker.statisticsservice.payload.response.TotalSendingByLocationsResponse;
 import com.parcellocker.statisticsservice.repository.ParcelRepository;
 import com.parcellocker.statisticsservice.service.ParcelService;
 import jakarta.annotation.PostConstruct;
@@ -373,6 +374,28 @@ public class ParcelServiceImpl implements ParcelService {
         return ResponseEntity.ok(response);
     }
 
+    //Csomagfeladások száma automaták szerint
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @Override
+    public ResponseEntity<List<TotalSendingByLocationsResponse>> totalSendingByLocations() {
+
+        List<TotalSendingByLocationsResponse> response = countParcelByLocations("from");
+
+        return ResponseEntity.ok(response);
+    }
+
+    //Csomagátvételek száma automaták szerint
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @Override
+    public ResponseEntity<List<TotalSendingByLocationsResponse>> totalPickingUpByLocations() {
+
+        List<TotalSendingByLocationsResponse> response = countParcelByLocations("to");
+
+        return ResponseEntity.ok(response);
+    }
+
     //Csomagautomaták lekérése a parcel handler service-ből
     public List<GetParcelLockersResponse> getParcelLockers(){
 
@@ -396,7 +419,7 @@ public class ParcelServiceImpl implements ParcelService {
 
         Map<String, Integer> streetCount = new HashMap<>();
 
-        //Utcák számlálása
+        //Csomagok számlálása utcák szerint
         for(GetParcelLockersResponse parcelLocker : getParcelLockers()){
 
             if(fromOrTo.equals("from")){
@@ -423,6 +446,46 @@ public class ParcelServiceImpl implements ParcelService {
         }
 
         return mostCommonStreet;
+    }
+
+    //Csomagok számlálása utcák szerint
+    //Feladott csomagok
+    //Átvett csomagok
+    public List<TotalSendingByLocationsResponse> countParcelByLocations(String fromOrTo){
+
+        List<TotalSendingByLocationsResponse> response = new ArrayList<>();
+
+        //Csomagok számlálása utcák szerint
+        for(GetParcelLockersResponse parcelLocker : getParcelLockers()){
+
+            //Feladás
+            if(fromOrTo.equals("from")){
+
+                TotalSendingByLocationsResponse responseObj = new TotalSendingByLocationsResponse();
+
+                responseObj.setLocation(parcelLocker.getPostCode() + ", " + parcelLocker.getCity() + ", " +
+                        parcelLocker.getStreet());
+                responseObj.setAmount(countByShippingFromStreet(parcelLocker.getStreet()));
+
+                response.add(responseObj);
+
+            }
+            //Átvétel
+            if(fromOrTo.equals("to")){
+
+                TotalSendingByLocationsResponse responseObj = new TotalSendingByLocationsResponse();
+
+                responseObj.setLocation(parcelLocker.getPostCode() + ", " + parcelLocker.getCity() + ", " +
+                        parcelLocker.getStreet());
+                responseObj.setAmount(countByShippingToStreet(parcelLocker.getStreet()));
+
+                response.add(responseObj);
+
+            }
+        }
+
+        return response;
+
     }
 
 

@@ -2,6 +2,7 @@ package com.parcellocker.statisticsservice.controller;
 
 import com.parcellocker.statisticsservice.payload.request.ParcelToStaticticsServiceRequest;
 import com.parcellocker.statisticsservice.payload.response.StringResponse;
+import com.parcellocker.statisticsservice.payload.response.TotalSendingByLocationsResponse;
 import com.parcellocker.statisticsservice.service.serviceimpl.ParcelServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -116,6 +117,22 @@ public class ParcelController {
     @GetMapping("/averageminmaxshippingtime")
     public ResponseEntity<List<StringResponse>> averageMinMaxShippingTime(){
         return parcelService.averageMinMaxShippingTime();
+    }
+
+    //Csomagfeladások száma automaták szerint
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/totalsendingbylocations")
+    public ResponseEntity<List<TotalSendingByLocationsResponse>> totalSendingByLocations(){
+        return parcelService.totalSendingByLocations();
+    }
+
+    //Csomagátvételek száma automaták szerint
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/totalpickingupbylocations")
+    public ResponseEntity<List<TotalSendingByLocationsResponse>> totalPickingUpByLocations(){
+        return parcelService.totalPickingUpByLocations();
     }
 
     //Átlagos szállítási idő adott x automatától y automatához

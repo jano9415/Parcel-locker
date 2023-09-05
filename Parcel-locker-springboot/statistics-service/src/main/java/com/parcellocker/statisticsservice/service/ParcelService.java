@@ -3,6 +3,7 @@ package com.parcellocker.statisticsservice.service;
 import com.parcellocker.statisticsservice.model.Parcel;
 import com.parcellocker.statisticsservice.payload.request.ParcelToStaticticsServiceRequest;
 import com.parcellocker.statisticsservice.payload.response.StringResponse;
+import com.parcellocker.statisticsservice.payload.response.TotalSendingByLocationsResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -60,4 +61,13 @@ public interface ParcelService {
     //Leglassabb szállítási idő - response lista harmadik objektuma
     ResponseEntity<List<StringResponse>> averageMinMaxShippingTime();
 
+    //Csomagfeladások száma automaták szerint
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    ResponseEntity<List<TotalSendingByLocationsResponse>> totalSendingByLocations();
+
+    //Csomagátvételek száma automaták szerint
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    ResponseEntity<List<TotalSendingByLocationsResponse>> totalPickingUpByLocations();
 }
