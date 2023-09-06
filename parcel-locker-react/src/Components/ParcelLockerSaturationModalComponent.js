@@ -26,12 +26,6 @@ const ParcelLockerSaturationModalComponent = (props) => {
 
     useEffect(() => {
 
-
-    }, [])
-
-    const showDatas = () => {
-        setOpen(true);
-
         //A kiválasztott automata telítettségi adatainak lekérése
         ParcelLockerService.getSaturationDatas(props.parcelLockerId).then(
             (response) => {
@@ -41,6 +35,13 @@ const ParcelLockerSaturationModalComponent = (props) => {
 
             }
         )
+
+
+    }, [])
+
+    const showDatas = () => {
+        setOpen(true);
+
     }
 
 

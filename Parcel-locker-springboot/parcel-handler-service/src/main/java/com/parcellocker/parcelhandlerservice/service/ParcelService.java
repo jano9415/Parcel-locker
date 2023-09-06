@@ -2,6 +2,7 @@ package com.parcellocker.parcelhandlerservice.service;
 
 import com.parcellocker.parcelhandlerservice.model.Parcel;
 import com.parcellocker.parcelhandlerservice.payload.GetParcelsForShippingResponse;
+import com.parcellocker.parcelhandlerservice.payload.ParcelDTO;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
@@ -87,4 +88,7 @@ public interface ParcelService {
     //Futár felvesz egy csomagot a központi raktárból
     //Jwt token szükséges
     ResponseEntity<StringResponse> pickUpParcelFromStore(String uniqueCourierId, String uniqueParcelId);
+
+    //Felhasználó csomagjainak lekérése
+    ResponseEntity<?> getParcelsOfUser(String emailAddress, String type);
 }

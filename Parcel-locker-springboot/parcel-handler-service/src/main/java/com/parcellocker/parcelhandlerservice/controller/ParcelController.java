@@ -1,6 +1,7 @@
 package com.parcellocker.parcelhandlerservice.controller;
 
 import com.parcellocker.parcelhandlerservice.payload.GetParcelsForShippingResponse;
+import com.parcellocker.parcelhandlerservice.payload.ParcelDTO;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
@@ -138,5 +139,16 @@ public class ParcelController {
     public ResponseEntity<StringResponse> pickUpParcelFromStore(@PathVariable String uniqueCourierId,
                                                             @PathVariable String uniqueParcelId){
         return parcelService.pickUpParcelFromStore(uniqueCourierId, uniqueParcelId);
+    }
+
+    //Felhasználó csomagjainak lekérése
+    //Típusok:
+    //all - összes csomag
+    //reserved - online feladott, automatában még nem elhelyezett csomagok
+    //notPickedUp - még át nem vett csomagok. Szállítás alatti csomagok
+    //pickedUp - átvett csomagok. Sikeresen lezárt küldések
+    @GetMapping("getparcelsofuser/{emailAddress}/{type}")
+    public ResponseEntity<?> getParcelsOfUser(@PathVariable String emailAddress, @PathVariable String type){
+        return parcelService.getParcelsOfUser(emailAddress, type);
     }
 }

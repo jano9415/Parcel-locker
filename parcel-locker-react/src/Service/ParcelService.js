@@ -6,11 +6,6 @@ import AuthService from '../Service/AuthService';
 const API_URL = "http://localhost:8080/parcelhandler/parcel/";
 
 
-
-
-
-
-
 //Csomag küldése a weblapról feladási kóddal
 //Ez még csak egy előzetes csomagfeladás. A felhasználó megkapja email-ben a csomagfeladási kódot
 //A végleges csomagfeladás az automatánál történik
@@ -25,11 +20,22 @@ const followParcel = (uniqueParcelId) => {
     return axios.get(API_URL + "followparcel/" + uniqueParcelId);
 }
 
+//Felhasználó csomagjainak lekérése
+//Típusok:
+//all - összes csomag
+//reserved - online feladott, automatában még nem elhelyezett csomagok
+//notPickedUp - még át nem vett csomagok. Szállítás alatti csomagok
+//pickedUp - átvett csomagok. Sikeresen lezárt küldések
+const getParcelsOfUser = (type) => {
+    return axios.get(API_URL + "getparcelsofuser/" + AuthService.getCurrentUser().emailAddress + "/" + type,
+    { headers: authHeader() } );
+}
 
 
 const ParcelService = {
     sendParcelWithCodeFromWebpage,
     followParcel,
+    getParcelsOfUser
 
 };
 

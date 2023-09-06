@@ -20,7 +20,9 @@ public class JwtUtil {
     //A user szerepkör ezeket a végpontokat érheti el
     final List<String> apiEndpointsForUser = List.of(
             //Csomag küldése a weblapról feladási kóddal
-            "/parcelhandler/parcel/sendparcelwithcodefromwebpage"
+            "/parcelhandler/parcel/sendparcelwithcodefromwebpage",
+            //Felhasználó csomagjainak lekérése
+            "/parcelhandler/parcel/getparcelsofuser"
     );
 
     //A courier szerepkör ezeket a végpontokat érheti el

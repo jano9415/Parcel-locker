@@ -899,6 +899,63 @@ public class ParcelServiceImpl implements ParcelService {
         return ResponseEntity.ok(response);
     }
 
+    //Felhasználó csomagjainak lekérése
+    @Override
+    public ResponseEntity<?> getParcelsOfUser(String emailAddress, String type) {
+
+        User user = userService.findByEmailAddress(emailAddress);
+        List<ParcelDTO> response = new ArrayList<>();
+
+        //User nem található
+        if(user == null){
+            StringResponse stringResponse = new StringResponse();
+            stringResponse.setMessage("userNotFound");
+            return ResponseEntity.ok(stringResponse);
+
+        }
+
+        //all - összes csomag
+        if(type.equals("all")){
+            for(Parcel parcel : user.getParcels()){
+                response.add(parcelToParcelDTO(parcel));
+            }
+        }
+
+        //reserved - online feladott, automatában még nem elhelyezett csomagok
+        if(type.equals("reserved")){
+            for(Parcel parcel : user.getParcels()){
+                if(parcel.getSendingCode() != null && parcel.isPlaced() == false){
+                    response.add(parcelToParcelDTO(parcel));
+                }
+
+            }
+
+        }
+        //notPickedUp - még át nem vett csomagok. Szállítás alatti csomagok
+        if(type.equals("notPickedUp")){
+            for(Parcel parcel : user.getParcels()){
+                if(parcel.isPlaced() && parcel.isPickedUp() == false){
+                    response.add(parcelToParcelDTO(parcel));
+                }
+
+            }
+
+        }
+        //pickedUp - átvett csomagok. Sikeresen lezárt küldések
+        if(type.equals("pickedUp")){
+            for(Parcel parcel : user.getParcels()){
+                if(parcel.isPickedUp()){
+                    response.add(parcelToParcelDTO(parcel));
+                }
+
+            }
+
+        }
+
+
+        return ResponseEntity.ok(response);
+    }
+
     //Random string generálása
     public String generateRandomString(int length) {
 
@@ -1084,5 +1141,94 @@ public class ParcelServiceImpl implements ParcelService {
                 .bodyToMono(StringResponse.class)
                 .block();
     }
+
+    //Parcel objektum konvertálása parcelDTO objektumba
+    public ParcelDTO parcelToParcelDTO(Parcel parcel){
+
+        ParcelDTO parcelDTO = new ParcelDTO();
+
+        //Feladási automata
+        parcelDTO.setShippingFromPostCode(parcel.getShippingFrom().getLocation().getPostCode());
+        parcelDTO.setShippingFromCounty(parcel.getShippingFrom().getLocation().getCounty());
+        parcelDTO.setShippingFromCity(parcel.getShippingFrom().getLocation().getCity());
+        parcelDTO.setShippingFromStreet(parcel.getShippingFrom().getLocation().getStreet());
+
+        //Érkezési automata
+        parcelDTO.setShippingToPostCode(parcel.getShippingTo().getLocation().getPostCode());
+        parcelDTO.setShippingToCounty(parcel.getShippingTo().getLocation().getCounty());
+        parcelDTO.setShippingToCity(parcel.getShippingTo().getLocation().getCity());
+        parcelDTO.setShippingToCity(parcel.getShippingTo().getLocation().getCity());
+
+        //Raktár
+        if(parcel.getStore() != null){
+            parcelDTO.setStorePostCode(parcel.getStore().getAddress().getPostCode());
+            parcelDTO.setStoreCounty(parcel.getStore().getAddress().getCounty());
+            parcelDTO.setStoreCity(parcel.getStore().getAddress().getCity());
+            parcelDTO.setStoreStreet(parcel.getStore().getAddress().getStreet());
+        }
+
+        parcelDTO.setId(parcelDTO.getId());
+        parcelDTO.setUniqueParcelId(parcelDTO.getUniqueParcelId());
+        parcelDTO.setSize(parcel.getSize());
+        parcelDTO.setPrice(parcelDTO.getPrice());
+        parcelDTO.setReceiverName(parcel.getReceiverName());
+        parcelDTO.setReceiverEmailAddress(parcel.getReceiverEmailAddress());
+
+        //Ha kell, akkor user vagy a feladó adatai
+
+        parcelDTO.setShipped(parcel.isShipped());
+        parcelDTO.setPickedUp(parcel.isPickedUp());
+
+        if(parcel.getSendingDate() != null){
+            parcelDTO.setSendingDate(parcel.getSendingDate().toString());
+            parcelDTO.setSendingTime(parcel.getSendingTime().toString());
+        }
+
+
+        if(parcel.getPickingUpDate() != null){
+            parcelDTO.setPickingUpDate(parcel.getPickingUpDate().toString());
+            parcelDTO.setPickingUpTime(parcel.getPickingUpTime().toString());
+        }
+
+        if(parcel.getShippingDate() != null){
+            parcelDTO.setShippingDate(parcel.getShippingDate().toString());
+            parcelDTO.setShippingTime(parcel.getShippingTime().toString());
+        }
+
+        //Ha a csomag még valamelyik automatában van
+        if(parcel.getBox() != null){
+            parcelDTO.setMaxBoxWidth(parcel.getBox().getMaxWidth());
+            parcelDTO.setMaxBoxHeight(parcel.getBox().getMaxHeight());
+            parcelDTO.setMaxBoxLength(parcel.getBox().getMaxLength());
+            parcelDTO.setMaxBoxWeight(parcel.getBox().getMaxWeight());
+            parcelDTO.setBoxSize(parcel.getBox().getSize());
+            parcelDTO.setBoxNumber(parcel.getBox().getBoxNumber());
+        }
+
+        parcelDTO.setPlaced(parcel.isPlaced());
+        parcelDTO.setPaid(parcel.isPaid());
+
+        parcelDTO.setPickingUpCode(parcel.getPickingUpCode());
+
+        if(parcel.getSendingCode() != null){
+            parcelDTO.setSendingCode(parcel.getSendingCode());
+        }
+
+        if(parcel.getPickingUpExpirationDate() != null){
+            parcelDTO.setPickingUpExpirationDate(parcel.getPickingUpExpirationDate().toString());
+            parcelDTO.setPickingUpExpirationTime(parcel.getPickingUpExpirationTime().toString());
+        }
+        parcelDTO.setPickingUpExpired(parcel.isPickingUpExpired());
+
+        if(parcel.getSendingExpirationDate() != null){
+            parcelDTO.setSendingExpirationDate(parcel.getSendingExpirationDate().toString());
+            parcelDTO.setSendingExpirationTime(parcel.getSendingExpirationTime().toString());
+        }
+
+        parcelDTO.setSendingExpired(parcel.isSendingExpired());
+
+        return parcelDTO;
+    }
+
 
 }
