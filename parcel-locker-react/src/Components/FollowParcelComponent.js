@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Form, useFormik } from 'formik';
-import { Box, Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from '@mui/material';
+import { Box, Button, Chip, Divider, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from '@mui/material';
 import * as Yup from 'yup';
 import ParcelService from '../Service/ParcelService';
 import image15 from '../image15.png';
 import image16 from '../image16.png';
+import FollowParcelStepperComponent from './FollowParcelStepperComponent';
 
 
 
@@ -33,7 +34,6 @@ const FollowParcelComponent = () => {
       ParcelService.followParcel(values.uniqueParcelId).then((response) => {
 
         setParcel(response.data);
-        console.log(response.data);
       },
         (error) => {
 
@@ -44,7 +44,7 @@ const FollowParcelComponent = () => {
 
 
   return (
-    <div>
+    <Box>
       <form onSubmit={formik.handleSubmit}>
         <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
           <Box>
@@ -68,6 +68,13 @@ const FollowParcelComponent = () => {
               <Button disabled={!formik.isValid} type='submit'>Küldés</Button>
             </Box>
 
+            {
+              parcel.message === null && (
+                <FollowParcelStepperComponent parcel={parcel}></FollowParcelStepperComponent>
+              )
+            }
+
+
             {parcel.message === "notFound" && (
               <Box>
                 <Typography>A megadott azonosítóval nem található csomag</Typography>
@@ -75,9 +82,10 @@ const FollowParcelComponent = () => {
             )}
 
             {parcel.message === null && parcel.sendingExpirationDate != null && (
-              <Box>
+              <Box className='mt-2'>
+                <Divider><Chip label="Előzetesen feladva" /></Divider>
                 <Typography>Csomag még nincs elhelyezve, csak előzetesen feladva</Typography>
-                <Typography>Itt tudod feladni: {
+                <Typography>Feladási automata: {
                   parcel.shippingFromPostCode + " " + parcel.shippingFromCity + " " + parcel.shippingFromStreet
                 }</Typography>
                 <Typography>Eddig tudod feladni: {
@@ -89,6 +97,7 @@ const FollowParcelComponent = () => {
 
             {parcel.message === null && parcel.sendingDate != null && (
               <Box className='mt-2'>
+                <Divider><Chip label="Csomag feladva" /></Divider>
                 <Typography>Csomag feladva {parcel.sendingDate + " " + parcel.sendingTime + "-kor"}</Typography>
                 <Typography>Feladási automata: {
                   parcel.shippingFromPostCode + " " + parcel.shippingFromCity + " " + parcel.shippingFromStreet
@@ -98,8 +107,9 @@ const FollowParcelComponent = () => {
 
             {parcel.message === null && parcel.shippingDate != null && (
               <Box>
+                <Divider><Chip label="Csomag megérkezett" /></Divider>
                 <Typography>Csomag leszállítva {parcel.shippingDate + " " + parcel.shippingTime + "-kor"}</Typography>
-                <Typography>Érkezési automata {
+                <Typography>Itt tudod átvenni {
                   parcel.shippingToPostCode + " " + parcel.shippingToCity + " " + parcel.shippingToStreet
                 }</Typography>
                 <Typography>Eddig tudod átvenni: {
@@ -111,10 +121,8 @@ const FollowParcelComponent = () => {
 
             {parcel.message === null && parcel.pickingUpDate != null && (
               <Box>
+                <Divider><Chip label="Csomag átvéve" /></Divider>
                 <Typography>Csomag átvéve {parcel.pickingUpDate + " " + parcel.pickingUpTime + "-kor"}</Typography>
-                <Typography>Érkezési automata {
-                  parcel.shippingToPostCode + " " + parcel.shippingToCity + " " + parcel.shippingToStreet
-                }</Typography>
               </Box>
             )}
 
@@ -124,7 +132,7 @@ const FollowParcelComponent = () => {
 
       </form>
 
-      <Box sx={{height: '100px'}}>
+      <Box sx={{ height: '100px' }}>
 
       </Box>
 
@@ -149,7 +157,7 @@ const FollowParcelComponent = () => {
 
 
 
-    </div>
+    </Box>
   );
 }
 

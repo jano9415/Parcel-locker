@@ -147,8 +147,21 @@ public class ParcelController {
     //reserved - online feladott, automatában még nem elhelyezett csomagok
     //notPickedUp - még át nem vett csomagok. Szállítás alatti csomagok
     //pickedUp - átvett csomagok. Sikeresen lezárt küldések
+    //Jwt token szükséges
+    //User szerepkör szükséges
     @GetMapping("getparcelsofuser/{emailAddress}/{type}")
     public ResponseEntity<?> getParcelsOfUser(@PathVariable String emailAddress, @PathVariable String type){
         return parcelService.getParcelsOfUser(emailAddress, type);
     }
+
+    //Csomag törlése
+    //Felhasználó kitörli az előzetes csomagfeladást
+    //Jwt token szükséges
+    //User szerepkör szükséges
+    @DeleteMapping("deletemyparcel/{parcelId}")
+    public ResponseEntity<StringResponse> deleteMyParcel(@PathVariable Long parcelId){
+        return parcelService.deleteMyParcel(parcelId);
+    }
+
+
 }

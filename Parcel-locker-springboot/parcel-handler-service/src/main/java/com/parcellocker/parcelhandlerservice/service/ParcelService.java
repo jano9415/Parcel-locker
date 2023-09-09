@@ -91,4 +91,8 @@ public interface ParcelService {
 
     //Felhasználó csomagjainak lekérése
     ResponseEntity<?> getParcelsOfUser(String emailAddress, String type);
+
+    //Csomag törlése
+    //Felhasználó kitörli az előzetes csomagfeladást
+    ResponseEntity<StringResponse> deleteMyParcel(Long parcelId);
 }

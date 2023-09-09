@@ -19,6 +19,8 @@ import MyParcelsComponent from './Components/MyParcelsComponent';
 import FooterMenuComponent from './Components/FooterMenuComponent';
 import PricesComponent from './Components/PricesComponent';
 import StatisticsComponent from './Components/StatisticsComponent';
+import QuestionsComponent from './Components/QuestionsComponent';
+import GetCouriersComponent from './Components/GetCouriersComponent';
 
 
 const App = () => {
@@ -81,6 +83,8 @@ const App = () => {
             <Route path='/myparcels' element={<MyParcelsComponent />} />
             <Route path='/prices' element={<PricesComponent />} />
             <Route path='/statistics' element={<StatisticsComponent />} />
+            <Route path='/questions' element={<QuestionsComponent />} />
+            <Route path='/getcouriers' element={<GetCouriersComponent />} />
 
           </Routes>
         </div>

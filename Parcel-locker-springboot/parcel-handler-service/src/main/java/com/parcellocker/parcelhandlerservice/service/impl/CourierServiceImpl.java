@@ -3,14 +3,17 @@ package com.parcellocker.parcelhandlerservice.service.impl;
 import com.parcellocker.parcelhandlerservice.model.Courier;
 import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
 import com.parcellocker.parcelhandlerservice.model.Store;
+import com.parcellocker.parcelhandlerservice.payload.CourierDTO;
 import com.parcellocker.parcelhandlerservice.payload.CreateCourierDTO;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
+import com.parcellocker.parcelhandlerservice.payload.request.UpdateCourierRequest;
 import com.parcellocker.parcelhandlerservice.repository.CourierRepository;
 import com.parcellocker.parcelhandlerservice.service.CourierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -81,5 +84,55 @@ public class CourierServiceImpl implements CourierService {
 
         response.setMessage("notEligible");
         return ResponseEntity.ok(response);
+    }
+
+    //Összes futár lekérése
+    @Override
+    public ResponseEntity<List<CourierDTO>> getCouriers() {
+
+        List<CourierDTO> response = new ArrayList<>();
+
+        for(Courier courier : findAll()){
+            CourierDTO courierDTO = new CourierDTO();
+
+            courierDTO.setId(courier.getId());
+            courierDTO.setUniqueCourierId(courier.getUniqueCourierId());
+            courierDTO.setFirstName(courier.getFirstName());
+            courierDTO.setLastName(courier.getLastName());
+            courierDTO.setStorePostCode(courier.getArea().getAddress().getPostCode());
+            courierDTO.setStoreCounty(courier.getArea().getAddress().getCounty());
+            courierDTO.setStoreCity(courier.getArea().getAddress().getCity());
+            courierDTO.setStoreStreet(courier.getArea().getAddress().getStreet());
+
+            response.add(courierDTO);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    //Futár valamely adatának módosítása
+    @Override
+    public ResponseEntity<StringResponse> updateCourier(UpdateCourierRequest request) {
+
+        Courier courier = findById(request.getId());
+
+
+
+        //Ebben az esetben az admin módosítani szeretné a futár jelszavát is
+        //A jelszó egyben az rfid azonosító is
+        //Az auth database-t is frissíteni kell
+        //Kérés küldése az authentical service-nek
+        if(request.getPassword() != null){
+
+        }
+
+        //Keresztnév és vezetéknév frissítése
+        //Az auth database-t is frissíteni kell
+        //Kérés küldése az authentical service-nek
+        if(!courier.getFirstName().equals(request.getFirstName()) || !courier.getLastName().equals(request.getLastName())){
+
+        }
+
+        return null;
     }
 }

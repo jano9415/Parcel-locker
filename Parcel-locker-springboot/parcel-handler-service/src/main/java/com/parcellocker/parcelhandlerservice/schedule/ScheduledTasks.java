@@ -25,6 +25,8 @@ public class ScheduledTasks {
 
     //Online feladott csomagok, amiket nem helyeztek el időben az automatában, és azoknak lejárt a feladási határideje
     //A függvény minden reggel 5:30-kor lefut
+    //Minden előzetesen feladott csomag lejárati ideje a lejárat napja + 3 nap. A lejárati idő pedig 5:29
+    //Így az aznap lejárt csomagokat mindet ki fogja törölni a rendszer
     //Transactional nélkül hibára fut
     @Scheduled(cron = "0 30 5 * * *") // Cron kifejezés: másodperc perc óra nap hónap nap a hét sorrendben
     @Transactional
@@ -38,12 +40,15 @@ public class ScheduledTasks {
                 LocalDate currentDate = LocalDate.now();
                 LocalTime currentTime = LocalTime.now();
 
-                if(parcel.getSendingExpirationDate() != null && parcel.getSendingExpirationTime() != null){
+                //Ha van feladási lejárati dátum és időpont és a csomag még nincs elhelyezve
+                if(parcel.getSendingExpirationDate() != null && parcel.getSendingExpirationTime() != null &&
+                parcel.isPlaced() == false){
 
                     LocalDate expirationDate = parcel.getSendingExpirationDate();
                     LocalTime expirationTime = parcel.getSendingExpirationTime();
 
-                    //Ha a jelenlegi dátum és a lejárati dátum megegyezik, akkor az időpontokat kell megvizsgálni
+                    //Ha a jelenlegi dátum és a lejárati dátum megegyezik, akkor a csomag lejárt 5:29-kor
+                    // De azért ellenőrzöm a lejárati időpont és az aktuális időpont viszonyát
                     if(currentDate.isEqual(expirationDate) && currentTime.isAfter(expirationTime)){
                         //Kapcsolótábla frissítése
                         parcel.setParcelLocker(null);
@@ -51,15 +56,6 @@ public class ScheduledTasks {
                         //Csomag törlése az adatbázisból
                         parcelService.delete(parcel);
                         //Itt még lehetne küldeni egy email értesítést erről
-
-                    }
-                    //Ha a jelenlegi dátum nagyobb, mint a lejárati dátum
-                    if(currentDate.isAfter(expirationDate)){
-                        //Kapcsolótábla frissítése
-                        parcel.setParcelLocker(null);
-                        parcelService.save(parcel);
-                        //Csomag törlése az adatbázisból
-                        parcelService.delete(parcel);
 
                     }
 

@@ -26,16 +26,28 @@ const followParcel = (uniqueParcelId) => {
 //reserved - online feladott, automatában még nem elhelyezett csomagok
 //notPickedUp - még át nem vett csomagok. Szállítás alatti csomagok
 //pickedUp - átvett csomagok. Sikeresen lezárt küldések
+//Jwt token szükséges
+//User szerepkör szükséges
 const getParcelsOfUser = (type) => {
     return axios.get(API_URL + "getparcelsofuser/" + AuthService.getCurrentUser().emailAddress + "/" + type,
-    { headers: authHeader() } );
+        { headers: authHeader() });
+}
+
+//Csomag törlése
+//Felhasználó kitörli az előzetes csomagfeladást
+//Jwt token szükséges
+//User szerepkör szükséges
+const deleteMyParcel = (parcelId) => {
+    return axios.delete(API_URL + "deletemyparcel/" + parcelId,
+        { headers: authHeader() });
 }
 
 
 const ParcelService = {
     sendParcelWithCodeFromWebpage,
     followParcel,
-    getParcelsOfUser
+    getParcelsOfUser,
+    deleteMyParcel
 
 };
 

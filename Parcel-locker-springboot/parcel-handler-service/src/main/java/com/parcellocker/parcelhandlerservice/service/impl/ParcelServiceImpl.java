@@ -719,9 +719,11 @@ public class ParcelServiceImpl implements ParcelService {
 
         //Feladási lejárati dátum és idő
         //A dátum a feladási dátum + három nap
+        //A lejárati időpont minden csomag esetnén 5:29
+        //A rendszer automatikusan minden nap 5:30-kor törli az aznap lejárt előzetes feladásokat
         parcel.setSendingExpirationDate(currentDate.plusDays(3));
         //Megegyezik a feladási időpnttal
-        parcel.setSendingExpirationTime(currentTime);
+        parcel.setSendingExpirationTime(LocalTime.of(5,29));
         parcel.setSendingExpired(false);
 
         //Csomag és csomag automata összerendlése
@@ -907,6 +909,8 @@ public class ParcelServiceImpl implements ParcelService {
         List<ParcelDTO> response = new ArrayList<>();
 
         //User nem található
+        //Bár frontenden a csomagjait csak akkor tudja lekérni a user, ha be van jelentkezve
+        //Szóval mindenképp találni fog usert
         if(user == null){
             StringResponse stringResponse = new StringResponse();
             stringResponse.setMessage("userNotFound");
@@ -953,6 +957,32 @@ public class ParcelServiceImpl implements ParcelService {
         }
 
 
+        return ResponseEntity.ok(response);
+    }
+
+    //Csomag törlése
+    //Felhasználó kitörli az előzetes csomagfeladást
+    @Override
+    public ResponseEntity<StringResponse> deleteMyParcel(Long parcelId) {
+
+        Parcel parcel = findById(parcelId);
+        StringResponse response = new StringResponse();
+
+        //Ha a csomag nem található. Bár ha a kérés idáig eljut, akkor a frontenden a felhasználó
+        // be van jelentkezve és megjelentek a csomagok, amelyeket ki tud törölni
+        if(parcel == null){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
+        }
+
+        //Csomag és automata kapcsolótábla frissítése
+        parcel.setParcelLocker(null);
+        save(parcel);
+
+        //Csomag törlése
+        delete(parcel);
+
+        response.setMessage("successfulDeleting");
         return ResponseEntity.ok(response);
     }
 
@@ -1157,7 +1187,7 @@ public class ParcelServiceImpl implements ParcelService {
         parcelDTO.setShippingToPostCode(parcel.getShippingTo().getLocation().getPostCode());
         parcelDTO.setShippingToCounty(parcel.getShippingTo().getLocation().getCounty());
         parcelDTO.setShippingToCity(parcel.getShippingTo().getLocation().getCity());
-        parcelDTO.setShippingToCity(parcel.getShippingTo().getLocation().getCity());
+        parcelDTO.setShippingToStreet(parcel.getShippingTo().getLocation().getStreet());
 
         //Raktár
         if(parcel.getStore() != null){
@@ -1167,10 +1197,10 @@ public class ParcelServiceImpl implements ParcelService {
             parcelDTO.setStoreStreet(parcel.getStore().getAddress().getStreet());
         }
 
-        parcelDTO.setId(parcelDTO.getId());
-        parcelDTO.setUniqueParcelId(parcelDTO.getUniqueParcelId());
+        parcelDTO.setId(parcel.getId());
+        parcelDTO.setUniqueParcelId(parcel.getUniqueParcelId());
         parcelDTO.setSize(parcel.getSize());
-        parcelDTO.setPrice(parcelDTO.getPrice());
+        parcelDTO.setPrice(parcel.getPrice());
         parcelDTO.setReceiverName(parcel.getReceiverName());
         parcelDTO.setReceiverEmailAddress(parcel.getReceiverEmailAddress());
 

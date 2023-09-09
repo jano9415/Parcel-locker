@@ -22,7 +22,9 @@ public class JwtUtil {
             //Csomag küldése a weblapról feladási kóddal
             "/parcelhandler/parcel/sendparcelwithcodefromwebpage",
             //Felhasználó csomagjainak lekérése
-            "/parcelhandler/parcel/getparcelsofuser"
+            "/parcelhandler/parcel/getparcelsofuser",
+            //Felhasználó kitörli az előzetes csomagfeladást
+            "/parcelhandler/parcel/deletemyparcel"
     );
 
     //A courier szerepkör ezeket a végpontokat érheti el
@@ -72,7 +74,9 @@ public class JwtUtil {
             //Csomagfeladások száma automaták szerint
             "/statistics/parcel/totalsendingbylocations",
             //Csomagátvételek száma automaták szerint
-            "/statistics/parcel/totalpickingupbylocations"
+            "/statistics/parcel/totalpickingupbylocations",
+            //Összes futár lekérése
+            "/parcelhandler/courier/getcouriers"
     );
 
     //Jwt token body részének lekérése

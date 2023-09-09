@@ -20,7 +20,7 @@ const FooterMenuComponent = () => {
                     <Typography sx={{ color: 'white' }}>Adatvédelem</Typography>
                 </Box>
                 <Box className='m-3'>
-                    <Typography sx={{ color: 'white' }}>GYIK</Typography>
+                    <Typography sx={{ color: 'white' }}>Ügyfélszolgálat</Typography>
                 </Box>
                 <Box className='m-3'>
                     <Typography sx={{ color: 'white' }}>Karrier</Typography>
