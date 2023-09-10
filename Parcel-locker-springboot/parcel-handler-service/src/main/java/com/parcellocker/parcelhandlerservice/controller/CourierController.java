@@ -50,4 +50,12 @@ public class CourierController {
         return courierService.updateCourier(request);
 
     }
+
+    //Futár lekérése id alapján
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/findcourierbyid/{courierId}")
+    public ResponseEntity<CourierDTO> findCourierById(@PathVariable Long courierId){
+        return courierService.findCourierById(courierId);
+    }
 }

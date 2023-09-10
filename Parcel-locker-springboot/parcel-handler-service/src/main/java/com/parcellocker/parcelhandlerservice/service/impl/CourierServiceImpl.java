@@ -6,12 +6,15 @@ import com.parcellocker.parcelhandlerservice.model.Store;
 import com.parcellocker.parcelhandlerservice.payload.CourierDTO;
 import com.parcellocker.parcelhandlerservice.payload.CreateCourierDTO;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
+import com.parcellocker.parcelhandlerservice.payload.request.ParcelToStaticticsServiceRequest;
 import com.parcellocker.parcelhandlerservice.payload.request.UpdateCourierRequest;
 import com.parcellocker.parcelhandlerservice.repository.CourierRepository;
 import com.parcellocker.parcelhandlerservice.service.CourierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,9 @@ public class CourierServiceImpl implements CourierService {
 
     @Autowired
     private ParcelLockerServiceImpl parcelLockerService;
+
+    @Autowired
+    private WebClient.Builder webClientBuilder;
 
     @Override
     public List<Courier> findAll() {
@@ -115,24 +121,69 @@ public class CourierServiceImpl implements CourierService {
     public ResponseEntity<StringResponse> updateCourier(UpdateCourierRequest request) {
 
         Courier courier = findById(request.getId());
+        Store store = storeService.findById(request.getStoreId());
+        StringResponse response = new StringResponse();
 
+        //Parcel handler database frissítése
+        courier.setUniqueCourierId(request.getUniqueCourierId());
+        courier.setFirstName(request.getFirstName());
+        courier.setLastName(request.getLastName());
+        courier.setArea(store);
 
+        save(courier);
 
-        //Ebben az esetben az admin módosítani szeretné a futár jelszavát is
-        //A jelszó egyben az rfid azonosító is
-        //Az auth database-t is frissíteni kell
+        //Ha az admin a futár jelszavát (rfid azonosítóját) vagy email címét (egyedi futár azonosítót) is szeretné módosítani
+        //Akkor frissíteni kell az auth database-t is
         //Kérés küldése az authentical service-nek
-        if(request.getPassword() != null){
+        //Azt, hogy üres-e a jelszó, még az authentical service-ben is ellenőrizni kell
+        if(request.getPassword() != null || !courier.getUniqueCourierId().equals(request.getUniqueCourierId())){
+
+            //Kérés objektum az authentication service-nek
+            UpdateCourierRequest requestForAuthService = new UpdateCourierRequest();
+            requestForAuthService.setUniqueCourierId(request.getUniqueCourierId());
+            if(request.getPassword() != null){
+                requestForAuthService.setPassword(request.getPassword());
+            }
+
+            //Válasz objektum
+            StringResponse responseFromAuthService;
+
+            responseFromAuthService = webClientBuilder.build().post()
+                    .uri("http://authentication-service/auth/updatecourier")
+                    .body(Mono.just(requestForAuthService), UpdateCourierRequest.class)
+                    .retrieve()
+                    .bodyToMono(StringResponse.class)
+                    .block();
+
+            //Ide még kelleni fog egy tranzakció kezelés
+            //Ha az authentication database-ben nem sikerül módosítani az adatokat,
+            //akkor itt a parcel handler database-be se módosuljanak
 
         }
 
-        //Keresztnév és vezetéknév frissítése
-        //Az auth database-t is frissíteni kell
-        //Kérés küldése az authentical service-nek
-        if(!courier.getFirstName().equals(request.getFirstName()) || !courier.getLastName().equals(request.getLastName())){
 
+        response.setMessage("successfulUpdating");
+        return ResponseEntity.ok(response);
+    }
+
+    //Futár lekérése id alapján
+    @Override
+    public ResponseEntity<CourierDTO> findCourierById(Long courierId) {
+
+        Courier courier = findById(courierId);
+        CourierDTO courierDTO = new CourierDTO();
+
+        if(courier != null){
+            courierDTO.setUniqueCourierId(courier.getUniqueCourierId());
+            courierDTO.setId(courier.getId());
+            courierDTO.setLastName(courier.getLastName());
+            courierDTO.setFirstName(courier.getFirstName());
+            courierDTO.setStorePostCode(courier.getArea().getAddress().getPostCode());
+            courierDTO.setStoreCounty(courier.getArea().getAddress().getCounty());
+            courierDTO.setStoreCity(courier.getArea().getAddress().getCity());
+            courierDTO.setStoreStreet(courier.getArea().getAddress().getStreet());
         }
 
-        return null;
+        return ResponseEntity.ok(courierDTO);
     }
 }

@@ -2,6 +2,7 @@ package com.parcellocker.authenticationservice.service;
 
 import com.parcellocker.authenticationservice.model.User;
 import com.parcellocker.authenticationservice.payload.request.*;
+import com.parcellocker.authenticationservice.payload.response.StringResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
@@ -50,4 +51,8 @@ public interface UserService {
 
     //Új admin létrehozása
     ResponseEntity<?> createAdmin(CreateAdminDTO adminDTO);
+
+    //Futár valamely adatának módosítása
+    //A kérés a parcel handler service-ből jön
+    ResponseEntity<StringResponse> updateCourier(UpdateCourierRequest request);
 }

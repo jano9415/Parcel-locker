@@ -76,7 +76,13 @@ public class JwtUtil {
             //Csomagátvételek száma automaták szerint
             "/statistics/parcel/totalpickingupbylocations",
             //Összes futár lekérése
-            "/parcelhandler/courier/getcouriers"
+            "/parcelhandler/courier/getcouriers",
+            //Futár valamely adatának módosítása
+            "/parcelhandler/courier/updatecourier",
+            //Futár lekérése id alapján
+            "/parcelhandler/courier/findcourierbyid"
+
+
     );
 
     //Jwt token body részének lekérése

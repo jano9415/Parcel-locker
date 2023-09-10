@@ -36,4 +36,7 @@ public interface CourierService {
 
     //Futár valamely adatának módosítása
     ResponseEntity<StringResponse> updateCourier(UpdateCourierRequest request);
+
+    //Futár lekérése id alapján
+    ResponseEntity<CourierDTO> findCourierById(Long courierId);
 }

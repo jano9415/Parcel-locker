@@ -21,6 +21,7 @@ import PricesComponent from './Components/PricesComponent';
 import StatisticsComponent from './Components/StatisticsComponent';
 import QuestionsComponent from './Components/QuestionsComponent';
 import GetCouriersComponent from './Components/GetCouriersComponent';
+import UpdateCourierComponent from './Components/UpdateCourierComponent';
 
 
 const App = () => {
@@ -85,6 +86,7 @@ const App = () => {
             <Route path='/statistics' element={<StatisticsComponent />} />
             <Route path='/questions' element={<QuestionsComponent />} />
             <Route path='/getcouriers' element={<GetCouriersComponent />} />
+            <Route path='/updatecourier/:courierId' element={<UpdateCourierComponent />} />
 
           </Routes>
         </div>

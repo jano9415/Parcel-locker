@@ -9,6 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { Link } from "react-router-dom";
 
 
 
@@ -57,7 +58,9 @@ const GetCouriersComponent = () => {
                                 <TableCell align="right">{courier.lastName}</TableCell>
                                 <TableCell align="right">{courier.firstName}</TableCell>
                                 <TableCell align="right">{courier.storeCounty} megye</TableCell>
-                                <TableCell align="right"><Button>Módosítás</Button></TableCell>
+                                <TableCell align="right">
+                                    <Link to={`/updatecourier/${courier.id}`} >Módosítás</Link>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

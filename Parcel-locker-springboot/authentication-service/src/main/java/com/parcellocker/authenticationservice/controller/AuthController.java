@@ -1,6 +1,7 @@
 package com.parcellocker.authenticationservice.controller;
 
 import com.parcellocker.authenticationservice.payload.request.*;
+import com.parcellocker.authenticationservice.payload.response.StringResponse;
 import com.parcellocker.authenticationservice.service.serviceimpl.UserServiceImpl;
 import io.jsonwebtoken.Jwts;
 import org.apache.tomcat.util.http.parser.Authorization;
@@ -62,6 +63,14 @@ public class AuthController {
     @PostMapping("/createadmin")
     public ResponseEntity<?> createAdmin(@RequestBody CreateAdminDTO adminDTO){
         return userService.createAdmin(adminDTO);
+    }
+
+    //Futár valamely adatának módosítása
+    //A kérés a parcel handler service-ből jön
+    @PutMapping("/updatecourier")
+    public ResponseEntity<StringResponse> updateCourier(@RequestBody UpdateCourierRequest request){
+        return userService.updateCourier(request);
+
     }
 
 

@@ -163,8 +163,6 @@ public class UserServiceImpl implements UserService {
         loginResponse.setEmailAddress(user.getEmailAddress());
         loginResponse.setToken(token);
 
-        /*List<String> roles = user.getRoles().stream().map(item -> item.getRoleName())
-                .collect(Collectors.toList());*/
         loginResponse.setRoles(roles);
 
         return ResponseEntity.ok(loginResponse);
@@ -380,6 +378,35 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         response.setMessage("successAdminCreation");
+        return ResponseEntity.ok(response);
+    }
+
+    //Futár valamely adatának módosítása
+    //A kérés a parcel handler service-ből jön
+    @Override
+    public ResponseEntity<StringResponse> updateCourier(UpdateCourierRequest request) {
+
+        User user = findByEmailAddress(request.getUniqueCourierId());
+        StringResponse response = new StringResponse();
+
+        //Nem valószínű, mert a frontenden megjelenítem a futárokat és abból választ ki az admin
+        if(user == null){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
+        }
+
+        user.setEmailAddress(request.getUniqueCourierId());
+
+        //Előfordulhat, hogy a jelszó (rfid azonosító) üres, mert azt nem akarja az admin módosítani
+        //A régi pedig nem fog érkezni a kérésben, mert azt nem jelenítem meg a frontenden
+        //Nem is tudnám, az sha256 kódolás miatt
+        if(request.getPassword() != null){
+            String sha256Password = sha256Encode(request.getPassword());
+            user.setPassword(sha256Password);
+        }
+
+        userRepository.save(user);
+        response.setMessage("successfulUpdating");
         return ResponseEntity.ok(response);
     }
 
