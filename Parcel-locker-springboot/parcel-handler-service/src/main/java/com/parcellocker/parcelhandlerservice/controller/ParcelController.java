@@ -163,5 +163,13 @@ public class ParcelController {
         return parcelService.deleteMyParcel(parcelId);
     }
 
+    //Központi raktárak csomagjainak lekérése
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/getparcelsofstore/{storeId}")
+    public ResponseEntity<?> getParcelsOfStore(@PathVariable Long storeId){
+        return parcelService.getParcelsOfStore(storeId);
+    }
+
 
 }

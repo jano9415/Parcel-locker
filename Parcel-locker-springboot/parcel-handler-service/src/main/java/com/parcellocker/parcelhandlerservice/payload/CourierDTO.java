@@ -20,6 +20,8 @@ public class CourierDTO {
 
     private String lastName;
 
+    private Long storeId;
+
     private int storePostCode;
 
     private String storeCounty;
@@ -27,4 +29,5 @@ public class CourierDTO {
     private String storeCity;
 
     private String storeStreet;
+
 }

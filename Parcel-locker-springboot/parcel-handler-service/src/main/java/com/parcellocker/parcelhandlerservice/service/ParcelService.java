@@ -95,4 +95,7 @@ public interface ParcelService {
     //Csomag törlése
     //Felhasználó kitörli az előzetes csomagfeladást
     ResponseEntity<StringResponse> deleteMyParcel(Long parcelId);
+
+    //Központi raktárak csomagjainak lekérése
+    ResponseEntity<?> getParcelsOfStore(Long storeId);
 }

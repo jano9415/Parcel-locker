@@ -20,10 +20,19 @@ const findCourierById = (courierId) => {
         { headers: authHeader() });
 }
 
+//Futár valamely adatának módosítása
+//Jwt token szükséges
+//Admin szerepkör szükséges
+const updateCourier = (formValues) => {
+    return axios.put(API_URL + "updatecourier", formValues,
+        { headers: authHeader() });
+}
+
 
 const CourierService = {
     getCouriers,
-    findCourierById
+    findCourierById,
+    updateCourier
 
 };
 

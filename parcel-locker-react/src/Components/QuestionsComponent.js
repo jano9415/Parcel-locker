@@ -190,7 +190,7 @@ const QuestionsComponent = () => {
                     </AccordionSummary>
                     <AccordionDetails>
                         <Typography>
-                            Telefonon kérheted, hogya a csomagot szállítsák vissza az automatába. 
+                            Telefonon kérheted, hogy a csomagot szállítsák vissza az automatába. 
                             Ez plusz költséggel jár.
                         </Typography>
                     </AccordionDetails>

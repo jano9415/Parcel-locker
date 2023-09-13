@@ -67,4 +67,8 @@ public class FollowParcelResponse {
 
     private boolean isSendingExpired;
 
+    private String senderName;
+
+    private String senderEmailAddress;
+
 }

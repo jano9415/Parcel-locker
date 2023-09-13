@@ -42,12 +42,21 @@ const deleteMyParcel = (parcelId) => {
         { headers: authHeader() });
 }
 
+//Központi raktárak csomagjainak lekérése
+//Jwt token szükséges
+//Admin szerepkör szükséges
+const getParcelsOfStore = (storeId) => {
+    return axios.get(API_URL + "getparcelsofstore/" + storeId,
+        { headers: authHeader() });
+}
+
 
 const ParcelService = {
     sendParcelWithCodeFromWebpage,
     followParcel,
     getParcelsOfUser,
-    deleteMyParcel
+    deleteMyParcel,
+    getParcelsOfStore
 
 };
 

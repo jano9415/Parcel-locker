@@ -81,6 +81,15 @@ const FollowParcelComponent = () => {
               </Box>
             )}
 
+            {parcel.message === null && (
+              <Box>
+                <Divider><Chip label="Feladó" /></Divider>
+                <Typography>Feladó neve: {parcel.senderName}</Typography>
+                <Typography>Feladó email címe: {parcel.senderEmailAddress}</Typography>
+              </Box>
+            )}
+
+
             {parcel.message === null && parcel.sendingExpirationDate != null && (
               <Box className='mt-2'>
                 <Divider><Chip label="Előzetesen feladva" /></Divider>

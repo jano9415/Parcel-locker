@@ -43,6 +43,12 @@ const ParcelDetailsModalComponent = (props) => {
                 <Box sx={style}>
                     <Typography>Hol tart a csomagom?</Typography>
 
+                    <Box>
+                        <Divider><Chip label="Címzett" /></Divider>
+                        <Typography>Címzett neve: {props.parcel.receiverName}</Typography>
+                        <Typography>Címzett email címe: {props.parcel.receiverEmailAddress}</Typography>
+                    </Box>
+
                     {props.parcel.sendingExpirationDate != null && (
                         <Box>
                             <Divider><Chip label="Előzetesen feladva" /></Divider>

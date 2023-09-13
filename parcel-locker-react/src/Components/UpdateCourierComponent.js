@@ -25,23 +25,25 @@ const UpdateCourierComponent = () => {
 
     useEffect(() => {
 
-        
+
         //Futár lekérése a parcel handler service-ből
+        //Fromik változók inicializálása a kérés változóival
         CourierService.findCourierById(courierId).then((response) => {
             setCourier(response.data);
 
             formik.setValues({
+                id: response.data.id,
                 uniqueCourierId: response.data.uniqueCourierId || '',
                 firstName: response.data.firstName || '',
                 lastName: response.data.lastName || '',
-                storeId: 1
+                storeId: response.data.storeId
             });
 
         },
             (error) => {
 
             })
-            
+
 
 
         //Központi raktárak lekérése
@@ -61,6 +63,8 @@ const UpdateCourierComponent = () => {
 
     const formik = useFormik({
         initialValues: {
+            //Ez az id mező a courier válasz objektumból jön
+            id: '',
             uniqueCourierId: '',
             password: '',
             firstName: '',
@@ -80,22 +84,30 @@ const UpdateCourierComponent = () => {
 
         }),
         onSubmit: (values) => {
-            //Új futár létrehozása
-            AuthService.createCourier(values).then((response) => {
+            //Futár valamely adatának módosítása
+            CourierService.updateCourier(values).then((response) => {
+
+                if (response.data.message === "notFound") {
+
+                }
+
                 if (response.data.message === "uidExists") {
                     setEmailOrPasswordAlredyExistMessage("Ez a futár azonosító már regisztrálva van");
                 }
-                if (response.data.message === "passwordExists") {
-                    setEmailOrPasswordAlredyExistMessage("Ez a jelszó már regisztrálva van. A jelszó egyben a futár rfid azonosítója is");
-                }
-                if (response.data.message === "successCourierCreation") {
 
-                    navigate("/login");
+
+                if (response.data.message === "successfulUpdating") {
+
+                    navigate("/getcouriers");
                     window.location.reload();
                 }
 
             },
                 (error) => {
+
+                    //Tranzakciós hiba a szerver oldalon
+                    setEmailOrPasswordAlredyExistMessage("Ez a jelszó már regisztrálva van. A jelszó egyben a futár rfid azonosítója is");
+
 
                 })
 

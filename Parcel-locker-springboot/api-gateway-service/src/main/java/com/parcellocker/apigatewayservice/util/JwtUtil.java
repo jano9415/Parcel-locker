@@ -80,7 +80,9 @@ public class JwtUtil {
             //Futár valamely adatának módosítása
             "/parcelhandler/courier/updatecourier",
             //Futár lekérése id alapján
-            "/parcelhandler/courier/findcourierbyid"
+            "/parcelhandler/courier/findcourierbyid",
+            //Központi raktárak csomagjainak lekérése
+            "/parcelhandler/parcel/getparcelsofstore"
 
 
     );

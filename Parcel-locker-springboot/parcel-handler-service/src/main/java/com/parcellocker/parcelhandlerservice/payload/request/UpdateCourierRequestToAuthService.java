@@ -1,9 +1,9 @@
-package com.parcellocker.authenticationservice.payload.request;
+package com.parcellocker.parcelhandlerservice.payload.request;
 
 import lombok.Data;
 
 @Data
-public class UpdateCourierRequest {
+public class UpdateCourierRequestToAuthService {
 
     private String newUniqueCourierId;
 

@@ -386,8 +386,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<StringResponse> updateCourier(UpdateCourierRequest request) {
 
-        User user = findByEmailAddress(request.getUniqueCourierId());
+        //User keresése a régi email cím (egyedi futár azonosító) alapján
+        User user = findByEmailAddress(request.getPreviousUniqueCourierId());
         StringResponse response = new StringResponse();
+
 
         //Nem valószínű, mert a frontenden megjelenítem a futárokat és abból választ ki az admin
         if(user == null){
@@ -395,15 +397,34 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(response);
         }
 
-        user.setEmailAddress(request.getUniqueCourierId());
+        //A megadott egyedi futár azonosító már létezik az adatbázisban
+        //Azt is meg kell nézni, hogy a régi és az új futár azonosító megegyezik-e
+        //Mert ha megegyezik, akkor mindig már létezik az adatbázisban hibát fog visszaküldeni
+        if(!request.getPreviousUniqueCourierId().equals(request.getNewUniqueCourierId()) &&
+                findByEmailAddress(request.getNewUniqueCourierId()) != null){
+            response.setMessage("uidExists");
+            return ResponseEntity.ok(response);
+        }
+
 
         //Előfordulhat, hogy a jelszó (rfid azonosító) üres, mert azt nem akarja az admin módosítani
         //A régi pedig nem fog érkezni a kérésben, mert azt nem jelenítem meg a frontenden
         //Nem is tudnám, az sha256 kódolás miatt
         if(request.getPassword() != null){
             String sha256Password = sha256Encode(request.getPassword());
+
+            //Futár esetén a jelszót is ellenőrizni kell. Kettő ugyan olyan nem lehet, mert a jelszó egyben a bejelentkezési
+            //RFID azonosító is
+            if(existsByPassword(sha256Password)){
+                response.setMessage("passwordExists");
+                return ResponseEntity.ok(response);
+            }
+
             user.setPassword(sha256Password);
         }
+
+        //Új email cím (egyedi futár azonosító)
+        user.setEmailAddress(request.getNewUniqueCourierId());
 
         userRepository.save(user);
         response.setMessage("successfulUpdating");

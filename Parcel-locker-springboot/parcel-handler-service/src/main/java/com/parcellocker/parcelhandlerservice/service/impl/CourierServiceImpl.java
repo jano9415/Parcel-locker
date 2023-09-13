@@ -8,11 +8,16 @@ import com.parcellocker.parcelhandlerservice.payload.CreateCourierDTO;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.payload.request.ParcelToStaticticsServiceRequest;
 import com.parcellocker.parcelhandlerservice.payload.request.UpdateCourierRequest;
+import com.parcellocker.parcelhandlerservice.payload.request.UpdateCourierRequestToAuthService;
 import com.parcellocker.parcelhandlerservice.repository.CourierRepository;
 import com.parcellocker.parcelhandlerservice.service.CourierService;
+import jakarta.ws.rs.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -105,6 +110,7 @@ public class CourierServiceImpl implements CourierService {
             courierDTO.setUniqueCourierId(courier.getUniqueCourierId());
             courierDTO.setFirstName(courier.getFirstName());
             courierDTO.setLastName(courier.getLastName());
+            courierDTO.setStoreId(courier.getArea().getId());
             courierDTO.setStorePostCode(courier.getArea().getAddress().getPostCode());
             courierDTO.setStoreCounty(courier.getArea().getAddress().getCounty());
             courierDTO.setStoreCity(courier.getArea().getAddress().getCity());
@@ -117,12 +123,35 @@ public class CourierServiceImpl implements CourierService {
     }
 
     //Futár valamely adatának módosítása
+    @Transactional
     @Override
     public ResponseEntity<StringResponse> updateCourier(UpdateCourierRequest request) {
 
-        Courier courier = findById(request.getId());
-        Store store = storeService.findById(request.getStoreId());
         StringResponse response = new StringResponse();
+
+        Courier courier = findById(request.getId());
+
+        //Új futár azonosító
+        String newUniqueCourierId = request.getUniqueCourierId();
+        //Régi futár azonosító
+        String previousUniqueCourierId = courier.getUniqueCourierId();
+
+        //Nem valószínű, mert a frontenden megjelenítem a futárokat és abból választ ki az admin
+        if(courier == null){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
+        }
+
+        //A megadott egyedi futár azonosító már létezik az adatbázisban
+        //Azt is meg kell nézni, hogy a régi és az új futár azonosító megegyezik-e
+        //Mert ha megegyezik, akkor mindig már létezik az adatbázisban hibát fog visszaküldeni
+        if(!previousUniqueCourierId.equals(newUniqueCourierId) && findByUniqueCourierId(newUniqueCourierId) != null){
+            response.setMessage("uidExists");
+            return ResponseEntity.ok(response);
+        }
+
+        Store store = storeService.findById(request.getStoreId());
+
 
         //Parcel handler database frissítése
         courier.setUniqueCourierId(request.getUniqueCourierId());
@@ -136,11 +165,13 @@ public class CourierServiceImpl implements CourierService {
         //Akkor frissíteni kell az auth database-t is
         //Kérés küldése az authentical service-nek
         //Azt, hogy üres-e a jelszó, még az authentical service-ben is ellenőrizni kell
-        if(request.getPassword() != null || !courier.getUniqueCourierId().equals(request.getUniqueCourierId())){
+        if(request.getPassword() != null || !newUniqueCourierId.equals(previousUniqueCourierId)){
 
             //Kérés objektum az authentication service-nek
-            UpdateCourierRequest requestForAuthService = new UpdateCourierRequest();
-            requestForAuthService.setUniqueCourierId(request.getUniqueCourierId());
+            UpdateCourierRequestToAuthService requestForAuthService = new UpdateCourierRequestToAuthService();
+            requestForAuthService.setNewUniqueCourierId(newUniqueCourierId);
+            requestForAuthService.setPreviousUniqueCourierId(previousUniqueCourierId);
+
             if(request.getPassword() != null){
                 requestForAuthService.setPassword(request.getPassword());
             }
@@ -148,18 +179,63 @@ public class CourierServiceImpl implements CourierService {
             //Válasz objektum
             StringResponse responseFromAuthService;
 
-            responseFromAuthService = webClientBuilder.build().post()
+            responseFromAuthService = webClientBuilder.build().put()
                     .uri("http://authentication-service/auth/updatecourier")
-                    .body(Mono.just(requestForAuthService), UpdateCourierRequest.class)
+                    .body(Mono.just(requestForAuthService), UpdateCourierRequestToAuthService.class)
                     .retrieve()
                     .bodyToMono(StringResponse.class)
                     .block();
 
-            //Ide még kelleni fog egy tranzakció kezelés
+
+            if(responseFromAuthService.getMessage().equals("successfulUpdating")){
+
+                response.setMessage("successfulUpdating");
+                return ResponseEntity.ok(response);
+            }
+
+            //Tranzakció kezelés
             //Ha az authentication database-ben nem sikerül módosítani az adatokat,
             //akkor itt a parcel handler database-be se módosuljanak
+            //Futár nem található
+            if(responseFromAuthService.getMessage().equals("notFound")){
+
+                throw new DataAccessException("notFound") {
+                    @Override
+                    public String getMessage() {
+                        return super.getMessage();
+                    }
+                };
+
+            }
+
+            //Ilyen email cím (egyedi futár azonosító) már létezik
+            if(responseFromAuthService.getMessage().equals("uidExists")){
+
+                throw new DataAccessException("uidExists") {
+                    @Override
+                    public String getMessage() {
+                        return super.getMessage();
+                    }
+                };
+
+
+            }
+
+            //Ilyen jelszó (rfid azonosító) már létezik
+            if(responseFromAuthService.getMessage().equals("passwordExists")){
+
+                throw new DataAccessException("passwordExists") {
+                    @Override
+                    public String getMessage() {
+                        return super.getMessage();
+                    }
+                };
+
+
+            }
 
         }
+
 
 
         response.setMessage("successfulUpdating");
@@ -178,6 +254,7 @@ public class CourierServiceImpl implements CourierService {
             courierDTO.setId(courier.getId());
             courierDTO.setLastName(courier.getLastName());
             courierDTO.setFirstName(courier.getFirstName());
+            courierDTO.setStoreId(courier.getArea().getId());
             courierDTO.setStorePostCode(courier.getArea().getAddress().getPostCode());
             courierDTO.setStoreCounty(courier.getArea().getAddress().getCounty());
             courierDTO.setStoreCity(courier.getArea().getAddress().getCity());

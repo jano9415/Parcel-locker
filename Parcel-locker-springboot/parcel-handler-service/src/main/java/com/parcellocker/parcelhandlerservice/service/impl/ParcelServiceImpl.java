@@ -782,7 +782,7 @@ public class ParcelServiceImpl implements ParcelService {
         response.setShippingToPostCode(parcel.getShippingTo().getLocation().getPostCode());
         response.setShippingToCounty(parcel.getShippingTo().getLocation().getCounty());
         response.setShippingToCity(parcel.getShippingTo().getLocation().getCity());
-        response.setShippingToCity(parcel.getShippingTo().getLocation().getCity());
+        response.setShippingToStreet(parcel.getShippingTo().getLocation().getStreet());
 
         if(parcel.getStore() != null){
             response.setStorePostCode(parcel.getStore().getAddress().getPostCode());
@@ -825,6 +825,15 @@ public class ParcelServiceImpl implements ParcelService {
         if(parcel.getSendingExpirationDate() != null){
             response.setSendingExpirationDate(parcel.getSendingExpirationDate().toString());
             response.setSendingExpirationTime(parcel.getSendingExpirationTime().toString());
+        }
+
+        if(parcel.getUser() != null){
+            response.setSenderName(parcel.getUser().getLastName() + " " + parcel.getUser().getFirstName());
+            response.setSenderEmailAddress(parcel.getUser().getEmailAddress());
+        }
+        else{
+            response.setSenderName(parcel.getSenderName());
+            response.setSenderEmailAddress(parcel.getSenderEmailAddress());
         }
 
         response.setSendingExpired(parcel.isSendingExpired());
@@ -983,6 +992,28 @@ public class ParcelServiceImpl implements ParcelService {
         delete(parcel);
 
         response.setMessage("successfulDeleting");
+        return ResponseEntity.ok(response);
+    }
+
+    //Központi raktárak csomagjainak lekérése
+    @Override
+    public ResponseEntity<?> getParcelsOfStore(Long storeId) {
+
+        List<ParcelDTO> response = new ArrayList<>();
+        StringResponse stringResponse = new StringResponse();
+        Store store = storeService.findById(storeId);
+
+        //Nem valószínű, mert a frontenden kiválasztja a megjelenített központi raktárat
+        if(store == null){
+            stringResponse.setMessage("notFound");
+            ResponseEntity.ok(stringResponse);
+        }
+
+        for(Parcel parcel : store.getParcels()){
+            response.add(parcelToParcelDTO(parcel));
+        }
+
+
         return ResponseEntity.ok(response);
     }
 

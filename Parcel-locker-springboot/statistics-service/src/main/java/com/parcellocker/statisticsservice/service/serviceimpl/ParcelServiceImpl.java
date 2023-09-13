@@ -462,9 +462,13 @@ public class ParcelServiceImpl implements ParcelService {
             if(fromOrTo.equals("from")){
 
                 TotalSendingByLocationsResponse responseObj = new TotalSendingByLocationsResponse();
+                String location = parcelLocker.getPostCode() + ", " + parcelLocker.getCity() + ", " +
+                        parcelLocker.getStreet();
 
-                responseObj.setLocation(parcelLocker.getPostCode() + ", " + parcelLocker.getCity() + ", " +
-                        parcelLocker.getStreet());
+                responseObj.setId(parcelLocker.getId());
+                responseObj.setLocationShortFormat(location.substring(6,8));
+                responseObj.setIdAndLocation(parcelLocker.getId() + "-" + location.substring(6,8));
+                responseObj.setLocation(location);
                 responseObj.setAmount(countByShippingFromStreet(parcelLocker.getStreet()));
 
                 response.add(responseObj);
@@ -474,9 +478,13 @@ public class ParcelServiceImpl implements ParcelService {
             if(fromOrTo.equals("to")){
 
                 TotalSendingByLocationsResponse responseObj = new TotalSendingByLocationsResponse();
+                String location = parcelLocker.getPostCode() + ", " + parcelLocker.getCity() + ", " +
+                        parcelLocker.getStreet();
 
-                responseObj.setLocation(parcelLocker.getPostCode() + ", " + parcelLocker.getCity() + ", " +
-                        parcelLocker.getStreet());
+                responseObj.setId(parcelLocker.getId());
+                responseObj.setLocationShortFormat(location.substring(6,8));
+                responseObj.setIdAndLocation(parcelLocker.getId() + "-" + location.substring(6,8));
+                responseObj.setLocation(location);
                 responseObj.setAmount(countByShippingToStreet(parcelLocker.getStreet()));
 
                 response.add(responseObj);
@@ -487,62 +495,5 @@ public class ParcelServiceImpl implements ParcelService {
         return response;
 
     }
-
-
-    /*
-    public void valami(){
-        Parcel parcel = new Parcel();
-        ParcelLocker senderParcelLocker = new ParcelLocker();
-        ParcelLocker receiverParcelLocker = new ParcelLocker();
-
-        parcel.setUniqueParcelId("fdsfds");
-        parcel.setSenderEmailAddress("fdsfdsgfd");
-        parcel.setSenderName("Nagy László");
-
-        //Feladási automata
-        senderParcelLocker.setPostCode(8100);
-        senderParcelLocker.setCounty("aaaa");
-        senderParcelLocker.setCity("dsfhgj");
-        senderParcelLocker.setStreet("jhgbd");
-        parcel.setShippingFrom(senderParcelLocker);
-        //Érkezési automata
-        receiverParcelLocker.setPostCode(5600);
-        receiverParcelLocker.setCounty("lllhh");
-        receiverParcelLocker.setCity("sasasc");
-        receiverParcelLocker.setStreet("hhtzt");
-        parcel.setShippingTo(receiverParcelLocker);
-
-        parcel.setSize("large");
-        parcel.setPrice(9000);
-        parcel.setReceiverName("Kovács Nóra");
-        parcel.setReceiverEmailAddress("gfgfd");
-
-        parcel.setShipped(true);
-        parcel.setPickedUp(true);
-        parcel.setSendingDate(LocalDate.parse("2023-09-04"));
-        parcel.setSendingTime(LocalTime.parse("13:40:20"));
-
-        parcel.setPickingUpDate(LocalDate.parse("2023-09-08"));
-        parcel.setPickingUpTime(LocalTime.parse("10:41:10"));
-        parcel.setShippingDate(LocalDate.parse("2023-09-07"));
-        parcel.setShippingTime(LocalTime.parse("8:41:13"));
-
-        parcel.setPlaced(true);
-        parcel.setPaid(true);
-        parcel.setPickingUpExpirationDate(LocalDate.parse("2023-09-10"));
-        parcel.setPickingUpExpirationTime(LocalTime.parse("16:30:44"));
-
-        parcel.setPickedUp(true);
-
-        parcel.setSendingExpirationDate(LocalDate.parse("2023-09-05"));
-        parcel.setSendingExpirationTime(LocalTime.parse("12:30:20"));
-
-        save(parcel);
-    }
-
-     */
-
-
-
 
 }
