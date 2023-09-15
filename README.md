@@ -16,10 +16,12 @@ Authentication service object relational database plan:
 
 Parcel handler service relational database plan:
 
-![Parcel handler service relational db plan drawio](https://github.com/jano9415/Parcel-locker/assets/87268161/5efb3cd8-2b5b-4478-91e6-646be6485086)
+![Parcel handler service relational db plan drawio](https://github.com/jano9415/Parcel-locker/assets/87268161/ccf2f112-7470-4266-9d37-ee7b4124ef39)
+
 
 
 Parcel handler service object relational database plan:
 
-![Parcel handler service object relational db plan drawio](https://github.com/jano9415/Parcel-locker/assets/87268161/9e45f6ff-1e8a-4810-88cf-075104a3a25a)
+![Parcel handler service object relational db plan drawio](https://github.com/jano9415/Parcel-locker/assets/87268161/dba8a208-64ab-4c93-ad66-0a3355dd4c50)
+
 
