@@ -1017,6 +1017,29 @@ public class ParcelServiceImpl implements ParcelService {
         return ResponseEntity.ok(response);
     }
 
+    //Csomag átvételi ideje lejárt, ezért az a központi raktárban van
+    //Csomag újraindítása az automatához
+    //pickingUpExpired mező módosítása. True vagy false
+    @Override
+    public ResponseEntity<StringResponse> updatePickingUpExpired(Long parcelId) {
+
+        Parcel parcel = findById(parcelId);
+        StringResponse response = new StringResponse();
+
+        //Nem valószínű, mert a csomagok meg vannak jelenítve az admin számára a fonrontend oldalon
+        if(parcel == null){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
+
+        }
+
+        parcel.setPickingUpExpired(false);
+        save(parcel);
+
+        response.setMessage("successfulUpdating");
+        return ResponseEntity.ok(response);
+    }
+
     //Random string generálása
     public String generateRandomString(int length) {
 

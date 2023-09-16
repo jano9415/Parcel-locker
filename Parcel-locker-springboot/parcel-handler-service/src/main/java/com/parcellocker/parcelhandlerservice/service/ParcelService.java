@@ -98,4 +98,9 @@ public interface ParcelService {
 
     //Központi raktárak csomagjainak lekérése
     ResponseEntity<?> getParcelsOfStore(Long storeId);
+
+    //Csomag átvételi ideje lejárt, ezért az a központi raktárban van
+    //Csomag újraindítása az automatához
+    //pickingUpExpired mező módosítása. True vagy false
+    ResponseEntity<StringResponse> updatePickingUpExpired(Long parcelId);
 }

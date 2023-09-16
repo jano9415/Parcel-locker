@@ -50,13 +50,24 @@ const getParcelsOfStore = (storeId) => {
         { headers: authHeader() });
 }
 
+//Csomag átvételi ideje lejárt, ezért az a központi raktárban van
+//Csomag újraindítása az automatához
+//pickingUpExpired mező módosítása. True vagy false
+//Jwt token szükséges
+//Admin szerepkör szükséges
+const updatePickingUpExpired = (parcelId) => {
+    return axios.get(API_URL + "updatepickingupexpired/" + parcelId,
+        { headers: authHeader() });
+}
+
 
 const ParcelService = {
     sendParcelWithCodeFromWebpage,
     followParcel,
     getParcelsOfUser,
     deleteMyParcel,
-    getParcelsOfStore
+    getParcelsOfStore,
+    updatePickingUpExpired
 
 };
 

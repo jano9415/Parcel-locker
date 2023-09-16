@@ -82,7 +82,9 @@ public class JwtUtil {
             //Futár lekérése id alapján
             "/parcelhandler/courier/findcourierbyid",
             //Központi raktárak csomagjainak lekérése
-            "/parcelhandler/parcel/getparcelsofstore"
+            "/parcelhandler/parcel/getparcelsofstore",
+            //Csomag újraindítása az automatához
+            "/parcelhandler/parcel/updatepickingupexpired"
 
 
     );

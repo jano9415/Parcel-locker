@@ -171,5 +171,16 @@ public class ParcelController {
         return parcelService.getParcelsOfStore(storeId);
     }
 
+    //Csomag átvételi ideje lejárt, ezért az a központi raktárban van
+    //Csomag újraindítása az automatához
+    //pickingUpExpired mező módosítása. True vagy false
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/updatepickingupexpired/{parcelId}")
+    public ResponseEntity<StringResponse> updatePickingUpExpired(@PathVariable Long parcelId){
+        return parcelService.updatePickingUpExpired(parcelId);
+    }
+
+
 
 }
