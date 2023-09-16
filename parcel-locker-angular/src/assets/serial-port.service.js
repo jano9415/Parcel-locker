@@ -36,6 +36,9 @@ let uniqueCourierId;
                 break;
             }
         }
+        for(let i=0 ; i<uId.length ; i++){
+            console.log("+" + uId[i]);
+        }
         uniqueCourierId = uId;
         return uId;
         

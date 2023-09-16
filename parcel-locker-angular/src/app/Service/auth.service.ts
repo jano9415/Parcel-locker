@@ -40,6 +40,7 @@ export class AuthService {
 
   //Futár bejelentkezés
   //Rfid uid: 07 6205 26
+  //Másik rfid uid: 'space'A6 40 65'space'
   courierLogin(password: string): Observable<any> {
     this.getSenderParcelLockerId();
     return this.httpClient.post<any>(`${this.API_URL + "courierlogin"}/${this.senderParcelLockerId}`, { password });

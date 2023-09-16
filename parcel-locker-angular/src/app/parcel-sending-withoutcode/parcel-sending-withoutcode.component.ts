@@ -127,6 +127,20 @@ export class ParcelSendingWithoutcodeComponent {
       this.parcelLockerService.getParcelLockersForChoice().subscribe({
         next: (response) => {
           this.parcelLockers = response;
+          //Feladási automata törlése a listából
+          const senderParcelLockerIdString = localStorage.getItem('senderParcelLockerId');
+
+          if(senderParcelLockerIdString != null){
+            //A 10-es érték a számrendszert jelenti
+            const senderParcelLockerIdInt = parseInt(senderParcelLockerIdString, 10);
+
+            const indexToRemove = this.parcelLockers.findIndex(parcelLocker => parcelLocker.id === senderParcelLockerIdInt);
+            if (indexToRemove !== -1) {
+              this.parcelLockers.splice(indexToRemove, 1);
+            }
+          }
+          
+
         },
         error: (error) => {
           console.log(error);
