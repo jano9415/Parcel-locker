@@ -103,4 +103,16 @@ public interface ParcelService {
     //Csomag újraindítása az automatához
     //pickingUpExpired mező módosítása. True vagy false
     ResponseEntity<StringResponse> updatePickingUpExpired(Long parcelId);
+
+    //Futár csomagjainak lekérése
+    ResponseEntity<?> getParcelsOfCourier(Long courierId);
+
+    //Automata csomagjainak lekérése
+    ResponseEntity<?> getParcelsOfParcelLocker(Long parcelLockerId);
+
+    //Csomagátvételi lejárati idő meghosszabbítása
+    ResponseEntity<StringResponse> updatePickingUpExpirationDate(Long parcelId, String newDate);
+
+    //Csomagfeladási lejárati idő meghosszabbítása
+    ResponseEntity<StringResponse> updateSendingExpirationDate(Long parcelId, String newDate);
 }

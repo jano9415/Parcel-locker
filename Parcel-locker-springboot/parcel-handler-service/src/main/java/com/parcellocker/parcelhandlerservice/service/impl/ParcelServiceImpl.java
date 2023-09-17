@@ -196,7 +196,7 @@ public class ParcelServiceImpl implements ParcelService {
         return ResponseEntity.ok(response);
     }
 
-    //Csomagok lekérése, amik készen állnak az elszállításra
+    //Csomagok lekérése az automatából, amik készen állnak az elszállításra
     @Override
     public ResponseEntity<List<GetParcelsForShippingResponse>> getParcelsForShipping(Long senderParcelLockerId) {
 
@@ -837,6 +837,7 @@ public class ParcelServiceImpl implements ParcelService {
         }
 
         response.setSendingExpired(parcel.isSendingExpired());
+        response.setPickingUpExpired(parcel.isPickingUpExpired());
 
         return ResponseEntity.ok(response);
     }
@@ -1037,6 +1038,102 @@ public class ParcelServiceImpl implements ParcelService {
         save(parcel);
 
         response.setMessage("successfulUpdating");
+        return ResponseEntity.ok(response);
+    }
+
+    //Futár csomagjainak lekérése
+    @Override
+    public ResponseEntity<?> getParcelsOfCourier(Long courierId) {
+
+        List<ParcelDTO> response = new ArrayList<>();
+        StringResponse stringResponse = new StringResponse();
+        Courier courier = courierService.findById(courierId);
+
+        //Nem valószínű, mert a frontenden kiválasztja a megjelenített futárokat
+        if(courier == null){
+            stringResponse.setMessage("notFound");
+            ResponseEntity.ok(stringResponse);
+        }
+
+        for(Parcel parcel : courier.getParcels()){
+            response.add(parcelToParcelDTO(parcel));
+        }
+
+
+        return ResponseEntity.ok(response);
+    }
+
+    //Automata csomagjainak lekérése
+    @Override
+    public ResponseEntity<?> getParcelsOfParcelLocker(Long parcelLockerId) {
+
+        List<ParcelDTO> response = new ArrayList<>();
+        StringResponse stringResponse = new StringResponse();
+        ParcelLocker parcelLocker = parcelLockerService.findById(parcelLockerId);
+
+        //Nem valószínű, mert a frontenden kiválasztja a megjelenített automatákat
+        if(parcelLocker == null){
+            stringResponse.setMessage("notFound");
+            ResponseEntity.ok(stringResponse);
+        }
+
+        for(Parcel parcel : parcelLocker.getParcels()){
+            response.add(parcelToParcelDTO(parcel));
+        }
+
+
+        return ResponseEntity.ok(response);
+    }
+
+    //Csomagátvételi lejárati idő meghosszabbítása
+    @Override
+    public ResponseEntity<StringResponse> updatePickingUpExpirationDate(Long parcelId, String newDate) {
+
+        Parcel parcel = findById(parcelId);
+        StringResponse response = new StringResponse();
+
+        //Nem valószínű, mert frontenden megjelennek a csomagok
+        if(parcel == null){
+            response.setMessage("notFound");
+            ResponseEntity.ok(response);
+        }
+
+        //Frontend csak azt jeleníti meg, ami nem null
+        //De azért egy kis plusz validáció
+        if(parcel.getPickingUpExpirationDate() == null){
+            response.setMessage("expirationDateIsNull");
+            ResponseEntity.ok(response);
+        }
+
+        parcel.setPickingUpExpirationDate(LocalDate.parse(newDate));
+        save(parcel);
+        response.setMessage("successFulUpdating");
+        return ResponseEntity.ok(response);
+    }
+
+    //Csomagfeladási lejárati idő meghosszabbítása
+    @Override
+    public ResponseEntity<StringResponse> updateSendingExpirationDate(Long parcelId, String newDate) {
+
+        Parcel parcel = findById(parcelId);
+        StringResponse response = new StringResponse();
+
+        //Nem valószínű, mert frontenden megjelennek a csomagok
+        if(parcel == null){
+            response.setMessage("notFound");
+            ResponseEntity.ok(response);
+        }
+
+        //Frontend csak azt jeleníti meg, ami nem null
+        //De azért egy kis plusz validáció
+        if(parcel.getSendingExpirationDate() == null){
+            response.setMessage("expirationDateIsNull");
+            ResponseEntity.ok(response);
+        }
+
+        parcel.setSendingExpirationDate(LocalDate.parse(newDate));
+        save(parcel);
+        response.setMessage("successFulUpdating");
         return ResponseEntity.ok(response);
     }
 

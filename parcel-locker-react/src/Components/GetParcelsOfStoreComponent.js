@@ -1,4 +1,4 @@
-import { Box, Button, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Box, Button, InputLabel, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import StoreService from "../Service/StoreService";
 import ParcelService from "../Service/ParcelService";
@@ -35,6 +35,7 @@ const GetParcelsOfStoreComponent = () => {
         //Központi raktár csomagjainak lekérése
         ParcelService.getParcelsOfStore(selectedValue).then((response) => {
             setParcels(response.data);
+            console.log(response.data);
         },
             (error) => {
 
@@ -69,9 +70,19 @@ const GetParcelsOfStoreComponent = () => {
     return (
         <Box>
 
+            <Box className="d-flex justify-content-center m-2">
+                <Box sx={{ p: 2, border: '1px dashed grey' }}>
+                    <Typography>Itt tudod megtekinteni a központi raktárakban megtalálható csomagokat.</Typography>
+                    <Typography>A legördülő listából válaszd ki a megyei központi raktárt.</Typography>
+                    <Typography>Ha a csomag azért van a központi raktárban, mert lejárt az átvételi ideje,</Typography>
+                    <Typography>akkor itt tudod azt beállítani, hogy a futár újra elszállítsa az átvételi automatához.</Typography>
+                    <Typography>Ehhez kattints a csomaglejárat módosítása oszlopban az újraindítás gombra, ha az látható.</Typography>
+                </Box>
+            </Box>
+
             <Box className="d-flex justify-content-center">
                 <Box>
-                    <InputLabel>Csomagtípus kiválasztása</InputLabel>
+                    <InputLabel>Központi raktárak</InputLabel>
                     <Select
                         id='storeid'
                         name='storeid'
@@ -94,7 +105,6 @@ const GetParcelsOfStoreComponent = () => {
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Id</TableCell>
                             <TableCell align="right">Csomagazonosító</TableCell>
                             <TableCell align="right">Feladási automata</TableCell>
                             <TableCell align="right">Érkezési automata</TableCell>
@@ -109,15 +119,20 @@ const GetParcelsOfStoreComponent = () => {
                                 key={parcel.id}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row">
-                                    {parcel.id}
+                                <TableCell align="right">{parcel.uniqueParcelId}</TableCell>
+                                <TableCell align="right">
+                                    {parcel.shippingFromPostCode + " " + parcel.shippingFromCity + " " + parcel.shippingFromStreet}
                                 </TableCell>
-                                <TableCell align="right">{parcel.uniqueParcelId}</TableCell>
-                                <TableCell align="right">{parcel.uniqueParcelId}</TableCell>
-                                <TableCell align="right">{parcel.uniqueParcelId}</TableCell>
+                                <TableCell align="right">
+                                    {parcel.shippingToPostCode + " " + parcel.shippingToCity + " " + parcel.shippingToStreet}
+                                </TableCell>
                                 <TableCell align="right">{parcel.pickingUpExpired + ""}</TableCell>
                                 <TableCell align="right">
-                                    <Button onClick={() => updatePickingUpExpired(parcel.id)}>Módosítás</Button>
+                                    {
+                                        parcel.pickingUpExpired && (
+                                            <Button onClick={() => updatePickingUpExpired(parcel.id)}>Újraindítás</Button>
+                                        )
+                                    }
                                 </TableCell>
                             </TableRow>
                         ))}

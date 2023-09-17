@@ -307,6 +307,7 @@ public class ParcelServiceImpl implements ParcelService {
         return ResponseEntity.ok(response);
     }
 
+    //Feladás és átvétel között eltelt idő
     //Átlagos szállítási idő - response lista első objektuma
     //Leggyorsabb szállítási idő - response lista második objektuma
     //Leglassabb szállítási idő - response lista harmadik objektuma

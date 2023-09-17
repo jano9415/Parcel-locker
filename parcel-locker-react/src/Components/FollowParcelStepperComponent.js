@@ -10,6 +10,7 @@ const FollowParcelStepperComponent = (props) => {
         'Előzetesen feladva',
         'Csomag feladva',
         'Csomag megérkezett',
+        'Csomag a központi raktárban',
         'Csomag átvéve'
     ];
 
@@ -24,8 +25,11 @@ const FollowParcelStepperComponent = (props) => {
         if(props.parcel.shippingDate != null){
             setActualStep(2);
         }
-        if(props.parcel.pickingUpDate != null){
+        if(props.parcel.pickingUpExpired === true){
             setActualStep(3);
+        }
+        if(props.parcel.pickingUpDate != null){
+            setActualStep(4);
         }
 
     }, [])

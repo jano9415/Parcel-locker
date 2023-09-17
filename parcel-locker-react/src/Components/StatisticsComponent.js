@@ -103,7 +103,7 @@ const StatisticsComponent = () => {
                                 checked={checked4}
                                 onChange={handleChange4} />}
                             inputProps={{ 'aria-label': 'controlled' }}
-                            label="Csomgátvételi forgalom diagram"
+                            label="Csomagátvételi forgalom diagram"
                             labelPlacement="start"
                         />
                     </Box>
@@ -232,6 +232,9 @@ const StatisticsComponent = () => {
                     <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
                         <Paper elevation={5} className="m-2">
                             <Typography sx={{ fontSize: 20 }}>Szállítási idők</Typography>
+                            <Typography>Feladási dátum: amikor az ügyfél elhelyezte a csomagját a feladási automatában.</Typography>
+                            <Typography>Szállítási dátum: amikor a futár elhelyezte a csomagot az érkezési automatában.</Typography>
+                            <Typography>Az adatok ezeknek az időkülönbségeknek az átlagát, minimumát és maximimát fejezik ki.</Typography>
                             <AverageMinMaxShippingTime></AverageMinMaxShippingTime>
                         </Paper>
                         <Paper elevation={5} className="m-2">

@@ -181,6 +181,39 @@ public class ParcelController {
         return parcelService.updatePickingUpExpired(parcelId);
     }
 
+    //Futár csomagjainak lekérése
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/getparcelsofcourier/{courierId}")
+    public ResponseEntity<?> getParcelsOfCourier(@PathVariable Long courierId){
+        return parcelService.getParcelsOfCourier(courierId);
+    }
+
+    //Automata csomagjainak lekérése
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/getparcelsofparcellocker/{parcelLockerId}")
+    public ResponseEntity<?> getParcelsOfParcelLocker(@PathVariable Long parcelLockerId){
+        return parcelService.getParcelsOfParcelLocker(parcelLockerId);
+    }
+
+    //Csomagátvételi lejárati idő meghosszabbítása
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/updatepickingupexpirationdate/{parcelId}/{newDate}")
+    public ResponseEntity<StringResponse> updatePickingUpExpirationDate(@PathVariable Long parcelId,
+                                                                        @PathVariable String newDate){
+        return parcelService.updatePickingUpExpirationDate(parcelId, newDate);
+    }
+
+    //Csomagfeladási lejárati idő meghosszabbítása
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/updatesendingexpirationdate/{parcelId}/{newDate}")
+    public ResponseEntity<StringResponse> updateSendingExpirationDate(@PathVariable Long parcelId,
+                                                                        @PathVariable String newDate){
+        return parcelService.updateSendingExpirationDate(parcelId, newDate);
+    }
 
 
 }

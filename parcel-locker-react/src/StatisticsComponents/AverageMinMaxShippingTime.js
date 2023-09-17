@@ -26,7 +26,7 @@ const AverageMinMaxShippingTime = () => {
 
 
     return (
-        <Box>
+        <Box className="m-2">
             <Typography>Átlagos szállítási idő: {averageTime} óra</Typography>
             <Typography>Leggyorsabb szállítási idő: {minTime} óra</Typography>
             <Typography>Leglassabb szállítási idő: {maxTime} óra</Typography>

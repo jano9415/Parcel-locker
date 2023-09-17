@@ -23,6 +23,8 @@ import QuestionsComponent from './Components/QuestionsComponent';
 import GetCouriersComponent from './Components/GetCouriersComponent';
 import UpdateCourierComponent from './Components/UpdateCourierComponent';
 import GetParcelsOfStoreComponent from './Components/GetParcelsOfStoreComponent';
+import GetParcelsOfCourierComponent from './Components/GetParcelsOfCourierComponent';
+import GetParcelsOfParcelLockerComponent from './Components/GetParcelsOfParcelLockerComponent';
 
 
 const App = () => {
@@ -89,6 +91,8 @@ const App = () => {
             <Route path='/getcouriers' element={<GetCouriersComponent />} />
             <Route path='/updatecourier/:courierId' element={<UpdateCourierComponent />} />
             <Route path='/getparcelsofstore' element={<GetParcelsOfStoreComponent />} />
+            <Route path='/getparcelsofcourier' element={ <GetParcelsOfCourierComponent /> } />
+            <Route path='/getparcelsofparcellocker' element={ <GetParcelsOfParcelLockerComponent /> } />
 
           </Routes>
         </div>

@@ -60,6 +60,37 @@ const updatePickingUpExpired = (parcelId) => {
         { headers: authHeader() });
 }
 
+//Futárok csomagjainak lekérése
+//Jwt token szükséges
+//Admin szerepkör szükséges
+const getParcelsOfCourier = (courierId) => {
+    return axios.get(API_URL + "getparcelsofcourier/" + courierId,
+        { headers: authHeader() });
+}
+
+//Automaták csomagjainak lekérése
+//Jwt token szükséges
+//Admin szerepkör szükséges
+const getParcelsOfParcelLocker = (parcelLockerId) => {
+    return axios.get(API_URL + "getparcelsofparcellocker/" + parcelLockerId,
+        { headers: authHeader() });
+}
+
+//Csomagátvételi lejárati idő meghosszabbítása
+//Jwt token szükséges
+//Admin szerepkör szükséges
+const updatePickingUpExpirationDate = (parcelId, newDate) => {
+    return axios.get(API_URL + "updatepickingupexpirationdate/" + parcelId + "/" + newDate,
+        { headers: authHeader() });
+}
+
+//Csomagfeladási lejárati idő meghosszabbítása
+//Jwt token szükséges
+//Admin szerepkör szükséges
+const updateSendingExpirationDate = (parcelId, newDate) => {
+    return axios.get(API_URL + "updatesendingexpirationdate/" + parcelId + "/" + newDate,
+        { headers: authHeader() });
+}
 
 const ParcelService = {
     sendParcelWithCodeFromWebpage,
@@ -67,7 +98,11 @@ const ParcelService = {
     getParcelsOfUser,
     deleteMyParcel,
     getParcelsOfStore,
-    updatePickingUpExpired
+    updatePickingUpExpired,
+    getParcelsOfCourier,
+    getParcelsOfParcelLocker,
+    updatePickingUpExpirationDate,
+    updateSendingExpirationDate
 
 };
 

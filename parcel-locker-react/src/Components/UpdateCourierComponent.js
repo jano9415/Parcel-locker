@@ -99,7 +99,6 @@ const UpdateCourierComponent = () => {
                 if (response.data.message === "successfulUpdating") {
 
                     navigate("/getcouriers");
-                    window.location.reload();
                 }
 
             },

@@ -128,6 +128,21 @@ const FollowParcelComponent = () => {
               </Box>
             )}
 
+            {
+              parcel.message === null && parcel.pickingUpExpired === true && (
+                <Box>
+                  <Divider><Chip label="Csomag a megyei raktárban" /></Divider>
+                  <Typography>A csomagot a futár visszaszállította a megyei raktárba,
+                    <Typography>mert lejárt az átvételi ideje.</Typography>
+                    <Typography>Ha szeretnéd újraindítani a csomagot az átvételi automatához,</Typography>
+                    <Typography>akkor hívd fel az ügyfélszolgálatot.</Typography>
+                  </Typography>
+                  <Typography>Megyei raktár címe: {parcel.storePostCode + " " + parcel.storeCity + " "
+                    + parcel.storeStreet}</Typography>
+                </Box>
+              )
+            }
+
             {parcel.message === null && parcel.pickingUpDate != null && (
               <Box>
                 <Divider><Chip label="Csomag átvéve" /></Divider>

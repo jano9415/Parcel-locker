@@ -84,7 +84,15 @@ public class JwtUtil {
             //Központi raktárak csomagjainak lekérése
             "/parcelhandler/parcel/getparcelsofstore",
             //Csomag újraindítása az automatához
-            "/parcelhandler/parcel/updatepickingupexpired"
+            "/parcelhandler/parcel/updatepickingupexpired",
+            //Futárok csomagjainak lekérése
+            "/parcelhandler/parcel/getparcelsofcourier",
+            //Automaták csomagjainak lekérése
+            "/parcelhandler/parcel/getparcelsofparcellocker",
+            //Csomagátvételi lejárati idő meghosszabbítása
+            "/parcelhandler/parcel/updatepickingupexpirationdate",
+            //Csomagfeladási lejárati idő meghosszabbítása
+            "/parcelhandler/parcel/updatesendingexpirationdate"
 
 
     );

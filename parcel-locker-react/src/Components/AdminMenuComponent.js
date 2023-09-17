@@ -32,6 +32,20 @@ const AdminMenuComponent = () => {
 
     }
 
+    //Link az automaták csomagjai oldalra
+    const getParcelsOfParcelLocker = () => {
+        setAnchorEl(null);
+        navigate("/getparcelsofparcellocker");
+
+    }
+
+    //Link a futárok csomagjai oldalra
+    const getParcelsOfCourier = () => {
+        setAnchorEl(null);
+        navigate("/getparcelsofcourier");
+
+    }
+
 
     return (
         <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
@@ -56,8 +70,8 @@ const AdminMenuComponent = () => {
                         'aria-labelledby': 'basic-button',
                     }}
                 >
-                    <MenuItem onClick={handleClose}>Lejárati idő hosszabítása</MenuItem>
-                    <MenuItem onClick={handleClose}>Automaták csomagjai</MenuItem>
+                    <MenuItem onClick={getParcelsOfParcelLocker}>Automaták csomagjai</MenuItem>
+                    <MenuItem onClick={getParcelsOfCourier}>Futárok csomagjai</MenuItem>
                     <MenuItem onClick={getParcelsOfStore}>Központi raktárak csomagjai</MenuItem>
                 </Menu>
             </Tabs>
