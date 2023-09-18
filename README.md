@@ -16,8 +16,18 @@ On the server side I use the following technologies:
 Spring Data JPA, JWT token for authentication and authorization, Spring Cloud Eureka Netflix for discovery service, Spring Cloud Gateway for API Gateway service, Apache Kafka for the asynchronous communication between the services, Spring Webflux for the synchronous communication between the services, Postgre SQL with JPA and MongoDB.
 
 There is an angular client side application. This software runs on the parcel lockers.
+In the angular application I use the following technologies:
+Arduino Uno microcontorller - I use the arduino to log in into the web application with RFID tag by the courier. The arduino receives the datas from a Mifare RC522 RFID modul.
+Web Seriap API - I use this API in order to communicate the arudino uno microcontroller and the web application each other via serial protocoll.
+Reactive Form Modul for handling the forms and the form validations, Angular Material design components.
+
 There is a react client side application. This is a web application with domain address and everyone can react this app.
+In the react application I use the following technologies:
+Axios libary for handling the requests and the responses, React Material elements, Fromik and Yup for the forms and for the form validations.
+
 There is a native android client side application made by android studio.
+In the android application I use the following technologies:
+Retrofit libary for handling the requests and the responses.
 
 
                                                         Architect plan:
