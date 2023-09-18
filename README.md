@@ -70,6 +70,7 @@ With red color I indicate the optional variables and with black the mandatory va
 ![Android-use-case drawio](https://github.com/jano9415/Parcel-locker/assets/87268161/993a7417-4377-4f31-a460-32215562b453)
 
 Pictures from the applications. The applications still contain only hungarian language but these will contain english too.
+
                                                         Angular:
 The main screen of the parcel locker
 ![Image1](https://github.com/jano9415/Parcel-locker/assets/87268161/27680827-cae7-4cfb-8e83-bc5daf9940f6)
@@ -82,7 +83,7 @@ Email notification after parcel sending
 ![Image4](https://github.com/jano9415/Parcel-locker/assets/87268161/44a52162-7019-4190-92fa-dfbb266890cb)
 
 Courier login with RFID tag
-![Image5](https://github.com/jano9415/Parcel-locker/assets/87268161/1e611451-3fc9-4008-9e09-bbe178dc6509)
+![Image5](https://github.com/jano9415/Parcel-locker/assets/87268161/4ad0ab07-9c60-4cd3-976d-a98be0f806d3)
 
 Empty parcel locker
 ![Image6](https://github.com/jano9415/Parcel-locker/assets/87268161/bcf83bce-bc2f-4f2d-a96e-89b59ad414c3)
@@ -92,6 +93,46 @@ Fill parcel locker
 
 Pick up your parcel and the email notification with the picking up code
 ![Image8](https://github.com/jano9415/Parcel-locker/assets/87268161/e33e7927-8db8-456f-b603-a130b1b8006a)
+
+                                                        React
+Home page
+![Image1](https://github.com/jano9415/Parcel-locker/assets/87268161/c0908be3-f682-4456-8a06-6fa73b142007)
+![Image3](https://github.com/jano9415/Parcel-locker/assets/87268161/d6fab2ad-eadc-4c67-b523-c6687ec8c47f)
+![Image2](https://github.com/jano9415/Parcel-locker/assets/87268161/5963148e-d91c-44a2-8f4e-09941a9ee2db)
+
+Check the parcel lockers and the saturation datas
+![Image4](https://github.com/jano9415/Parcel-locker/assets/87268161/36e345ef-eef9-45ad-a927-c6b409e1313d)
+
+Check my parcel that I am waiting for
+![Image5](https://github.com/jano9415/Parcel-locker/assets/87268161/e253632d-0b0a-48af-af82-88f87d784506)
+
+Prices
+![Image6](https://github.com/jano9415/Parcel-locker/assets/87268161/d870808d-9f80-442a-bc7f-49059ae5c3a7)
+
+Common questions
+![Image7](https://github.com/jano9415/Parcel-locker/assets/87268161/fbdc1ed3-36ef-4f04-9dda-563cd17ca099)
+
+Send parcel with sending code after login. This is just a pre-sending. You still have to go to the parcel locker, type the sending code that you got in email and situate the parcel
+![Image8](https://github.com/jano9415/Parcel-locker/assets/87268161/e843046b-c894-474a-8cf0-1a0c9ebb2b74)
+
+Check my parcels that I sent
+![Image9](https://github.com/jano9415/Parcel-locker/assets/87268161/b8f4b3b8-fb6a-44af-8e57-f17f2585c5f8)
+![Image10](https://github.com/jano9415/Parcel-locker/assets/87268161/26d838db-b60f-4499-bbd9-c20349740e33)
+![Image12](https://github.com/jano9415/Parcel-locker/assets/87268161/5c880667-e812-4239-a6a1-41eb93c52173)
+
+
+Delete my parcel that I didn't placed in the parcel locker yet
+![Image11](https://github.com/jano9415/Parcel-locker/assets/87268161/c5c6d27b-54b6-4565-9dca-2b399884ddfb)
+
+
+
+
+
+
+
+
+
+
 
 
 
