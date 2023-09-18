@@ -125,6 +125,33 @@ Delete my parcel that I didn't placed in the parcel locker yet
 ![Image11](https://github.com/jano9415/Parcel-locker/assets/87268161/c5c6d27b-54b6-4565-9dca-2b399884ddfb)
 
 
+Admin functions
+Add new yourier
+![Image13](https://github.com/jano9415/Parcel-locker/assets/87268161/4d64aa62-64d9-49c0-b115-e006cfb90a50)
+
+Check couriers
+![Image14](https://github.com/jano9415/Parcel-locker/assets/87268161/71d9e3dc-2afa-45d4-8fe7-3156e256632d)
+
+Modify courier
+![Image15](https://github.com/jano9415/Parcel-locker/assets/87268161/eb1f97c9-ccc0-498b-8488-6acf1361b0b0)
+
+Statistic datas
+![Image16](https://github.com/jano9415/Parcel-locker/assets/87268161/839f714a-0dd7-4ef3-a2ec-1286a772be94)
+
+![Image17](https://github.com/jano9415/Parcel-locker/assets/87268161/26ad2155-564a-43ec-8d96-a6e5e4ae6ca7)
+
+![Image18](https://github.com/jano9415/Parcel-locker/assets/87268161/d704b3df-85dc-47b4-9f10-d590cfb38e4e)
+
+![Image19](https://github.com/jano9415/Parcel-locker/assets/87268161/81b44ccf-fad2-4712-bc79-2880864d2d91)
+
+
+
+
+
+
+
+
+
 
 
 
