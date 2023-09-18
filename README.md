@@ -100,17 +100,27 @@ Home page
 ![Image3](https://github.com/jano9415/Parcel-locker/assets/87268161/d6fab2ad-eadc-4c67-b523-c6687ec8c47f)
 ![Image2](https://github.com/jano9415/Parcel-locker/assets/87268161/5963148e-d91c-44a2-8f4e-09941a9ee2db)
 
+My profile and logout
+![Image29](https://github.com/jano9415/Parcel-locker/assets/87268161/bf4d0807-35b0-4d98-87c3-4b1696013ba0)
+
+
 Check the parcel lockers and the saturation datas
 ![Image4](https://github.com/jano9415/Parcel-locker/assets/87268161/36e345ef-eef9-45ad-a927-c6b409e1313d)
 
 Check my parcel that I am waiting for
 ![Image5](https://github.com/jano9415/Parcel-locker/assets/87268161/e253632d-0b0a-48af-af82-88f87d784506)
+![Image24](https://github.com/jano9415/Parcel-locker/assets/87268161/c7368fa1-144f-4183-9b99-67db27f2783d)
+
 
 Prices
 ![Image6](https://github.com/jano9415/Parcel-locker/assets/87268161/d870808d-9f80-442a-bc7f-49059ae5c3a7)
+![Image25](https://github.com/jano9415/Parcel-locker/assets/87268161/0f4d854e-32d4-4f64-b5eb-5a84873f087e)
+
 
 Common questions
 ![Image7](https://github.com/jano9415/Parcel-locker/assets/87268161/fbdc1ed3-36ef-4f04-9dda-563cd17ca099)
+![Image26](https://github.com/jano9415/Parcel-locker/assets/87268161/4a3854d7-f556-4404-83a0-f076f4b9a470)
+
 
 Send parcel with sending code after login. This is just a pre-sending. You still have to go to the parcel locker, type the sending code that you got in email and situate the parcel
 ![Image8](https://github.com/jano9415/Parcel-locker/assets/87268161/e843046b-c894-474a-8cf0-1a0c9ebb2b74)
@@ -126,14 +136,28 @@ Delete my parcel that I didn't placed in the parcel locker yet
 
 
 Admin functions
-Add new yourier
+Add new courier
 ![Image13](https://github.com/jano9415/Parcel-locker/assets/87268161/4d64aa62-64d9-49c0-b115-e006cfb90a50)
+![Image27](https://github.com/jano9415/Parcel-locker/assets/87268161/65f089c5-bc9b-425c-9b16-575059a70363)
+![Image28](https://github.com/jano9415/Parcel-locker/assets/87268161/386312e3-c551-46c6-95e9-2a34478db200)
+
+
 
 Check couriers
 ![Image14](https://github.com/jano9415/Parcel-locker/assets/87268161/71d9e3dc-2afa-45d4-8fe7-3156e256632d)
 
 Modify courier
 ![Image15](https://github.com/jano9415/Parcel-locker/assets/87268161/eb1f97c9-ccc0-498b-8488-6acf1361b0b0)
+
+Check parcels of the parcel locker, parcels of the courier, parcels of the store and modify the parcel for example the expiration dates of the parcels
+![Image20](https://github.com/jano9415/Parcel-locker/assets/87268161/60fa5963-7a16-486d-8ee3-b8f0a05a2163)
+![Image21](https://github.com/jano9415/Parcel-locker/assets/87268161/26adf2aa-ba21-4223-b328-a9fea4964541)
+![Image22](https://github.com/jano9415/Parcel-locker/assets/87268161/7c384468-6933-4366-933d-e34a7c2eab5a)
+![Image23](https://github.com/jano9415/Parcel-locker/assets/87268161/52cb7320-f821-45c5-a786-be6ed5310bd7)
+
+
+
+
 
 Statistic datas
 ![Image16](https://github.com/jano9415/Parcel-locker/assets/87268161/839f714a-0dd7-4ef3-a2ec-1286a772be94)
@@ -143,6 +167,9 @@ Statistic datas
 ![Image18](https://github.com/jano9415/Parcel-locker/assets/87268161/d704b3df-85dc-47b4-9f10-d590cfb38e4e)
 
 ![Image19](https://github.com/jano9415/Parcel-locker/assets/87268161/81b44ccf-fad2-4712-bc79-2880864d2d91)
+
+
+                                                        Android
 
 
 
