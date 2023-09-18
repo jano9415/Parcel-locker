@@ -5,7 +5,7 @@ General operation:
 The essence of the parcel delivery service that the customers can send their parcels from parcel lockers to parcel lockers. It is a very useful service, because if I am waiting for a parcel I dont't have to sit home and waiting for the courier.
 The software handles the parcel sending and parcel pick up by the customer, the parcel delivery and store by the courier, and the admin functions.
 
-                                                        This is a parcel locker:
+                                                        This is a parcel locker in the real life:
 ![parcellockerimage3](https://github.com/jano9415/Parcel-locker/assets/87268161/b5716d3e-c958-498e-8801-ac2f5e63cf04)
 
 
@@ -51,7 +51,13 @@ There is a native android client side application made by android studio.
 
                                                         Functions of the react application:
 
-![React-use-case drawio](https://github.com/jano9415/Parcel-locker/assets/87268161/dcb98ce0-c433-4cc0-afa5-d9a373444570)
+![React-use-case drawio](https://github.com/jano9415/Parcel-locker/assets/87268161/279881f3-07af-4ae2-973a-03117090ddec)
+
+
+                                                        Functions of the android mobile application:
+
+![Android-use-case drawio](https://github.com/jano9415/Parcel-locker/assets/87268161/993a7417-4377-4f31-a460-32215562b453)
+
 
 
 
