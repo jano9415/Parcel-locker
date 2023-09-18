@@ -90,6 +90,10 @@ Empty parcel locker
 Fill parcel locker
 ![Image7](https://github.com/jano9415/Parcel-locker/assets/87268161/3362787a-4d09-410c-ba7a-d36df1744474)
 
+Pick up your parcel and the email notification with the picking up code
+![Image8](https://github.com/jano9415/Parcel-locker/assets/87268161/e33e7927-8db8-456f-b603-a130b1b8006a)
+
+
 
 
 
