@@ -103,6 +103,16 @@ Home page
 My profile and logout
 ![Image29](https://github.com/jano9415/Parcel-locker/assets/87268161/bf4d0807-35b0-4d98-87c3-4b1696013ba0)
 
+Registration
+![Image31](https://github.com/jano9415/Parcel-locker/assets/87268161/b2925ffa-6d57-4e18-916b-ca95a0010234)
+
+After registration you get an email notification that you can find the activation link in. Click the link, and your registration is active. Without activation you can't login.
+![Image30](https://github.com/jano9415/Parcel-locker/assets/87268161/51f85879-f863-4b39-b820-e74d493d78e0)
+
+Login page
+![Image32](https://github.com/jano9415/Parcel-locker/assets/87268161/29fee92a-110c-4f41-bb29-af22a83aea3e)
+![Image33](https://github.com/jano9415/Parcel-locker/assets/87268161/2141540b-8b6b-4961-bc61-6cc95a299e1d)
+![Image34](https://github.com/jano9415/Parcel-locker/assets/87268161/91a6cab3-68ad-4592-897c-0484f7bdd1d6)
 
 Check the parcel lockers and the saturation datas
 ![Image4](https://github.com/jano9415/Parcel-locker/assets/87268161/36e345ef-eef9-45ad-a927-c6b409e1313d)
