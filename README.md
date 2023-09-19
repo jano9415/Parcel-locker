@@ -179,36 +179,28 @@ Home page
 ![Screenshot_2023-09-19-14-07-55-714](https://github.com/jano9415/Parcel-locker/assets/87268161/dd75f918-4196-4ac8-bbcb-d082075a7428)
 
 Registration
-
 ![Screenshot_2023-09-19-14-09-05-819](https://github.com/jano9415/Parcel-locker/assets/87268161/0dceee2d-663d-46d8-848b-cf5eb14a6610)
 
 Check parcel lockers
-
 ![Screenshot_2023-09-19-14-09-53-887](https://github.com/jano9415/Parcel-locker/assets/87268161/2a10fda3-f1c7-4a7c-bf56-404d8bdf2aed)
 
 Check saturation datas of parcel locker
-
 ![Screenshot_2023-09-19-14-10-09-462](https://github.com/jano9415/Parcel-locker/assets/87268161/445f44a0-3df4-48a1-a6a2-8a53b92005ec)
 
 Home page after login by the user
-
 ![Screenshot_2023-09-19-14-10-53-082](https://github.com/jano9415/Parcel-locker/assets/87268161/9fa82f19-c804-4a6e-8c9f-2737777bbc03)
 
 Send parcel. You have to login for this function. This is just a pre-sending. You still have to go to the parcel locker, type the sending code that you got in email and situate the parcel
-
 ![Screenshot_2023-09-19-14-11-04-183](https://github.com/jano9415/Parcel-locker/assets/87268161/1967b740-9aa8-4384-b79f-9308cccfa8df)
 ![Screenshot_2023-09-19-14-11-47-040](https://github.com/jano9415/Parcel-locker/assets/87268161/7352087d-a42e-4fba-8d4c-d9904e9b2c03)
 
 Follow my parcel that I am waiting for
-
 ![Screenshot_2023-09-19-14-16-17-082](https://github.com/jano9415/Parcel-locker/assets/87268161/72627e0c-2a49-45cf-a98b-70aa284899d3)
 
 Home page after login by the courier
-
 ![Screenshot_2023-09-19-14-18-43-679](https://github.com/jano9415/Parcel-locker/assets/87268161/26c7cc9f-c0b3-462c-b8c8-40b6a6760c6b)
 
 Hand a parcel to the store and pick up a parcel from the store by scanning the barcode
-
 ![Screenshot_2023-09-19-14-18-56-335](https://github.com/jano9415/Parcel-locker/assets/87268161/144e0ba7-e5ea-41f6-b15c-cf067b0af2ab)
 ![Barcode read](https://github.com/jano9415/Parcel-locker/assets/87268161/dfaae4d4-e942-4373-9430-2ba2e206a303)
 ![Screenshot_2023-09-19-14-21-21-328](https://github.com/jano9415/Parcel-locker/assets/87268161/10fa7f9a-3ce9-4c6f-b8be-3ccd4de79588)
