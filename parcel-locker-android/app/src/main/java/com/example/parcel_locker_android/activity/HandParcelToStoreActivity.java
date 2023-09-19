@@ -1,5 +1,6 @@
 package com.example.parcel_locker_android.activity;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -18,6 +19,9 @@ import com.example.parcel_locker_android.R;
 import com.example.parcel_locker_android.config.ApiConfig;
 import com.example.parcel_locker_android.payload.CurrentUser;
 import com.example.parcel_locker_android.payload.response.StringResponse;
+import com.example.parcel_locker_android.qrreading.Capture;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,7 +35,7 @@ public class HandParcelToStoreActivity extends AppCompatActivity {
 
     private TextView backBtn6;
 
-    private Button handParcelToStoreBtn;
+    private Button handParcelToStoreBtn, readQRBtnHPActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +45,22 @@ public class HandParcelToStoreActivity extends AppCompatActivity {
         context = this;
         handParcelToStoreBtn = findViewById(R.id.handParcelToStoreBtn);
         handUniqueParcelIdEt = findViewById(R.id.handUniqueParcelIdEt);
+        readQRBtnHPActivity = findViewById(R.id.readQRBtnHPActivity);
         backBtn6 = findViewById(R.id.backBtn6);
+
+        //Barkód olvasás
+        readQRBtnHPActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ScanOptions scanOptions = new ScanOptions();
+                scanOptions.setPrompt("Barkód olvasás");
+                scanOptions.setBeepEnabled(true);
+                scanOptions.setOrientationLocked(true);
+                scanOptions.setCaptureActivity(Capture.class);
+                barCodeLauncher.launch(scanOptions);
+
+            }
+        });
 
         //Csomag leadása a raktárba
         handParcelToStoreBtn.setOnClickListener(new View.OnClickListener() {
@@ -105,4 +124,21 @@ public class HandParcelToStoreActivity extends AppCompatActivity {
         return true;
 
     }
+
+    ActivityResultLauncher<ScanOptions> barCodeLauncher = registerForActivityResult(new ScanContract(),
+            result ->{
+
+                try {
+                    if(result.getContents() == null) {
+                        Toast.makeText(context, "Nem támogatott típusú kód", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(context, "Kód beolvasva: " + result.getContents(), Toast.LENGTH_LONG).show();
+                        handUniqueParcelIdEt.setText(result.getContents());
+                    }
+                }catch (Exception exception){
+
+                }
+
+
+            });
 }

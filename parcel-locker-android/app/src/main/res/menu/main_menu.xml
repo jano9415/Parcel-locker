@@ -2,10 +2,15 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menuSignUp"
-        android:title="valami1" />
+        android:title="Menü"
+        app:showAsAction="ifRoom"/>
+
     <item android:id="@+id/menuFollowParcel"
         android:title="valami2"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+
     <item android:id="@+id/menuParcelLockers"
-        android:title="valami3" />
+        android:title="valami3"
+        app:showAsAction="never"
+        />
 </menu>

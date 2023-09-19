@@ -9,7 +9,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiConfig {
 
+    //Otthoni ip
     private static final String API_GATEWAY_URL = "http://192.168.0.13:8080/";
+    //Egyetemi ip
+    //private static final String API_GATEWAY_URL = "http://172.21.28.170:8080/";
     private static ApiConfig instance;
     private Retrofit retrofit;
 

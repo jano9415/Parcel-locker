@@ -16,11 +16,20 @@
         android:textSize="20dp" />
 
     <TextView
+        android:id="@+id/textView16"
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Csomagkövetés"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Írd be az email-ben kapott csomagazonosítód" />
+        android:text="Írd be az email-ben kapott csomagazonosítót" />
 
     <EditText
         android:id="@+id/followUniqueParcelIdEt"
@@ -33,7 +42,7 @@
 
     <Button
         android:id="@+id/followUniqueParcelIdBtn"
-        android:layout_width="300dp"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:backgroundTint="#0996D6"

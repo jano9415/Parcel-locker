@@ -15,6 +15,29 @@
         android:textColor="#0996D6"
         android:text="Vissza" />
 
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Csomagautomaták"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="A telítettségi adatok megtekintéséhez kattints az automatára"
+        android:textSize="16sp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/parcelLockersRv"
         android:layout_width="409dp"
