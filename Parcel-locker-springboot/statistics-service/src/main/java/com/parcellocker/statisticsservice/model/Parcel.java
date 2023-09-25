@@ -73,4 +73,16 @@ public class Parcel {
     private LocalTime sendingExpirationTime;
 
     private boolean isSendingExpired;
+
+    private LocalDate pickingUpDateFromParcelLockerByCourier;
+
+    private LocalTime pickingUpTimeFromParcelLockerByCourier;
+
+    private LocalDate handingDateToFirstStoreByCourier;
+
+    private LocalTime handingTimeToFirstStoreByCourier;
+
+    private LocalDate pickingUpDateFromSecondStoreByCourier;
+
+    private LocalTime pickingUpTimeFromSecondStoreByCourier;
 }

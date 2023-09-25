@@ -126,7 +126,7 @@ public class FollowParcelActivity extends AppCompatActivity {
                                         + " " + response.body().getShippingToStreet() + "\n"
                                         + "Eddig tudod átvenni: " + response.body().getPickingUpExpirationDate()
                                         + " " + response.body().getPickingUpExpirationTime();
-                                isShippedTv.setText("Leszállítva");
+                                isShippedTv.setText(message);
 
                             }
 
@@ -138,7 +138,7 @@ public class FollowParcelActivity extends AppCompatActivity {
                                         + "Érkezési automata: " + response.body().getShippingToPostCode()
                                         + " " + response.body().getShippingToCity()
                                         + " " + response.body().getShippingToStreet();
-                                isPickedUpTv.setText("Átvéve");
+                                isPickedUpTv.setText(message);
 
                             }
 

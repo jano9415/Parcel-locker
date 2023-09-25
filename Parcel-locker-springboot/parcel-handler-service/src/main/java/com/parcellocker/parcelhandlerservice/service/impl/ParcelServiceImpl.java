@@ -15,6 +15,7 @@ import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -249,6 +250,10 @@ public class ParcelServiceImpl implements ParcelService {
 
             //Csomag és csomag automata összerendelés megszüntetése
             parcel.setParcelLocker(null);
+
+            //Dátum és időpont, amikor a futár kiveszi a csomagot
+            parcel.setPickingUpDateFromParcelLockerByCourier(currentDate());
+            parcel.setPickingUpTimeFromParcelLockerByCourier(currentTime());
 
             save(parcel);
             courierService.save(courier);
@@ -865,6 +870,10 @@ public class ParcelServiceImpl implements ParcelService {
             return ResponseEntity.ok(response);
         }
 
+        //Dátum és időpont, amikor a futár leadja a csomagot
+        parcel.setHandingDateToFirstStoreByCourier(currentDate());
+        parcel.setHandingTimeToFirstStoreByCourier(currentTime());
+
         //Csomag leadása
         //Csomag és futár összerendelés megszüntetése. Kapcsolótábla frissítése
         parcel.setCourier(null);
@@ -895,6 +904,10 @@ public class ParcelServiceImpl implements ParcelService {
             response.setMessage("notFound");
             return ResponseEntity.ok(response);
         }
+
+        //Dátum és időpont, amikor a futár leadja a csomagot
+        parcel.setPickingUpDateFromSecondStoreByCourier(currentDate());
+        parcel.setPickingUpTimeFromSecondStoreByCourier(currentTime());
 
         //Csomag felvétele
         //Futár és csomag összerendelése. Kapcsolótábla frissítése
@@ -1186,11 +1199,12 @@ public class ParcelServiceImpl implements ParcelService {
                 readyParcels.add(parcel);
             }
 
-            //Csomag ami már ide lett szállítva, de lejárt az átvételi dátum
+
             LocalDate currentDate = LocalDate.now();
             LocalTime currentTime = LocalTime.now();
 
 
+            //Csomag ami már ide lett szállítva, de lejárt az átvételi dátum
             //Ha a csomag már le van szállítva
             if(parcel.isShipped() && parcel.getPickingUpExpirationDate() != null && parcel.getPickingUpExpirationTime() != null){
 
@@ -1300,16 +1314,29 @@ public class ParcelServiceImpl implements ParcelService {
         request.setShippingDate(parcel.getShippingDate().toString());
         request.setShippingTime(parcel.getShippingTime().toString());
 
+        request.setPickingUpDateFromParcelLockerByCourier(parcel.getPickingUpDateFromParcelLockerByCourier().toString());
+        request.setPickingUpTimeFromParcelLockerByCourier(parcel.getPickingUpTimeFromParcelLockerByCourier().toString());
+
+        request.setHandingDateToFirstStoreByCourier(parcel.getHandingDateToFirstStoreByCourier().toString());
+        request.setHandingTimeToFirstStoreByCourier(parcel.getHandingTimeToFirstStoreByCourier().toString());
+
+        request.setPickingUpDateFromSecondStoreByCourier(parcel.getPickingUpDateFromSecondStoreByCourier().toString());
+        request.setPickingUpTimeFromSecondStoreByCourier(parcel.getPickingUpTimeFromSecondStoreByCourier().toString());
+
+
         request.setPlaced(parcel.isPlaced());
         request.setPaid(parcel.isPaid());
         request.setPickingUpExpirationDate(parcel.getPickingUpExpirationDate().toString());
         request.setPickingUpExpirationTime(parcel.getPickingUpExpirationTime().toString());
 
         request.setPickedUp(parcel.isPickedUp());
+
         if(parcel.getSendingExpirationDate() != null){
             request.setSendingExpirationDate(parcel.getSendingExpirationDate().toString());
             request.setSendingExpirationTime(parcel.getSendingExpirationTime().toString());
         }
+
+
 
 
         //Válasz objektum
@@ -1408,7 +1435,35 @@ public class ParcelServiceImpl implements ParcelService {
 
         parcelDTO.setSendingExpired(parcel.isSendingExpired());
 
+        if(parcel.getPickingUpDateFromParcelLockerByCourier() != null){
+            parcelDTO.setPickingUpDateFromParcelLockerByCourier(parcel.getPickingUpDateFromParcelLockerByCourier().toString());
+            parcelDTO.setPickingUpTimeFromParcelLockerByCourier(parcel.getPickingUpTimeFromParcelLockerByCourier().toString());
+        }
+
+        if(parcel.getHandingDateToFirstStoreByCourier() != null){
+            parcelDTO.setHandingDateToFirstStoreByCourier(parcel.getHandingDateToFirstStoreByCourier().toString());
+            parcelDTO.setHandingTimeToFirstStoreByCourier(parcel.getHandingTimeToFirstStoreByCourier().toString());
+        }
+
+        if(parcel.getPickingUpDateFromSecondStoreByCourier() != null){
+            parcelDTO.setPickingUpDateFromSecondStoreByCourier(parcel.getPickingUpDateFromSecondStoreByCourier().toString());
+            parcelDTO.setPickingUpTimeFromSecondStoreByCourier(parcel.getPickingUpTimeFromSecondStoreByCourier().toString());
+        }
+
         return parcelDTO;
+    }
+
+    //Jelenlegi dátum lekérése
+    public LocalDate currentDate(){
+
+        LocalDate currentDate = LocalDate.now();
+        return currentDate;
+    }
+    //Jelenlegi időpont lekérése
+    public LocalTime currentTime(){
+
+        LocalTime currentTime = LocalTime.now();
+        return currentTime;
     }
 
 

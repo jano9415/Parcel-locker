@@ -80,6 +80,15 @@ public class ParcelServiceImpl implements ParcelService {
         parcel.setShippingDate(LocalDate.parse(request.getShippingDate()));
         parcel.setShippingTime(LocalTime.parse(request.getShippingTime()));
 
+        parcel.setPickingUpDateFromParcelLockerByCourier(LocalDate.parse(request.getPickingUpDateFromParcelLockerByCourier()));
+        parcel.setPickingUpTimeFromParcelLockerByCourier(LocalTime.parse(request.getPickingUpTimeFromParcelLockerByCourier()));
+
+        parcel.setHandingDateToFirstStoreByCourier(LocalDate.parse(request.getHandingDateToFirstStoreByCourier()));
+        parcel.setHandingTimeToFirstStoreByCourier(LocalTime.parse(request.getHandingTimeToFirstStoreByCourier()));
+
+        parcel.setPickingUpDateFromSecondStoreByCourier(LocalDate.parse(request.getPickingUpDateFromSecondStoreByCourier()));
+        parcel.setPickingUpTimeFromSecondStoreByCourier(LocalTime.parse(request.getPickingUpTimeFromSecondStoreByCourier()));
+
         parcel.setPlaced(request.isPlaced());
         parcel.setPaid(request.isPaid());
         parcel.setPickingUpExpirationDate(LocalDate.parse(request.getPickingUpExpirationDate()));

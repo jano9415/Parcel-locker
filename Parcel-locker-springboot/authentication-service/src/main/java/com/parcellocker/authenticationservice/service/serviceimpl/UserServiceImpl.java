@@ -133,6 +133,7 @@ public class UserServiceImpl implements UserService {
 
         User user = findByEmailAddress(logInRequest.getEmailAddress());
 
+
         StringResponse response = new StringResponse();
 
         if(user == null){

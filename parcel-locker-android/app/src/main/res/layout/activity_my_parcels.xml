@@ -7,8 +7,35 @@
     android:orientation="vertical"
     tools:context=".activity.MyParcelsActivity">
 
+    <TextView
+        android:id="@+id/backBtn9"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Vissza"
+        android:textColor="#0996D6"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Csomagtípus kiválasztása" />
+
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/requestTypeSpinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="50dp" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/myParcelsRv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
 </LinearLayout>

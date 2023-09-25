@@ -99,4 +99,16 @@ public class ParcelDTO {
     private String sendingExpirationTime;
 
     private boolean isSendingExpired;
+
+    private String pickingUpDateFromParcelLockerByCourier;
+
+    private String pickingUpTimeFromParcelLockerByCourier;
+
+    private String handingDateToFirstStoreByCourier;
+
+    private String handingTimeToFirstStoreByCourier;
+
+    private String pickingUpDateFromSecondStoreByCourier;
+
+    private String pickingUpTimeFromSecondStoreByCourier;
 }

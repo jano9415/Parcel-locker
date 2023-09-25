@@ -56,8 +56,8 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String emailAddress = loginEmailAddressEt.getText().toString().trim();
-                String password = loginPasswordEt.getText().toString().trim();
+                String emailAddress = loginEmailAddressEt.getText().toString();
+                String password = loginPasswordEt.getText().toString();
 
                 if(validateDatas(emailAddress, password)){
 

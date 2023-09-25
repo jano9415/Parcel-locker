@@ -66,4 +66,16 @@ public class ParcelToStaticticsServiceRequest {
     private String sendingExpirationDate;
 
     private String sendingExpirationTime;
+
+    private String pickingUpDateFromParcelLockerByCourier;
+
+    private String pickingUpTimeFromParcelLockerByCourier;
+
+    private String handingDateToFirstStoreByCourier;
+
+    private String handingTimeToFirstStoreByCourier;
+
+    private String pickingUpDateFromSecondStoreByCourier;
+
+    private String pickingUpTimeFromSecondStoreByCourier;
 }
