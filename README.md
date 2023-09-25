@@ -46,14 +46,16 @@ Retrofit libary for handling the requests and the responses.
 
                                                         Parcel handler service relational database plan:
 
-![Parcel handler service relational db plan drawio](https://github.com/jano9415/Parcel-locker/assets/87268161/ccf2f112-7470-4266-9d37-ee7b4124ef39)
+![Parcel handler service relational db plan drawio](https://github.com/jano9415/Parcel-locker/assets/87268161/8b53e98f-0c63-4bd6-8469-a57c44d5ac70)
+
 
 
 
                                                         Parcel handler service object relational database plan:
 With red color I indicate the optional variables and with black the mandatory variables.
 
-![Parcel handler service object relational db plan drawio](https://github.com/jano9415/Parcel-locker/assets/87268161/dba8a208-64ab-4c93-ad66-0a3355dd4c50)
+![Parcel handler service object relational db plan drawio](https://github.com/jano9415/Parcel-locker/assets/87268161/9f0b8097-0be9-40ce-bdfc-493c3b1a2629)
+
 
 
                                                         Functions of the angular application:
