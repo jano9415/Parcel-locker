@@ -81,6 +81,7 @@ const ParcelLockerSaturationModalComponent = (props) => {
                             onTouchStart={(e) => e.preventDefault()}
                         />
                     </Typography>
+                    <Button onClick={() => { setOpen(false) }}>Vissza</Button>
                 </Box>
             </Modal>
 

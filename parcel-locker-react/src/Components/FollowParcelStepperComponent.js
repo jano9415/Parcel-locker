@@ -10,7 +10,7 @@ const FollowParcelStepperComponent = (props) => {
         'Előzetesen feladva',
         'Csomag feladva',
         'Csomag megérkezett',
-        'Csomag a központi raktárban',
+        'Csomag átvételi ideje lejárt',
         'Csomag átvéve'
     ];
 

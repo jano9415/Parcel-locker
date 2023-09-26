@@ -71,6 +71,7 @@ const DeleteParcelModalComponent = (props) => {
                     <Typography>Biztosan törölni szeretnéd a(z) {props.parcel.uniqueParcelId} számú csomagod?</Typography>
                     <Button onClick={() => deleteParcel("yes")}>Igen</Button>
                     <Button onClick={() => deleteParcel("no")}>Nem</Button>
+                    <Button onClick={() => { setOpen(false) }}>Vissza</Button>
                 </Box>
             </Modal>
 

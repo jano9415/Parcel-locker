@@ -44,6 +44,12 @@ export class ParcelPickingUpComponent {
           this.boxNumberMessage = "A megadott azonosítóval nem található csomag.";
 
         }
+        //Van ilyen csomag, de már lejárt az átvételi idő
+        if(response.message === "expired"){
+          this.boxNumberMessage = "A csomagod átvételi ideje lejárt. Telefonon kérheted, " + 
+          "hogy a csomagot szállítsák vissza az automatába. Ez plusz költséggel jár. " +
+          "Az ügyfélszolgálat telefonszáma: 0630-376-1288";
+        }
         //Csomag már ki van fizetve. Át lehet venni
         if (response.message === "pickedUp") {
           this.boxNumberMessage = "Vedd ki a csomagodat a(z) " + response.boxNumber + ". rekeszből.";

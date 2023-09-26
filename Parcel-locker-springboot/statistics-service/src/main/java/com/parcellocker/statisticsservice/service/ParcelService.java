@@ -70,4 +70,16 @@ public interface ParcelService {
     //Jwt token szükséges
     //Admin szerepkör szükséges
     ResponseEntity<List<TotalSendingByLocationsResponse>> totalPickingUpByLocations();
+
+    //Ügyfél elhelyezi a csomagot a feladási automatába időpont -> ügyfél átveszi a csomagot az érkezési automatából időpont
+    ResponseEntity<List<StringResponse>> placeByCustomerAndPickUpByCustomerTime();
+
+    //Ügyfél elhelyezi a csomagot a feladási automatába időpont -> futár kiveszi a csomagot a feladási automatából időpont
+    ResponseEntity<List<StringResponse>> placeByCustomerAndPickUpByCourierTime();
+
+    //Futár kiveszi a csomagot a feladási automatából időpont -> futár elhelyezi a csomagot az érkezési automatába időpont
+    ResponseEntity<List<StringResponse>> pickUpByCourierAndPlaceByCourierTime();
+
+    //Futár elhelyezi a csomagot az érkezési automatába időpont -> ügyfél átveszi a csomagot az érkezési automatából időpont
+    ResponseEntity<List<StringResponse>> placeByCourierAndPickUpByCustomerTime();
 }

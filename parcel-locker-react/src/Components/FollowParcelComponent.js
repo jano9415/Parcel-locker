@@ -131,7 +131,7 @@ const FollowParcelComponent = () => {
             {
               parcel.message === null && parcel.pickingUpExpired === true && (
                 <Box>
-                  <Divider><Chip label="Csomag a megyei raktárban" /></Divider>
+                  <Divider><Chip label="Csomag átvételi ideje lejárt" /></Divider>
                   <Typography>A csomagot a futár visszaszállította a megyei raktárba,
                     <Typography>mert lejárt az átvételi ideje.</Typography>
                     <Typography>Ha szeretnéd újraindítani a csomagot az átvételi automatához,</Typography>

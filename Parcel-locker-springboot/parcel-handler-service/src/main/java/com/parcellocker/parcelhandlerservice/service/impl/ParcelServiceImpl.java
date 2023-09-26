@@ -481,6 +481,12 @@ public class ParcelServiceImpl implements ParcelService {
             return ResponseEntity.ok(response);
         }
 
+        //A csomag átvételi ideje már lejárt
+        if(isPickingUpDateTimeExpired(parcel)){
+            response.setMessage("expired");
+            return ResponseEntity.ok(response);
+        }
+
         //Már át van véve
         if(parcel.isPickedUp()){
             response.setMessage("notFound");
@@ -1205,23 +1211,30 @@ public class ParcelServiceImpl implements ParcelService {
 
 
             //Csomag ami már ide lett szállítva, de lejárt az átvételi dátum
-            //Ha a csomag már le van szállítva
+            if(isPickingUpDateTimeExpired(parcel)){
+                parcel.setPickingUpExpired(true);
+                readyParcels.add(parcel);
+            }
+
+            /*
             if(parcel.isShipped() && parcel.getPickingUpExpirationDate() != null && parcel.getPickingUpExpirationTime() != null){
 
                 LocalDate expirationDate = parcel.getPickingUpExpirationDate();
                 LocalTime expirationTime = parcel.getPickingUpExpirationTime();
                 //Ha a jelenlegi dátum és a lejárati dátum megegyezik, akkor az időpontokat kell megvizsgálni
                 if(currentDate.isEqual(expirationDate) && currentTime.isAfter(expirationTime)){
-                    readyParcels.add(parcel);
                     parcel.setPickingUpExpired(true);
+                    readyParcels.add(parcel);
                 }
                 //Ha a jelenlegi dátum nagyobb, mint a lejárati dátum
                 if(currentDate.isAfter(expirationDate)){
-                    readyParcels.add(parcel);
                     parcel.setPickingUpExpired(true);
+                    readyParcels.add(parcel);
                 }
 
             }
+
+             */
         }
         return readyParcels;
     }
@@ -1466,5 +1479,29 @@ public class ParcelServiceImpl implements ParcelService {
         return currentTime;
     }
 
+    //Csomag átvételi ideje lejárt?
+    public boolean isPickingUpDateTimeExpired(Parcel parcel){
+
+        boolean result = false;
+
+        //Ha a csomag már le van szállítva
+        if(parcel.isShipped() && parcel.getPickingUpExpirationDate() != null && parcel.getPickingUpExpirationTime() != null){
+
+            LocalDate expirationDate = parcel.getPickingUpExpirationDate();
+            LocalTime expirationTime = parcel.getPickingUpExpirationTime();
+
+            //Ha a jelenlegi dátum és a lejárati dátum megegyezik, akkor az időpontokat kell megvizsgálni
+            if(currentDate().isEqual(expirationDate) && currentTime().isAfter(expirationTime)){
+                result = true;
+            }
+            //Ha a jelenlegi dátum nagyobb, mint a lejárati dátum
+            if(currentDate().isAfter(expirationDate)){
+                result = true;
+            }
+
+        }
+
+        return result;
+    }
 
 }

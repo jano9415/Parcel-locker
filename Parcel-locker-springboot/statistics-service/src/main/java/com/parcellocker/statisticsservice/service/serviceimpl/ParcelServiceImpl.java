@@ -406,6 +406,48 @@ public class ParcelServiceImpl implements ParcelService {
         return ResponseEntity.ok(response);
     }
 
+    //Ügyfél elhelyezi a csomagot a feladási automatába időpont -> ügyfél átveszi a csomagot az érkezési automatából időpont
+    @Override
+    public ResponseEntity<List<StringResponse>> placeByCustomerAndPickUpByCustomerTime() {
+
+        List<Duration> differences = new ArrayList<>();
+
+
+        for(Parcel parcel : parcelRepository.findAll()){
+
+            //Dátum és idő konvertálása
+            LocalDateTime placeByCustomerDateTime = LocalDateTime.of(parcel.getSendingDate(), parcel.getSendingTime());
+            LocalDateTime pickUpByCustomerDateTime = LocalDateTime.of(parcel.getPickingUpDate(), parcel.getPickingUpTime());
+
+            //A két időpont közötti különbség
+            Duration difference = Duration.between(placeByCustomerDateTime, pickUpByCustomerDateTime);
+
+            differences.add(difference);
+        }
+
+        List<StringResponse> response = averageMinMaxTimes(differences);
+
+        return ResponseEntity.ok(response);
+    }
+
+    //Ügyfél elhelyezi a csomagot a feladási automatába időpont -> futár kiveszi a csomagot a feladási automatából időpont
+    @Override
+    public ResponseEntity<List<StringResponse>> placeByCustomerAndPickUpByCourierTime() {
+        return null;
+    }
+
+    //Futár kiveszi a csomagot a feladási automatából időpont -> futár elhelyezi a csomagot az érkezési automatába időpont
+    @Override
+    public ResponseEntity<List<StringResponse>> pickUpByCourierAndPlaceByCourierTime() {
+        return null;
+    }
+
+    //Futár elhelyezi a csomagot az érkezési automatába időpont -> ügyfél átveszi a csomagot az érkezési automatából időpont
+    @Override
+    public ResponseEntity<List<StringResponse>> placeByCourierAndPickUpByCustomerTime() {
+        return null;
+    }
+
     //Csomagautomaták lekérése a parcel handler service-ből
     public List<GetParcelLockersResponse> getParcelLockers(){
 
@@ -504,6 +546,59 @@ public class ParcelServiceImpl implements ParcelService {
 
         return response;
 
+    }
+
+    //Időpontok átlaga, minimuma és maximuma
+    public List<StringResponse> averageMinMaxTimes(List<Duration> differences){
+
+        StringResponse responseObj1 = new StringResponse();
+        StringResponse responseObj2 = new StringResponse();
+        StringResponse responseObj3 = new StringResponse();
+        List<StringResponse> response = new ArrayList<>();
+
+
+        //Legkisebb idő
+        Duration minTime = differences.get(0);
+        //Legnagyobb idő
+        Duration maxTime = differences.get(0);
+        //Összes idő
+        Duration totalTime = Duration.ZERO;
+
+        //Összes idő, min és max kiszámítása
+        for(Duration duration : differences){
+
+            //Legkisebb idő
+            if(duration.compareTo(minTime) < 0){
+                minTime = duration;
+            }
+            //Legnagyobb idő
+            if(duration.compareTo(maxTime) > 0){
+                maxTime = duration;
+            }
+
+            //Összes idő kiszámítása
+            totalTime = totalTime.plus(duration);
+        }
+
+        //Átlag kiszámítása
+        float averageTimeInMinutes = totalTime.toMinutes() / differences.size();
+        float averageTimeInDays = averageTimeInMinutes / (24 * 60);
+        float averageTimeInHours = (averageTimeInMinutes % (24 * 60)) / 60;
+
+        //Minimum idő órában nem kerekítve
+        float minTimeInHours = (float) (minTime.toHours() / 60.0);
+        //Maximum idő órában nem kerekítve
+        float maxTimeInHours = (float) (maxTime.toHours() / 60.0);
+
+        responseObj1.setMessage(String.valueOf(averageTimeInHours));
+        responseObj2.setMessage(String.valueOf(maxTimeInHours));
+        responseObj3.setMessage(String.valueOf(minTimeInHours));
+
+        response.add(responseObj1);
+        response.add(responseObj2);
+        response.add(responseObj3);
+
+        return response;
     }
 
 }

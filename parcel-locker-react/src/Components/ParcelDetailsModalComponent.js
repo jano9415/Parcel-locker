@@ -99,6 +99,7 @@ const ParcelDetailsModalComponent = (props) => {
                             <Typography>Csomag átvéve {props.parcel.pickingUpDate + " " + props.parcel.pickingUpTime + "-kor"}</Typography>
                         </Box>
                     )}
+                    <Button onClick={() => { setOpen(false) }}>Vissza</Button>
                 </Box>
             </Modal>
 

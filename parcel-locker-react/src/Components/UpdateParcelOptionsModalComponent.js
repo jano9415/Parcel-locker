@@ -42,20 +42,28 @@ const UpdateParcelOptionsModalComponent = (props) => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description">
                 <Box sx={style}>
-                    <Typography>Csomagfeladási dátum módosításához</Typography>
                     {
-                        props.parcel.sendingExpirationDate != null && (
-                            <UpdateSendingExpirationDate parcel={props.parcel}></UpdateSendingExpirationDate>
+                        props.parcel.sendingCode != null && props.parcel.sendingExpirationDate != null &&
+                        props.parcel.sendingDate === null &&
+                        (
+                            <>
+                                <Typography>Csomagfeladási dátum módosításához</Typography>
+                                <UpdateSendingExpirationDate parcel={props.parcel}></UpdateSendingExpirationDate>
+                            </>
                         )
                     }
 
-                    <Typography>Csomagátvételi dátum módosításásához</Typography>
+
                     {
-                        props.parcel.pickingUpExpirationDate != null && (
-                            <UpdatePickingUpExpirationDate parcel={props.parcel}></UpdatePickingUpExpirationDate>
+                        props.parcel.pickingUpExpirationDate != null &&
+                        (
+                            <>
+                                <Typography>Csomagátvételi dátum módosításásához</Typography>
+                                <UpdatePickingUpExpirationDate parcel={props.parcel}></UpdatePickingUpExpirationDate>
+                            </>
                         )
                     }
-
+                    <Button onClick={() => { setOpen(false) }}>Vissza</Button>
                 </Box>
             </Modal>
 

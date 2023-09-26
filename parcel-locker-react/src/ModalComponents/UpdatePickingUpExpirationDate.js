@@ -91,6 +91,7 @@ const UpdatePickingUpExpirationDate = (props) => {
                         </DemoContainer>
                     </LocalizationProvider>
                     <Button onClick={sendNewDate}>Küldés</Button>
+                    <Button onClick={() => { setOpen(false) }}>Vissza</Button>
                 </Box>
             </Modal>
 
