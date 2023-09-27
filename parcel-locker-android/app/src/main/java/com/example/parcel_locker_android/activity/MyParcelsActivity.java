@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.parcel_locker_android.R;
 import com.example.parcel_locker_android.config.ApiConfig;
@@ -22,6 +23,7 @@ import com.example.parcel_locker_android.listadapter.MyParcelsRvAdapter;
 import com.example.parcel_locker_android.payload.CurrentUser;
 import com.example.parcel_locker_android.payload.ParcelDTO;
 import com.example.parcel_locker_android.payload.response.GetParcelLockersResponse;
+import com.example.parcel_locker_android.payload.response.StringResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,30 +93,114 @@ public class MyParcelsActivity extends AppCompatActivity {
                             @Override
                             public void onItemClick(ParcelDTO parcel) {
 
+                                //Ezt a szöveget jeleníti meg a modal
+                                StringBuilder modalMessage = new StringBuilder();
+
                                 //Csomagadatok modal
                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                                builder.setTitle("Hol tart a csomagom?")
-                                        .setMessage(
-                                                "A csomagot a webes vagy mobilos alkalmazásból már feladtad, " +
-                                                        "de az automatában még nem helyezted el.\n" +
-                                                "Itt tudod feladni: " + parcel.getShippingFromPostCode() + " " +
-                                                        parcel.getShippingFromCity() + " " + parcel.getShippingFromStreet() + "\n"
+                                builder.setTitle("Hol tart a csomagom?\n\n");
 
-                                        );
 
-                                        if(selectedRequest.equals("reserved")){
-                                            builder.setPositiveButton("Törlés", new DialogInterface.OnClickListener() {
+                                //Megjelenített szöveg elkészítése
+                                modalMessage.append("   Címzett\n\n");
+                                modalMessage.append("Címzett neve: " + parcel.getReceiverName() + "\n" +
+                                        "Címzett email címe: " + parcel.getReceiverEmailAddress() + "\n\n"
+                                );
+
+
+                                if (parcel.getSendingExpirationDate() != null) {
+                                    modalMessage.append("   Előzetesen feladva\n\n");
+                                    modalMessage.append(
+                                            "A csomagot a webes vagy mobilos alkalmazásból már feladtad, " +
+                                                    "de az automatában még nem helyezted el.\n" +
+                                                    "Itt tudod feladni: " + parcel.getShippingFromPostCode() + " " +
+                                                    parcel.getShippingFromCity() + " " + parcel.getShippingFromStreet() + "\n" +
+                                                    "Eddig tudod feladni: " + parcel.getSendingExpirationDate() + " " +
+                                                    parcel.getSendingExpirationTime() + "\n" +
+                                                    "Feladási kód: " + parcel.getSendingCode() + "\n\n"
+
+                                    );
+                                }
+
+                                if (parcel.getSendingDate() != null) {
+                                    modalMessage.append(
+                                            "   Csomag feladva\n\n" +
+                                                    "Csomag feladva " + parcel.getSendingDate() + " " +
+                                                    parcel.getSendingTime() + "-kor\n" +
+                                                    "Itt adtad fel: " + parcel.getShippingFromPostCode() + " " +
+                                                    parcel.getShippingFromCity() + " " + parcel.getShippingFromStreet() + "\n" +
+                                                    "Ide fog megérkezni: " + parcel.getShippingToPostCode() + " " +
+                                                    parcel.getShippingToCity() + " " + parcel.getShippingToStreet() + "\n\n"
+
+                                    );
+                                }
+
+                                if (parcel.getShippingDate() != null) {
+                                    modalMessage.append(
+                                            "   Csomag megérkezett\n\n" +
+                                                    "A csomagot még nem vették át.\n" +
+                                                    "Csomag leszállítva " + parcel.getShippingDate() + " " +
+                                                    parcel.getShippingTime() + "-kor\n" +
+                                                    "Csomag elhelyezve itt: " + parcel.getShippingToPostCode() + " " +
+                                                    parcel.getShippingToCity() + " " + parcel.getShippingToStreet() + "\n\n"
+                                    );
+                                }
+
+                                if (parcel.getPickingUpDate() != null) {
+                                    modalMessage.append(
+                                            "   Csomagot átvették\n\n" +
+                                                    "Csomag átvéve " + parcel.getPickingUpDate() + " " +
+                                                    parcel.getPickingUpTime() + "-kor"
+                                    );
+                                }
+
+
+                                //Szöveg megjelenítése
+                                 builder.setMessage(modalMessage);
+
+
+                                //Törlés gomb megjelenítése
+                                if (selectedRequest.equals("reserved")) {
+                                    builder.setPositiveButton("Törlés", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                                            Call<StringResponse> call2 = ApiConfig.getInstance().parcelService()
+                                                            .deleteMyParcel(parcel.getId(),
+                                                                    CurrentUser.getCurrentUser(context).getToken());
+
+
+                                            call2.enqueue(new Callback<StringResponse>() {
                                                 @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
 
-                                                    startActivity(new Intent(context, MyParcelsActivity.class));
+
+                                                    //Csomag nem található
+                                                    if(response.body().getMessage().equals("notFound")){
+
+                                                    }
+                                                    //Activity frissítése
+                                                    if(response.body().getMessage().equals("successfulDeleting")){
+                                                        startActivity(new Intent(context, MyParcelsActivity.class));
+                                                        Toast.makeText(context, "Csomag törölve", Toast.LENGTH_LONG).show();
+                                                    }
+
+
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<StringResponse> call, Throwable t) {
 
                                                 }
                                             });
-                                        }
 
-                                        builder.show();
+                                        }
+                                    });
+                                }
+
+                                builder.show();
                             }
                         });
 

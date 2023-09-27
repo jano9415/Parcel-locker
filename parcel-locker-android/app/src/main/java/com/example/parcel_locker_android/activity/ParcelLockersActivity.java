@@ -98,7 +98,6 @@ public class ParcelLockersActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<GetParcelLockersResponse>> call, Throwable t) {
-
             }
         });
 

@@ -266,7 +266,7 @@ public class SendParcelActivity extends AppCompatActivity {
                             if(response.body().getMessage().equals("successSending")){
                                 startActivity(new Intent(SendParcelActivity.this, SendParcelActivity.class));
                                 Toast.makeText(context, "Sikeres előzetes csomagfeladás. A feladási kódodat megtalálod az email értesítőben" +
-                                        " és a csomagjaim meüpontban.", Toast.LENGTH_SHORT).show();
+                                        " és a csomagjaim meüpontban.", Toast.LENGTH_LONG).show();
                             }
 
                         }

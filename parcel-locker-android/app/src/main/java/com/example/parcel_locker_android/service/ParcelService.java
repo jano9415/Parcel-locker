@@ -10,6 +10,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -59,6 +60,16 @@ public interface ParcelService {
     Call<List<ParcelDTO>> getParcelsOfUser(@Path("emailAddress") String emailAddress,
                                 @Path("type") String type,
                                 @Header("Authorization") String jwtToken);
+
+    //Csomag törlése
+    //Felhasználó kitörli az előzetes csomagfeladást
+    //Jwt token szükséges
+    //User szerepkör szükséges
+    @DELETE(API_URL + "deletemyparcel/{parcelId}")
+    Call<StringResponse> deleteMyParcel(@Path("parcelId") Long parcelId,
+                                           @Header("Authorization") String jwtToken);
+
+
 
 
 }
