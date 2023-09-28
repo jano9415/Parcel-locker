@@ -60,10 +60,14 @@ public class FollowParcelResponse {
 
     private boolean isSendingExpired;
 
+    private String senderName;
+
+    private String senderEmailAddress;
+
     public FollowParcelResponse() {
     }
 
-    public FollowParcelResponse(String message, int shippingFromPostCode, String shippingFromCounty, String shippingFromCity, String shippingFromStreet, int storePostCode, String storeCounty, String storeCity, String storeStreet, int shippingToPostCode, String shippingToCounty, String shippingToCity, String shippingToStreet, boolean isShipped, boolean isPickedUp, String sendingDate, String sendingTime, String pickingUpDate, String pickingUpTime, String shippingDate, String shippingTime, boolean isPlaced, boolean isPaid, String pickingUpExpirationDate, String pickingUpExpirationTime, boolean isPickingUpExpired, String sendingExpirationDate, String sendingExpirationTime, boolean isSendingExpired) {
+    public FollowParcelResponse(String message, int shippingFromPostCode, String shippingFromCounty, String shippingFromCity, String shippingFromStreet, int storePostCode, String storeCounty, String storeCity, String storeStreet, int shippingToPostCode, String shippingToCounty, String shippingToCity, String shippingToStreet, boolean isShipped, boolean isPickedUp, String sendingDate, String sendingTime, String pickingUpDate, String pickingUpTime, String shippingDate, String shippingTime, boolean isPlaced, boolean isPaid, String pickingUpExpirationDate, String pickingUpExpirationTime, boolean isPickingUpExpired, String sendingExpirationDate, String sendingExpirationTime, boolean isSendingExpired, String senderName, String senderEmailAddress) {
         this.message = message;
         this.shippingFromPostCode = shippingFromPostCode;
         this.shippingFromCounty = shippingFromCounty;
@@ -93,6 +97,8 @@ public class FollowParcelResponse {
         this.sendingExpirationDate = sendingExpirationDate;
         this.sendingExpirationTime = sendingExpirationTime;
         this.isSendingExpired = isSendingExpired;
+        this.senderName = senderName;
+        this.senderEmailAddress = senderEmailAddress;
     }
 
     public String getMessage() {
@@ -325,5 +331,21 @@ public class FollowParcelResponse {
 
     public void setSendingExpired(boolean sendingExpired) {
         isSendingExpired = sendingExpired;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
+    }
+
+    public String getSenderEmailAddress() {
+        return senderEmailAddress;
+    }
+
+    public void setSenderEmailAddress(String senderEmailAddress) {
+        this.senderEmailAddress = senderEmailAddress;
     }
 }

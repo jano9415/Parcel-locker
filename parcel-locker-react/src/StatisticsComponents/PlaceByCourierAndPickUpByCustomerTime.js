@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
 import ParcelStatistcsService from "../Service/ParcelStatistcsService";
 
-const AverageMinMaxShippingTime = () => {
+const PlaceByCourierAndPickUpByCustomerTime = () => {
 
     const [averageTime, setAverageTime] = useState("");
     const [minTime, setMinTime] = useState("");
@@ -10,7 +10,7 @@ const AverageMinMaxShippingTime = () => {
 
     useEffect(() => {
 
-        ParcelStatistcsService.averageMinMaxShippingTime().then(
+        ParcelStatistcsService.placeByCourierAndPickUpByCustomerTime().then(
             (response) => {
                 setAverageTime(response.data[0].message);
                 setMaxTime(response.data[1].message);
@@ -33,4 +33,4 @@ const AverageMinMaxShippingTime = () => {
     )
 }
 
-export default AverageMinMaxShippingTime;
+export default PlaceByCourierAndPickUpByCustomerTime;

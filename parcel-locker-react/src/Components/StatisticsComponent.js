@@ -13,6 +13,10 @@ import TotalSendingByLocations from "../StatisticsComponents/TotalSendingByLocat
 import TotalPickingUpByLocations from "../StatisticsComponents/TotalPickingUpByLocations";
 import Checkbox from '@mui/material/Checkbox';
 import { useState } from "react";
+import PlaceByCustomerAndPickUpByCustomerTime from "../StatisticsComponents/PlaceByCustomerAndPickUpByCustomerTime";
+import PlaceByCustomerAndPickUpByCourierTime from "../StatisticsComponents/PlaceByCustomerAndPickUpByCourierTime";
+import PickUpByCourierAndPlaceByCourierTime from "../StatisticsComponents/PickUpByCourierAndPlaceByCourierTime";
+import PlaceByCourierAndPickUpByCustomerTime from "../StatisticsComponents/PlaceByCourierAndPickUpByCustomerTime";
 
 
 
@@ -24,6 +28,7 @@ const StatisticsComponent = () => {
     const [checked4, setChecked4] = useState();
     const [checked5, setChecked5] = useState();
     const [checked6, setChecked6] = useState();
+    const [checked7, setChecked7] = useState();
 
     const handleChange = (event) => {
         setChecked(event.target.checked);
@@ -49,9 +54,13 @@ const StatisticsComponent = () => {
         setChecked6(event.target.checked);
     };
 
+    const handleChange7 = (event) => {
+        setChecked7(event.target.checked);
+    };
+
     return (
         <Box>
-            <Box sx={{textAlign: 'center'}} className="d-flex justify-content-center">
+            <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
                 <Box>
                     <Typography sx={{ fontSize: 40 }}>Statisztikai adatok</Typography>
                     <Typography>Válaszd ki azokat az adatokat, amiket meg szeretnél jeleníteni</Typography>
@@ -125,7 +134,21 @@ const StatisticsComponent = () => {
                                 checked={checked6}
                                 onChange={handleChange6} />}
                             inputProps={{ 'aria-label': 'controlled' }}
-                            label="Szállítási idők"
+                            label="Szállítási és átvételi idők"
+                            labelPlacement="start"
+                        />
+                    </Box>
+                </Box>
+
+                <Box className="m-2">
+                    <Box>
+                        <FormControlLabel
+                            value="top"
+                            control={<Checkbox
+                                checked={checked7}
+                                onChange={handleChange7} />}
+                            inputProps={{ 'aria-label': 'controlled' }}
+                            label="Raktárak forgalma diagram"
                             labelPlacement="start"
                         />
                     </Box>
@@ -231,17 +254,56 @@ const StatisticsComponent = () => {
                 checked6 && (
                     <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
                         <Paper elevation={5} className="m-2">
-                            <Typography sx={{ fontSize: 20 }}>Szállítási idők</Typography>
-                            <Typography>Feladási dátum: amikor az ügyfél elhelyezte a csomagját a feladási automatában.</Typography>
-                            <Typography>Szállítási dátum: amikor a futár elhelyezte a csomagot az érkezési automatában.</Typography>
+                            <Typography sx={{ fontSize: 20 }}>Átlag, min, max</Typography>
+                            <Typography>Ügyfél elhelyezi a csomagot a feladási automatában időpont.</Typography>
+                            <Typography>Futár elhelyezi a csomagot az érkezési automatában időpont.</Typography>
                             <Typography>Az adatok ezeknek az időkülönbségeknek az átlagát, minimumát és maximimát fejezik ki.</Typography>
                             <AverageMinMaxShippingTime></AverageMinMaxShippingTime>
                         </Paper>
                         <Paper elevation={5} className="m-2">
-                            <Typography sx={{ fontSize: 20 }}></Typography>
+                            <Typography sx={{ fontSize: 20 }}>Átlag, min, max</Typography>
+                            <Typography>Ügyfél elhelyezi a csomagot a feladási automatában időpont.</Typography>
+                            <Typography>Ügyfél átveszi a csomagot az érkezési automatából időpont</Typography>
+                            <Typography>Az adatok ezeknek az időkülönbségeknek az átlagát, minimumát és maximimát fejezik ki.</Typography>
+                            <PlaceByCustomerAndPickUpByCustomerTime></PlaceByCustomerAndPickUpByCustomerTime>
+                        </Paper>
+                    </Box>
+                )
+            }
+
+            {
+                checked6 && (
+                    <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
+                        <Paper elevation={5} className="m-2">
+                            <Typography sx={{ fontSize: 20 }}>Átlag, min, max</Typography>
+                            <Typography>Ügyfél elhelyezi a csomagot a feladási automatában időpont.</Typography>
+                            <Typography>Futár kiveszi a csomagot a feladási automatából időpont.</Typography>
+                            <Typography>Az adatok ezeknek az időkülönbségeknek az átlagát, minimumát és maximimát fejezik ki.</Typography>
+                            <PlaceByCustomerAndPickUpByCourierTime></PlaceByCustomerAndPickUpByCourierTime>
                         </Paper>
                         <Paper elevation={5} className="m-2">
-                            <Typography sx={{ fontSize: 20 }}></Typography>
+                            <Typography sx={{ fontSize: 20 }}>Átlag, min, max</Typography>
+                            <Typography>Futár kiveszi a csomagot a feladási automatából időpont.</Typography>
+                            <Typography>Futár elhelyezi a csomagot az érkezési automatában időpont.</Typography>
+                            <Typography>Az adatok ezeknek az időkülönbségeknek az átlagát, minimumát és maximimát fejezik ki.</Typography>
+                            <PickUpByCourierAndPlaceByCourierTime></PickUpByCourierAndPlaceByCourierTime>
+                        </Paper>
+                    </Box>
+                )
+            }
+
+            {
+                checked6 && (
+                    <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
+                        <Paper elevation={5} className="m-2">
+                            <Typography sx={{ fontSize: 20 }}>Átlag, min, max</Typography>
+                            <Typography>Futár elhelyezi a csomagot az érkezési automatában időpont.</Typography>
+                            <Typography>Ügyfél átveszi a csomagot az érkezési automatából időpont.</Typography>
+                            <Typography>Az adatok ezeknek az időkülönbségeknek az átlagát, minimumát és maximimát fejezik ki.</Typography>
+                            <PlaceByCourierAndPickUpByCustomerTime></PlaceByCourierAndPickUpByCustomerTime>
+                        </Paper>
+                        <Paper elevation={5} className="m-2">
+
                         </Paper>
                     </Box>
                 )

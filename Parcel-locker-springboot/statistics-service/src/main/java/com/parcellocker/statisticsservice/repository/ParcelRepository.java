@@ -16,4 +16,7 @@ public interface ParcelRepository extends MongoRepository<Parcel, String> {
     //Számlálás érkezési automata utcanév szerint
     int countByShippingToStreet(String street);
 
+    //Számlálás feladási automata megye név szerint vagy érkezési automata megye név szerint
+    int countByShippingFromCountyOr(String street);
+
 }

@@ -1,11 +1,15 @@
 package com.parcellocker.statisticsservice.service.serviceimpl;
 
+import com.netflix.discovery.converters.Auto;
 import com.parcellocker.statisticsservice.model.Parcel;
 import com.parcellocker.statisticsservice.model.ParcelLocker;
+import com.parcellocker.statisticsservice.model.Store;
 import com.parcellocker.statisticsservice.payload.request.ParcelToStaticticsServiceRequest;
 import com.parcellocker.statisticsservice.payload.response.GetParcelLockersResponse;
+import com.parcellocker.statisticsservice.payload.response.StoreTurnOverDataResponse;
 import com.parcellocker.statisticsservice.payload.response.StringResponse;
 import com.parcellocker.statisticsservice.payload.response.TotalSendingByLocationsResponse;
+import com.parcellocker.statisticsservice.repository.ParcelLockerRepository;
 import com.parcellocker.statisticsservice.repository.ParcelRepository;
 import com.parcellocker.statisticsservice.service.ParcelService;
 import jakarta.annotation.PostConstruct;
@@ -29,6 +33,12 @@ public class ParcelServiceImpl implements ParcelService {
 
     @Autowired
     private ParcelRepository parcelRepository;
+
+    @Autowired
+    private ParcelLockerServiceImpl parcelLockerService;
+
+    @Autowired
+    private StoreServiceImpl storeService;
 
     @Autowired
     private WebClient.Builder webClientBuilder;
@@ -433,27 +443,85 @@ public class ParcelServiceImpl implements ParcelService {
     //Ügyfél elhelyezi a csomagot a feladási automatába időpont -> futár kiveszi a csomagot a feladási automatából időpont
     @Override
     public ResponseEntity<List<StringResponse>> placeByCustomerAndPickUpByCourierTime() {
-        return null;
+
+        List<Duration> differences = new ArrayList<>();
+
+
+        for(Parcel parcel : parcelRepository.findAll()){
+
+            //Dátum és idő konvertálása
+            LocalDateTime placeByCustomerDateTime = LocalDateTime.of(parcel.getSendingDate(), parcel.getSendingTime());
+            LocalDateTime pickUpByCourierDateTime = LocalDateTime.of(parcel.getPickingUpDateFromParcelLockerByCourier(),
+                    parcel.getPickingUpTimeFromParcelLockerByCourier());
+
+            //A két időpont közötti különbség
+            Duration difference = Duration.between(placeByCustomerDateTime, pickUpByCourierDateTime);
+
+            differences.add(difference);
+        }
+
+        List<StringResponse> response = averageMinMaxTimes(differences);
+
+        return ResponseEntity.ok(response);
     }
 
     //Futár kiveszi a csomagot a feladási automatából időpont -> futár elhelyezi a csomagot az érkezési automatába időpont
     @Override
     public ResponseEntity<List<StringResponse>> pickUpByCourierAndPlaceByCourierTime() {
-        return null;
+
+        List<Duration> differences = new ArrayList<>();
+
+
+        for(Parcel parcel : parcelRepository.findAll()){
+
+            //Dátum és idő konvertálása
+            LocalDateTime pickUpByCourierDateTime = LocalDateTime.of(parcel.getPickingUpDateFromParcelLockerByCourier(),
+                    parcel.getPickingUpTimeFromParcelLockerByCourier());
+            LocalDateTime handByCourierDateTime = LocalDateTime.of(parcel.getShippingDate(), parcel.getShippingTime());
+
+            //A két időpont közötti különbség
+            Duration difference = Duration.between(pickUpByCourierDateTime, handByCourierDateTime);
+
+            differences.add(difference);
+        }
+
+        List<StringResponse> response = averageMinMaxTimes(differences);
+
+        return ResponseEntity.ok(response);
     }
 
     //Futár elhelyezi a csomagot az érkezési automatába időpont -> ügyfél átveszi a csomagot az érkezési automatából időpont
     @Override
     public ResponseEntity<List<StringResponse>> placeByCourierAndPickUpByCustomerTime() {
+
+        List<Duration> differences = new ArrayList<>();
+
+
+        for(Parcel parcel : parcelRepository.findAll()){
+
+            //Dátum és idő konvertálása
+            LocalDateTime handByCourierDateTime = LocalDateTime.of(parcel.getShippingDate(), parcel.getShippingTime());
+            LocalDateTime pickUpByCustomerDateTime = LocalDateTime.of(parcel.getPickingUpDate(), parcel.getPickingUpTime());
+
+            //A két időpont közötti különbség
+            Duration difference = Duration.between(handByCourierDateTime, pickUpByCustomerDateTime);
+
+            differences.add(difference);
+        }
+
+        List<StringResponse> response = averageMinMaxTimes(differences);
+
+        return ResponseEntity.ok(response);
+    }
+
+    //Raktárak forgalmi adatai
+    @Override
+    public ResponseEntity<List<StoreTurnOverDataResponse>> storeTurnOverData() {
         return null;
     }
 
     //Csomagautomaták lekérése a parcel handler service-ből
     public List<GetParcelLockersResponse> getParcelLockers(){
-
-
-
-        //parcelLockers.add(new ParcelLocker(8200, "Veszprém", "Veszprém", "Pápai út 32"));
 
         //Mivel a válasz egy objektum lista, ezért itt bodyToFlux-ot kell használni
         List<GetParcelLockersResponse> parcelLockers = webClientBuilder.build().get()

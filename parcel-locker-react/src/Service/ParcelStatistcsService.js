@@ -95,6 +95,46 @@ const totalPickingUpByLocations = () => {
     return axios.get(API_URL + "totalpickingupbylocations", { headers: authHeader() });
 }
 
+//Ügyfél elhelyezi a csomagot a feladási automatába időpont -> ügyfél átveszi a csomagot az érkezési automatából időpont
+//Átlagos szállítási idő - response lista első objektuma
+//Leggyorsabb szállítási idő - response lista második objektuma
+//Leglassabb szállítási idő - response lista harmadik objektuma
+//Jwt token szükséges
+//Admin szerepkör szükséges
+const placeByCustomerAndPickUpByCustomerTime = () => {
+    return axios.get(API_URL + "placebycustomerandpickupbycustomer", { headers: authHeader() });
+}
+
+//Ügyfél elhelyezi a csomagot a feladási automatába időpont -> futár kiveszi a csomagot a feladási automatából időpont
+//Átlagos szállítási idő - response lista első objektuma
+//Leggyorsabb szállítási idő - response lista második objektuma
+//Leglassabb szállítási idő - response lista harmadik objektuma
+//Jwt token szükséges
+//Admin szerepkör szükséges
+const placeByCustomerAndPickUpByCourierTime = () => {
+    return axios.get(API_URL + "placebycustomerandpickupbycourier", { headers: authHeader() });
+}
+
+//Futár kiveszi a csomagot a feladási automatából időpont -> futár elhelyezi a csomagot az érkezési automatába időpont
+//Átlagos szállítási idő - response lista első objektuma
+//Leggyorsabb szállítási idő - response lista második objektuma
+//Leglassabb szállítási idő - response lista harmadik objektuma
+//Jwt token szükséges
+//Admin szerepkör szükséges
+const pickUpByCourierAndPlaceByCourierTime = () => {
+    return axios.get(API_URL + "pickupbycourierandplacebycourier", { headers: authHeader() });
+}
+
+//Futár elhelyezi a csomagot az érkezési automatába időpont -> ügyfél átveszi a csomagot az érkezési automatából időpont
+//Átlagos szállítási idő - response lista első objektuma
+//Leggyorsabb szállítási idő - response lista második objektuma
+//Leglassabb szállítási idő - response lista harmadik objektuma
+//Jwt token szükséges
+//Admin szerepkör szükséges
+const placeByCourierAndPickUpByCustomerTime = () => {
+    return axios.get(API_URL + "placebycourierandpickupbycustomer", { headers: authHeader() });
+}
+
 
 const ParcelStatistcsService = {
     numberOfParcels,
@@ -108,7 +148,11 @@ const ParcelStatistcsService = {
     paymentDatas,
     averageMinMaxShippingTime,
     totalSendingByLocations,
-    totalPickingUpByLocations
+    totalPickingUpByLocations,
+    placeByCustomerAndPickUpByCustomerTime,
+    placeByCustomerAndPickUpByCourierTime,
+    pickUpByCourierAndPlaceByCourierTime,
+    placeByCourierAndPickUpByCustomerTime
 
 };
 

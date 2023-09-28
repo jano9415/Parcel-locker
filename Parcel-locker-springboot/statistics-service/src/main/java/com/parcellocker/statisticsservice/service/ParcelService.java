@@ -2,6 +2,7 @@ package com.parcellocker.statisticsservice.service;
 
 import com.parcellocker.statisticsservice.model.Parcel;
 import com.parcellocker.statisticsservice.payload.request.ParcelToStaticticsServiceRequest;
+import com.parcellocker.statisticsservice.payload.response.StoreTurnOverDataResponse;
 import com.parcellocker.statisticsservice.payload.response.StringResponse;
 import com.parcellocker.statisticsservice.payload.response.TotalSendingByLocationsResponse;
 import org.springframework.http.ResponseEntity;
@@ -82,4 +83,7 @@ public interface ParcelService {
 
     //Futár elhelyezi a csomagot az érkezési automatába időpont -> ügyfél átveszi a csomagot az érkezési automatából időpont
     ResponseEntity<List<StringResponse>> placeByCourierAndPickUpByCustomerTime();
+
+    //Raktárak forgalmi adatai
+    ResponseEntity<List<StoreTurnOverDataResponse>> storeTurnOverData();
 }

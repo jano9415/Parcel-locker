@@ -92,7 +92,16 @@ public class JwtUtil {
             //Csomagátvételi lejárati idő meghosszabbítása
             "/parcelhandler/parcel/updatepickingupexpirationdate",
             //Csomagfeladási lejárati idő meghosszabbítása
-            "/parcelhandler/parcel/updatesendingexpirationdate"
+            "/parcelhandler/parcel/updatesendingexpirationdate",
+            //Ügyfél elhelyezi a csomagot a feladási automatába időpont -> ügyfél átveszi a csomagot az érkezési automatából időpont
+            "/statistics/parcel/placebycustomerandpickupbycustomer",
+            //Ügyfél elhelyezi a csomagot a feladási automatába időpont -> futár kiveszi a csomagot a feladási automatából időpont
+            "/statistics/parcel/placebycustomerandpickupbycourier",
+            //Futár kiveszi a csomagot a feladási automatából időpont -> futár elhelyezi a csomagot az érkezési automatába időpont
+            "/statistics/parcel/pickupbycourierandplacebycourier",
+            //Futár elhelyezi a csomagot az érkezési automatába időpont -> ügyfél átveszi a csomagot az érkezési automatából időpont
+            "/statistics/parcel/placebycourierandpickupbycustomer"
+
 
 
     );

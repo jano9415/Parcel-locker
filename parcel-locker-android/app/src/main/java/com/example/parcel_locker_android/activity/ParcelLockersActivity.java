@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -75,16 +76,24 @@ public class ParcelLockersActivity extends AppCompatActivity {
 
                                 //Telítettségi adatok modal
                                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                builder.setTitle("Telítettségi adatok")
-                                        .setMessage(
+                                builder.setTitle("Telítettségi adatok");
+                                        builder.setMessage(
                                                 "Szabad kicsi rekeszek száma: " +
                                                         (response.body().getAmountOfSmallBoxes() - response.body().getAmountOfFullSmallBoxes()) +
                                                         "\n" + "Szabad közepes rekeszek száma: " +
                                                         (response.body().getAmountOfMediumBoxes() - response.body().getAmountOfFullMediumBoxes()) +
                                                         "\n" + "Szabad nagy rekeszek száma: " +
                                                         (response.body().getAmountOfLargeBoxes() - response.body().getAmountOfFullLargeBoxes())
-                                        )
-                                        .show();
+                                        );
+
+                                        builder.setNegativeButton("Vissza", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.dismiss();
+                                            }
+                                        });
+
+                                        builder.show();
                             }
 
                             @Override

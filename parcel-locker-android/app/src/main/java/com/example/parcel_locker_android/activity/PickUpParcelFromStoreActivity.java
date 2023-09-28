@@ -55,7 +55,12 @@ public class PickUpParcelFromStoreActivity extends AppCompatActivity {
                 scanOptions.setBeepEnabled(true);
                 scanOptions.setOrientationLocked(true);
                 scanOptions.setCaptureActivity(Capture.class);
-                barCodeLauncher.launch(scanOptions);
+                try{
+                    barCodeLauncher.launch(scanOptions);
+                }
+                catch (Exception exception){
+                    Toast.makeText(context, "Nem támogatott típusú kód", Toast.LENGTH_LONG).show();
+                }
             }
         });
 

@@ -1,6 +1,7 @@
 package com.parcellocker.statisticsservice.controller;
 
 import com.parcellocker.statisticsservice.payload.request.ParcelToStaticticsServiceRequest;
+import com.parcellocker.statisticsservice.payload.response.StoreTurnOverDataResponse;
 import com.parcellocker.statisticsservice.payload.response.StringResponse;
 import com.parcellocker.statisticsservice.payload.response.TotalSendingByLocationsResponse;
 import com.parcellocker.statisticsservice.service.serviceimpl.ParcelServiceImpl;
@@ -194,7 +195,12 @@ public class ParcelController {
 
     //Szállítási késések. Mondjuk ami több, mint 3 nap
 
-    //Raktárak
+    //Raktárak forgalmi adatai
+    @GetMapping("/storeturnoverdata")
+    public ResponseEntity<List<StoreTurnOverDataResponse>> storeTurnOverData(){
+        return parcelService.storeTurnOverData();
+
+    }
 
 
 

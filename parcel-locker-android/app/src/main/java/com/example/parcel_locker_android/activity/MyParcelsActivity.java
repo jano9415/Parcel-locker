@@ -103,14 +103,14 @@ public class MyParcelsActivity extends AppCompatActivity {
 
 
                                 //Megjelenített szöveg elkészítése
-                                modalMessage.append("   Címzett\n\n");
+                                modalMessage.append("       Címzett\n\n");
                                 modalMessage.append("Címzett neve: " + parcel.getReceiverName() + "\n" +
                                         "Címzett email címe: " + parcel.getReceiverEmailAddress() + "\n\n"
                                 );
 
 
                                 if (parcel.getSendingExpirationDate() != null) {
-                                    modalMessage.append("   Előzetesen feladva\n\n");
+                                    modalMessage.append("       Előzetesen feladva\n\n");
                                     modalMessage.append(
                                             "A csomagot a webes vagy mobilos alkalmazásból már feladtad, " +
                                                     "de az automatában még nem helyezted el.\n" +
@@ -125,7 +125,7 @@ public class MyParcelsActivity extends AppCompatActivity {
 
                                 if (parcel.getSendingDate() != null) {
                                     modalMessage.append(
-                                            "   Csomag feladva\n\n" +
+                                            "       Csomag feladva\n\n" +
                                                     "Csomag feladva " + parcel.getSendingDate() + " " +
                                                     parcel.getSendingTime() + "-kor\n" +
                                                     "Itt adtad fel: " + parcel.getShippingFromPostCode() + " " +
@@ -138,7 +138,7 @@ public class MyParcelsActivity extends AppCompatActivity {
 
                                 if (parcel.getShippingDate() != null) {
                                     modalMessage.append(
-                                            "   Csomag megérkezett\n\n" +
+                                            "       Csomag megérkezett\n\n" +
                                                     "A csomagot még nem vették át.\n" +
                                                     "Csomag leszállítva " + parcel.getShippingDate() + " " +
                                                     parcel.getShippingTime() + "-kor\n" +
@@ -149,7 +149,7 @@ public class MyParcelsActivity extends AppCompatActivity {
 
                                 if (parcel.getPickingUpDate() != null) {
                                     modalMessage.append(
-                                            "   Csomagot átvették\n\n" +
+                                            "       Csomagot átvették\n\n" +
                                                     "Csomag átvéve " + parcel.getPickingUpDate() + " " +
                                                     parcel.getPickingUpTime() + "-kor"
                                     );
@@ -157,7 +157,15 @@ public class MyParcelsActivity extends AppCompatActivity {
 
 
                                 //Szöveg megjelenítése
-                                 builder.setMessage(modalMessage);
+                                builder.setMessage(modalMessage);
+
+                                //Dialog bezárása gomb
+                                builder.setNegativeButton("Vissza", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                });
 
 
                                 //Törlés gomb megjelenítése
@@ -166,35 +174,60 @@ public class MyParcelsActivity extends AppCompatActivity {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
 
+                                            //Biztosan törölni szeretnéd modal
+                                            AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(context);
 
-                                            Call<StringResponse> call2 = ApiConfig.getInstance().parcelService()
+                                            deleteBuilder.setMessage("Biztosan törölni szeretnéd a(z) " +
+                                                    parcel.getUniqueParcelId() + " azonosítójú csomagod?");
+
+                                            //Igen törölni szeretném gomb
+                                            deleteBuilder.setPositiveButton("Igen", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                                    //Csomag törlése
+                                                    Call<StringResponse> call2 = ApiConfig.getInstance().parcelService()
                                                             .deleteMyParcel(parcel.getId(),
                                                                     CurrentUser.getCurrentUser(context).getToken());
 
 
-                                            call2.enqueue(new Callback<StringResponse>() {
-                                                @Override
-                                                public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
+                                                    call2.enqueue(new Callback<StringResponse>() {
+                                                        @Override
+                                                        public void onResponse(Call<StringResponse> call, Response<StringResponse> response) {
 
 
-                                                    //Csomag nem található
-                                                    if(response.body().getMessage().equals("notFound")){
+                                                            //Csomag nem található
+                                                            if (response.body().getMessage().equals("notFound")) {
 
-                                                    }
-                                                    //Activity frissítése
-                                                    if(response.body().getMessage().equals("successfulDeleting")){
-                                                        startActivity(new Intent(context, MyParcelsActivity.class));
-                                                        Toast.makeText(context, "Csomag törölve", Toast.LENGTH_LONG).show();
-                                                    }
+                                                            }
+                                                            //Activity frissítése
+                                                            if (response.body().getMessage().equals("successfulDeleting")) {
+                                                                startActivity(new Intent(context, MyParcelsActivity.class));
+                                                                Toast.makeText(context, "Csomag törölve", Toast.LENGTH_LONG).show();
+                                                            }
 
 
-                                                }
+                                                        }
 
-                                                @Override
-                                                public void onFailure(Call<StringResponse> call, Throwable t) {
+                                                        @Override
+                                                        public void onFailure(Call<StringResponse> call, Throwable t) {
+
+                                                        }
+                                                    });
 
                                                 }
                                             });
+
+                                            //Nem szeretném törölni gomb
+                                            deleteBuilder.setNegativeButton("Nem", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    dialogInterface.dismiss();
+
+                                                }
+                                            });
+
+                                            deleteBuilder.show();
 
                                         }
                                     });

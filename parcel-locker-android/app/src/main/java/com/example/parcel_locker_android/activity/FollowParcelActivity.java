@@ -28,11 +28,12 @@ public class FollowParcelActivity extends AppCompatActivity {
 
     private EditText followUniqueParcelIdEt;
 
-    private TextView notFoundTv, isPlacedTv, isSentTv, isShippedTv, isPickedUpTv, backBtn3;
+    private TextView notFoundTv, isPlacedTv, isSentTv, isShippedTv, isPickedUpTv, backBtn3,
+                    senderTv;
 
     private Button followUniqueParcelIdBtn;
 
-    private CardView notFoundCv, isPlacedCv, isSentCv, isShippedCv, isPickedUpCv;
+    private CardView notFoundCv, isPlacedCv, isSentCv, isShippedCv, isPickedUpCv, senderCv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +49,17 @@ public class FollowParcelActivity extends AppCompatActivity {
         isSentCv = findViewById(R.id.isSentCv);
         isShippedCv = findViewById(R.id.isShippedCv);
         isPickedUpCv = findViewById(R.id.isPickedUpCv);
+        senderCv = findViewById(R.id.senderCv);
 
         notFoundTv = findViewById(R.id.notFoundTv);
         isPlacedTv = findViewById(R.id.isPlacedTv);
         isSentTv = findViewById(R.id.isSentTv);
         isShippedTv = findViewById(R.id.isShippedTv);
         isPickedUpTv = findViewById(R.id.isPickedUpTv);
+        senderTv = findViewById(R.id.senderTv);
 
         notFoundCv.setVisibility(View.INVISIBLE);
+        senderCv.setVisibility(View.INVISIBLE);
         isPlacedCv.setVisibility(View.INVISIBLE);
         isSentCv.setVisibility(View.INVISIBLE);
         isShippedCv.setVisibility(View.INVISIBLE);
@@ -69,6 +73,7 @@ public class FollowParcelActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 notFoundCv.setVisibility(View.INVISIBLE);
+                senderCv.setVisibility(View.INVISIBLE);
                 isPlacedCv.setVisibility(View.INVISIBLE);
                 isSentCv.setVisibility(View.INVISIBLE);
                 isShippedCv.setVisibility(View.INVISIBLE);
@@ -89,6 +94,14 @@ public class FollowParcelActivity extends AppCompatActivity {
                                 notFoundCv.setVisibility(View.VISIBLE);
                                 notFoundTv.setText("A megadott azonosítóval nem található csomag");
 
+                            }
+
+                            //Feladó adatai
+                            if(response.body().getMessage() == null){
+                                senderCv.setVisibility(View.VISIBLE);
+                                String message = "Feladó neve: " + response.body().getSenderName() + "\n" +
+                                        "Feladó email címe: " + response.body().getSenderEmailAddress() + "\n";
+                                senderTv.setText(message);
                             }
 
                             //Csomag előzetesen feladva
