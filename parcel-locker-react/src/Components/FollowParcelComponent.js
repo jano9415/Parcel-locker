@@ -114,6 +114,22 @@ const FollowParcelComponent = () => {
               </Box>
             )}
 
+            {parcel.message === null && parcel.handingDateToFirstStoreByCourier != null && (
+              <Box className='mt-2'>
+                <Divider><Chip label="Feladási megyei raktárban" /></Divider>
+                <Typography>Csomag leszállítva {parcel.handingDateToFirstStoreByCourier + " " +
+                  parcel.handingTimeToFirstStoreByCourier + "-kor"}</Typography>
+              </Box>
+            )}
+
+            {parcel.message === null && parcel.pickingUpDateFromSecondStoreByCourier != null && (
+              <Box className='mt-2'>
+                <Divider><Chip label="Átvételi megyei raktárból elindult" /></Divider>
+                <Typography>Csomag elindult {parcel.pickingUpDateFromSecondStoreByCourier + " " +
+                  parcel.pickingUpTimeFromSecondStoreByCourier + "-kor"}</Typography>
+              </Box>
+            )}
+
             {parcel.message === null && parcel.shippingDate != null && (
               <Box>
                 <Divider><Chip label="Csomag megérkezett" /></Divider>
@@ -132,13 +148,11 @@ const FollowParcelComponent = () => {
               parcel.message === null && parcel.pickingUpExpired === true && (
                 <Box>
                   <Divider><Chip label="Csomag átvételi ideje lejárt" /></Divider>
-                  <Typography>A csomagot a futár visszaszállította a megyei raktárba,
+                  <Typography>A csomagot a futár visszaszállította az átvételi megyei raktárba,
                     <Typography>mert lejárt az átvételi ideje.</Typography>
                     <Typography>Ha szeretnéd újraindítani a csomagot az átvételi automatához,</Typography>
                     <Typography>akkor hívd fel az ügyfélszolgálatot.</Typography>
                   </Typography>
-                  <Typography>Megyei raktár címe: {parcel.storePostCode + " " + parcel.storeCity + " "
-                    + parcel.storeStreet}</Typography>
                 </Box>
               )
             }

@@ -183,7 +183,7 @@ public class ParcelController {
 
     //Átlagos szállítási idő adott x automatától y automatához
 
-    //Átlagos szállítási idő x városból x városba
+    //Átlagos szállítási idő x városból y városba
 
     //Mikor adják fel a legtöbb csomagot? Hétköznap? Hétvégén? Melyik nap?
 
@@ -193,9 +193,18 @@ public class ParcelController {
 
     //Át nem vett, lejárt csomagok száma. Ezek aránya az összes kézbesített csomag arányához
 
-    //Szállítási késések. Mondjuk ami több, mint 3 nap
+    //Szállítási késések. Ami több, mint 72 óra
+    //Csomagok száma, ami késve lett leszállítva
+    //Futár kiveszi a csomagot a feladási automatából időpont -> futár elhelyezi a csomagot az érkezési automatába időpont
+    //Jwt token szükséges
+    //Admin szerepkör szükséges
+    @GetMapping("/pickupbycourierandplacebycourierdelay")
+    public ResponseEntity<StringResponse> pickUpByCourierAndPlaceByCourierDelayTime(){
+        return parcelService.pickUpByCourierAndPlaceByCourierDelayTime();
+    }
 
     //Raktárak forgalmi adatai
+    //Csomagok számlálása feladási megye vagy érkezési megye szerint
     @GetMapping("/storeturnoverdata")
     public ResponseEntity<List<StoreTurnOverDataResponse>> storeTurnOverData(){
         return parcelService.storeTurnOverData();

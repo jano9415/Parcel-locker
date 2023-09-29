@@ -850,6 +850,24 @@ public class ParcelServiceImpl implements ParcelService {
         response.setSendingExpired(parcel.isSendingExpired());
         response.setPickingUpExpired(parcel.isPickingUpExpired());
 
+        //Futár kiveszi a csomagot időpont
+        if(parcel.getPickingUpDateFromParcelLockerByCourier() != null){
+            response.setPickingUpDateFromParcelLockerByCourier(parcel.getPickingUpDateFromParcelLockerByCourier().toString());
+            response.setPickingUpTimeFromParcelLockerByCourier(parcel.getPickingUpTimeFromParcelLockerByCourier().toString());
+        }
+
+        //Futár elhelyezi a csomagot a raktárba időpont
+        if(parcel.getHandingDateToFirstStoreByCourier() != null){
+            response.setHandingDateToFirstStoreByCourier(parcel.getHandingDateToFirstStoreByCourier().toString());
+            response.setHandingTimeToFirstStoreByCourier(parcel.getHandingTimeToFirstStoreByCourier().toString());
+        }
+
+        //Futár felveszi a csomagot a raktárból időpont
+        if(parcel.getPickingUpDateFromSecondStoreByCourier() != null){
+            response.setPickingUpDateFromSecondStoreByCourier(parcel.getPickingUpDateFromSecondStoreByCourier().toString());
+            response.setPickingUpTimeFromSecondStoreByCourier(parcel.getPickingUpTimeFromSecondStoreByCourier().toString());
+        }
+
         return ResponseEntity.ok(response);
     }
 

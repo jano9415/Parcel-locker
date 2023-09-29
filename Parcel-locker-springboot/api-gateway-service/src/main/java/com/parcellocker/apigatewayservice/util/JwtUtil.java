@@ -100,9 +100,11 @@ public class JwtUtil {
             //Futár kiveszi a csomagot a feladási automatából időpont -> futár elhelyezi a csomagot az érkezési automatába időpont
             "/statistics/parcel/pickupbycourierandplacebycourier",
             //Futár elhelyezi a csomagot az érkezési automatába időpont -> ügyfél átveszi a csomagot az érkezési automatából időpont
-            "/statistics/parcel/placebycourierandpickupbycustomer"
-
-
+            "/statistics/parcel/placebycourierandpickupbycustomer",
+            //Raktárak forgalmi adatai
+            "/statistics/parcel/storeturnoverdata",
+            //Szállítási késések. Ami több, mint 72 óra
+            "/statistics/parcel/pickupbycourierandplacebycourierdelay"
 
     );
 

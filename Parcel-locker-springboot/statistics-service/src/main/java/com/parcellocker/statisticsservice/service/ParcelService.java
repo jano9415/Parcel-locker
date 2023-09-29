@@ -36,6 +36,12 @@ public interface ParcelService {
     //Számlálás érkezési automata utcanév szerint
     int countByShippingToStreet(String street);
 
+    //Számlálás feladási automata megye szerint
+    int countByShippingFromCounty(String county);
+
+    //Számlálás érkezési automata megye szerint
+    int countByShippingToCounty(String county);;
+
     //Csomagok száma méret szerint
     ResponseEntity<List<StringResponse>> numberOfParcelsBySize();
 
@@ -86,4 +92,7 @@ public interface ParcelService {
 
     //Raktárak forgalmi adatai
     ResponseEntity<List<StoreTurnOverDataResponse>> storeTurnOverData();
+
+    //Szállítási késések. Ami több, mint 3 nap
+    ResponseEntity<StringResponse> pickUpByCourierAndPlaceByCourierDelayTime();
 }

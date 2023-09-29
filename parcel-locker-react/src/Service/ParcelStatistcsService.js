@@ -135,6 +135,22 @@ const placeByCourierAndPickUpByCustomerTime = () => {
     return axios.get(API_URL + "placebycourierandpickupbycustomer", { headers: authHeader() });
 }
 
+//Raktárak forgalmi adatai
+//Csomagok számlálása feladási megye vagy érkezési megye szerint
+//Jwt token szükséges
+//Admin szerepkör szükséges
+const storeTurnOverData = () => {
+    return axios.get(API_URL + "storeturnoverdata", { headers: authHeader() });
+}
+
+//Szállítási késések. Ami több, mint 72 óra
+//Csomagok száma, ami késve lett leszállítva
+//Jwt token szükséges
+//Admin szerepkör szükséges
+const pickUpByCourierAndPlaceByCourierDelayTime = () => {
+    return axios.get(API_URL + "pickupbycourierandplacebycourierdelay", { headers: authHeader() });
+}
+
 
 const ParcelStatistcsService = {
     numberOfParcels,
@@ -152,7 +168,9 @@ const ParcelStatistcsService = {
     placeByCustomerAndPickUpByCustomerTime,
     placeByCustomerAndPickUpByCourierTime,
     pickUpByCourierAndPlaceByCourierTime,
-    placeByCourierAndPickUpByCustomerTime
+    placeByCourierAndPickUpByCustomerTime,
+    storeTurnOverData,
+    pickUpByCourierAndPlaceByCourierDelayTime,
 
 };
 

@@ -143,6 +143,19 @@ public class ParcelServiceImpl implements ParcelService {
         return parcelRepository.countByShippingToStreet(street);
     }
 
+    //Számlálás feladási automata megye szerint
+    @Override
+    public int countByShippingFromCounty(String county) {
+        return parcelRepository.countByShippingFromCounty(county);
+    }
+
+    //Számlálás érkezési automata megye szerint
+    @Override
+    public int countByShippingToCounty(String county) {
+        return parcelRepository.countByShippingToCounty(county);
+    }
+
+
     //Összes kézbesített csomagok száma
     @Override
     public ResponseEntity<StringResponse> numberOfParcels() {
@@ -334,10 +347,8 @@ public class ParcelServiceImpl implements ParcelService {
     public ResponseEntity<List<StringResponse>> averageMinMaxShippingTime() {
 
         List<Duration> differences = new ArrayList<>();
-        StringResponse responseObj1 = new StringResponse();
-        StringResponse responseObj2 = new StringResponse();
-        StringResponse responseObj3 = new StringResponse();
-        List<StringResponse> response = new ArrayList<>();
+
+
 
         for(Parcel parcel : parcelRepository.findAll()){
             //Dátum és idő konvertálása
@@ -350,46 +361,7 @@ public class ParcelServiceImpl implements ParcelService {
             differences.add(difference);
         }
 
-        //Legkisebb idő
-        Duration minTime = differences.get(0);
-        //Legnagyobb idő
-        Duration maxTime = differences.get(0);
-        //Összes idő
-        Duration totalTime = Duration.ZERO;
-
-        //Összes idő, min és max kiszámítása
-        for(Duration duration : differences){
-
-            //Legkisebb idő
-            if(duration.compareTo(minTime) < 0){
-                minTime = duration;
-            }
-            //Legnagyobb idő
-            if(duration.compareTo(maxTime) > 0){
-                maxTime = duration;
-            }
-
-            //Összes idő kiszámítása
-            totalTime = totalTime.plus(duration);
-        }
-
-        //Átlag kiszámítása
-        float averageTimeInMinutes = totalTime.toMinutes() / differences.size();
-        float averageTimeInDays = averageTimeInMinutes / (24 * 60);
-        float averageTimeInHours = (averageTimeInMinutes % (24 * 60)) / 60;
-
-        //Minimum idő órában nem kerekítve
-        float minTimeInHours = (float) (minTime.toHours() / 60.0);
-        //Maximum idő órában nem kerekítve
-        float maxTimeInHours = (float) (maxTime.toHours() / 60.0);
-
-        responseObj1.setMessage(String.valueOf(averageTimeInHours));
-        responseObj2.setMessage(String.valueOf(maxTimeInHours));
-        responseObj3.setMessage(String.valueOf(minTimeInHours));
-
-        response.add(responseObj1);
-        response.add(responseObj2);
-        response.add(responseObj3);
+        List<StringResponse> response = averageMinMaxTimes(differences);
 
         return ResponseEntity.ok(response);
     }
@@ -515,9 +487,58 @@ public class ParcelServiceImpl implements ParcelService {
     }
 
     //Raktárak forgalmi adatai
+    //Csomagok számlálása feladási megye vagy érkezési megye szerint
     @Override
     public ResponseEntity<List<StoreTurnOverDataResponse>> storeTurnOverData() {
-        return null;
+
+        List<StoreTurnOverDataResponse> response = new ArrayList<>();
+        int id = 1;
+
+        for(Store store : storeService.findAll()){
+
+            StoreTurnOverDataResponse responseObj = new StoreTurnOverDataResponse();
+            responseObj.setId(id);
+            String location = store.getPostCode() + " " + store.getCity() + " " + store.getStreet();
+            responseObj.setLocation(location);
+            responseObj.setCounty(store.getCounty());
+            responseObj.setAmount((countByShippingFromCounty(store.getCounty())) + (countByShippingToCounty(store.getCounty())));
+
+            response.add(responseObj);
+
+            id++;
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    //Szállítási késések. Ami több, mint 72 óra
+    @Override
+    public ResponseEntity<StringResponse> pickUpByCourierAndPlaceByCourierDelayTime() {
+
+        StringResponse response = new StringResponse();
+        int parcelCounter = 0;
+
+
+        for(Parcel parcel : parcelRepository.findAll()){
+
+            //Dátum és idő konvertálása
+            LocalDateTime pickUpByCourierDateTime = LocalDateTime.of(parcel.getPickingUpDateFromParcelLockerByCourier(),
+                    parcel.getPickingUpTimeFromParcelLockerByCourier());
+            LocalDateTime handByCourierDateTime = LocalDateTime.of(parcel.getShippingDate(), parcel.getShippingTime());
+
+            //A két időpont közötti különbség
+            Duration difference = Duration.between(pickUpByCourierDateTime, handByCourierDateTime);
+
+
+            if(difference.toHours() > 72){
+                parcelCounter++;
+                response.setMessage(String.valueOf(parcelCounter));
+            }
+        }
+
+
+        return ResponseEntity.ok(response);
+
     }
 
     //Csomagautomaták lekérése a parcel handler service-ből
@@ -540,7 +561,7 @@ public class ParcelServiceImpl implements ParcelService {
         Map<String, Integer> streetCount = new HashMap<>();
 
         //Csomagok számlálása utcák szerint
-        for(GetParcelLockersResponse parcelLocker : getParcelLockers()){
+        for(ParcelLocker parcelLocker : parcelLockerService.findAll()){
 
             if(fromOrTo.equals("from")){
                 streetCount.put(parcelLocker.getPostCode() + ", " + parcelLocker.getCity() + ", " +
@@ -574,9 +595,10 @@ public class ParcelServiceImpl implements ParcelService {
     public List<TotalSendingByLocationsResponse> countParcelByLocations(String fromOrTo){
 
         List<TotalSendingByLocationsResponse> response = new ArrayList<>();
+        int id = 1;
 
         //Csomagok számlálása utcák szerint
-        for(GetParcelLockersResponse parcelLocker : getParcelLockers()){
+        for(ParcelLocker parcelLocker : parcelLockerService.findAll()){
 
             //Feladás
             if(fromOrTo.equals("from")){
@@ -585,7 +607,7 @@ public class ParcelServiceImpl implements ParcelService {
                 String location = parcelLocker.getPostCode() + ", " + parcelLocker.getCity() + ", " +
                         parcelLocker.getStreet();
 
-                responseObj.setId(parcelLocker.getId());
+                responseObj.setId(id);
                 responseObj.setLocationShortFormat(location.substring(6,8));
                 responseObj.setIdAndLocation(parcelLocker.getId() + "-" + location.substring(6,8));
                 responseObj.setLocation(location);
@@ -601,7 +623,7 @@ public class ParcelServiceImpl implements ParcelService {
                 String location = parcelLocker.getPostCode() + ", " + parcelLocker.getCity() + ", " +
                         parcelLocker.getStreet();
 
-                responseObj.setId(parcelLocker.getId());
+                responseObj.setId(id);
                 responseObj.setLocationShortFormat(location.substring(6,8));
                 responseObj.setIdAndLocation(parcelLocker.getId() + "-" + location.substring(6,8));
                 responseObj.setLocation(location);
@@ -610,10 +632,11 @@ public class ParcelServiceImpl implements ParcelService {
                 response.add(responseObj);
 
             }
+
+            id++;
         }
 
         return response;
-
     }
 
     //Időpontok átlaga, minimuma és maximuma
@@ -646,17 +669,20 @@ public class ParcelServiceImpl implements ParcelService {
 
             //Összes idő kiszámítása
             totalTime = totalTime.plus(duration);
+
         }
 
+
+
         //Átlag kiszámítása
-        float averageTimeInMinutes = totalTime.toMinutes() / differences.size();
-        float averageTimeInDays = averageTimeInMinutes / (24 * 60);
-        float averageTimeInHours = (averageTimeInMinutes % (24 * 60)) / 60;
+        double totalTimeInHours = totalTime.toMinutes() / 60.0;
+        double averageTimeInHours = totalTimeInHours / differences.size();
+
 
         //Minimum idő órában nem kerekítve
-        float minTimeInHours = (float) (minTime.toHours() / 60.0);
+        double minTimeInHours = minTime.toMinutes() / 60.0;
         //Maximum idő órában nem kerekítve
-        float maxTimeInHours = (float) (maxTime.toHours() / 60.0);
+        double maxTimeInHours = maxTime.toMinutes() / 60.0;
 
         responseObj1.setMessage(String.valueOf(averageTimeInHours));
         responseObj2.setMessage(String.valueOf(maxTimeInHours));
@@ -667,6 +693,14 @@ public class ParcelServiceImpl implements ParcelService {
         response.add(responseObj3);
 
         return response;
+    }
+
+    @PostConstruct
+    public void valami(){
+
+        Parcel parcel = findById("6516cce7b4e1db7478c58155");
+
+        System.out.println(parcel.getPickingUpDate() + " " + parcel.getPickingUpTime());
     }
 
 }

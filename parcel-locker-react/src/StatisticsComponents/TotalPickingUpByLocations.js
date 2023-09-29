@@ -14,7 +14,7 @@ const chartSetting = {
 };
 
 
-const valueFormatter = (value) => `${value}darab`;
+const valueFormatter = (value) => `${value} darab`;
 
 
 

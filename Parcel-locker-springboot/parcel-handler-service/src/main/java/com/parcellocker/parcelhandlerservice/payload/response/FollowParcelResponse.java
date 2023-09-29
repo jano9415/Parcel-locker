@@ -71,4 +71,16 @@ public class FollowParcelResponse {
 
     private String senderEmailAddress;
 
+    private String pickingUpDateFromParcelLockerByCourier;
+
+    private String pickingUpTimeFromParcelLockerByCourier;
+
+    private String handingDateToFirstStoreByCourier;
+
+    private String handingTimeToFirstStoreByCourier;
+
+    private String pickingUpDateFromSecondStoreByCourier;
+
+    private String pickingUpTimeFromSecondStoreByCourier;
+
 }
