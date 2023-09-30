@@ -121,12 +121,23 @@ const GetParcelsOfStoreComponent = () => {
                             >
                                 <TableCell align="right">{parcel.uniqueParcelId}</TableCell>
                                 <TableCell align="right">
-                                    {parcel.shippingFromPostCode + " " + parcel.shippingFromCity + " " + parcel.shippingFromStreet}
+                                    {parcel.shippingFromCounty + " megye" + " " + parcel.shippingFromPostCode + " " +
+                                        parcel.shippingFromCity + " " + parcel.shippingFromStreet}
                                 </TableCell>
                                 <TableCell align="right">
-                                    {parcel.shippingToPostCode + " " + parcel.shippingToCity + " " + parcel.shippingToStreet}
+                                    {parcel.shippingToCounty + " megye" + " " + parcel.shippingToPostCode + " " +
+                                        parcel.shippingToCity + " " + parcel.shippingToStreet}
                                 </TableCell>
-                                <TableCell align="right">{parcel.pickingUpExpired + ""}</TableCell>
+                                <TableCell align="right">
+                                    {
+                                        parcel.pickingUpExpired ? (
+                                            "Igen"
+                                        ) :
+                                            (
+                                                "Nem"
+                                            )
+                                    }
+                                </TableCell>
                                 <TableCell align="right">
                                     {
                                         parcel.pickingUpExpired && (

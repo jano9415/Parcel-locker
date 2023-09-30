@@ -130,11 +130,11 @@ public class ParcelServiceImpl implements ParcelService {
         parcel.setShipped(false);
         parcel.setPickedUp(false);
 
-        LocalDate currentDate = LocalDate.now();
-        parcel.setSendingDate(currentDate);
+        //parcel.setSendingDate(currentDate());
+        parcel.setSendingDate(date1());
 
-        LocalTime currentTime = LocalTime.now();
-        parcel.setSendingTime(currentTime);
+        //parcel.setSendingTime(currentTime());
+        parcel.setSendingTime(time1());
 
         parcel.setShippingDate(null);
         parcel.setShippingTime(null);
@@ -182,8 +182,8 @@ public class ParcelServiceImpl implements ParcelService {
         notification.setReceiverParcelLockerPostCode(receiverParcelLocker.getLocation().getPostCode());
         notification.setReceiverParcelLockerCity(receiverParcelLocker.getLocation().getCity());
         notification.setReceiverParcelLockerStreet(receiverParcelLocker.getLocation().getStreet());
-        notification.setSendingDate(currentDate.toString());
-        notification.setSendingTime(currentTime.toString());
+        notification.setSendingDate(currentDate().toString());
+        notification.setSendingTime(currentTime().toString());
 
         producer.sendNotificationForSender(notification);
 
@@ -252,8 +252,10 @@ public class ParcelServiceImpl implements ParcelService {
             parcel.setParcelLocker(null);
 
             //Dátum és időpont, amikor a futár kiveszi a csomagot
-            parcel.setPickingUpDateFromParcelLockerByCourier(currentDate());
-            parcel.setPickingUpTimeFromParcelLockerByCourier(currentTime());
+            //parcel.setPickingUpDateFromParcelLockerByCourier(currentDate());
+            parcel.setPickingUpDateFromParcelLockerByCourier(date2());
+            //parcel.setPickingUpTimeFromParcelLockerByCourier(currentTime());
+            parcel.setPickingUpTimeFromParcelLockerByCourier(time2());
 
             save(parcel);
             courierService.save(courier);
@@ -385,16 +387,16 @@ public class ParcelServiceImpl implements ParcelService {
                     //Csomag el van helyezve
                     //Elhelyezési dátum és időpont
                     parcel.setShipped(true);
-                    LocalDate currentDate = LocalDate.now();
-                    parcel.setShippingDate(currentDate);
+                    //parcel.setShippingDate(currentDate());
+                    parcel.setShippingDate(date5());
 
-                    LocalTime currentTime = LocalTime.now();
-                    parcel.setShippingTime(currentTime);
+                    //parcel.setShippingTime(currentTime());
+                    parcel.setShippingTime(time5());
 
                     //Átvételi lejárati dátum. Amikor a futár elhelyezi a csomagot az automatába + három nap
-                    parcel.setPickingUpExpirationDate(currentDate.plusDays(3));
+                    parcel.setPickingUpExpirationDate(currentDate().plusDays(3));
                     //Átvételi lejárati időpont. Megegyezik az elhelyezési időponttal
-                    parcel.setPickingUpExpirationTime(currentTime);
+                    parcel.setPickingUpExpirationTime(currentTime());
 
 
                     //Csomag és automata összerendlése
@@ -425,8 +427,8 @@ public class ParcelServiceImpl implements ParcelService {
                     notification.setReceiverParcelLockerPostCode(parcel.getShippingTo().getLocation().getPostCode());
                     notification.setReceiverParcelLockerCity(parcel.getShippingTo().getLocation().getCity());
                     notification.setReceiverParcelLockerStreet(parcel.getShippingTo().getLocation().getStreet());
-                    notification.setShippingDate(currentDate.toString());
-                    notification.setShippingTime(currentTime.toString());
+                    notification.setShippingDate(currentDate().toString());
+                    notification.setShippingTime(currentTime().toString());
 
                     notification.setPickingUpCode(parcel.getPickingUpCode());
 
@@ -589,11 +591,11 @@ public class ParcelServiceImpl implements ParcelService {
 
         //Csomag adatainak frissítése
         //Amit frissíteni kell: a csomag el van helyezve, feladási dátum és időpont
-        LocalDate currentDate = LocalDate.now();
-        parcel.setSendingDate(currentDate);
+        //parcel.setSendingDate(currentDate());
+        parcel.setSendingDate(date1());
 
-        LocalTime currentTime = LocalTime.now();
-        parcel.setSendingTime(currentTime);
+        //parcel.setSendingTime(currentTime());
+        parcel.setSendingTime(time1());
 
         parcel.setPlaced(true);
 
@@ -619,8 +621,8 @@ public class ParcelServiceImpl implements ParcelService {
         notification.setReceiverParcelLockerPostCode(receiverParcelLocker.getLocation().getPostCode());
         notification.setReceiverParcelLockerCity(receiverParcelLocker.getLocation().getCity());
         notification.setReceiverParcelLockerStreet(receiverParcelLocker.getLocation().getStreet());
-        notification.setSendingDate(currentDate.toString());
-        notification.setSendingTime(currentTime.toString());
+        notification.setSendingDate(currentDate().toString());
+        notification.setSendingTime(currentTime().toString());
 
         producer.sendNotificationForSender(notification);
 
@@ -895,8 +897,10 @@ public class ParcelServiceImpl implements ParcelService {
         }
 
         //Dátum és időpont, amikor a futár leadja a csomagot
-        parcel.setHandingDateToFirstStoreByCourier(currentDate());
-        parcel.setHandingTimeToFirstStoreByCourier(currentTime());
+        //parcel.setHandingDateToFirstStoreByCourier(currentDate());
+        parcel.setHandingDateToFirstStoreByCourier(date3());
+        //parcel.setHandingTimeToFirstStoreByCourier(currentTime());
+        parcel.setHandingTimeToFirstStoreByCourier(time3());
 
         //Csomag leadása
         //Csomag és futár összerendelés megszüntetése. Kapcsolótábla frissítése
@@ -930,8 +934,10 @@ public class ParcelServiceImpl implements ParcelService {
         }
 
         //Dátum és időpont, amikor a futár leadja a csomagot
-        parcel.setPickingUpDateFromSecondStoreByCourier(currentDate());
-        parcel.setPickingUpTimeFromSecondStoreByCourier(currentTime());
+        //parcel.setPickingUpDateFromSecondStoreByCourier(currentDate());
+        parcel.setPickingUpDateFromSecondStoreByCourier(date4());
+        //parcel.setPickingUpTimeFromSecondStoreByCourier(currentTime());
+        parcel.setPickingUpTimeFromSecondStoreByCourier(time4());
 
         //Csomag felvétele
         //Futár és csomag összerendelése. Kapcsolótábla frissítése
@@ -1263,10 +1269,8 @@ public class ParcelServiceImpl implements ParcelService {
         Parcel parcel = findByPickingUpCode(pickingUpCode);
 
         //Átvétel dátuma
-        LocalDate currentDate = LocalDate.now();
-        parcel.setPickingUpDate(currentDate);
-        LocalTime currentTime = LocalTime.now();
-        parcel.setPickingUpTime(currentTime);
+        parcel.setPickingUpDate(currentDate());
+        parcel.setPickingUpTime(currentTime());
 
         //Email értesítés objektum
         ParcelPickingUpNotification notification = new ParcelPickingUpNotification();
@@ -1278,8 +1282,8 @@ public class ParcelServiceImpl implements ParcelService {
         notification.setReceiverParcelLockerCity(parcel.getShippingTo().getLocation().getCity());
         notification.setReceiverParcelLockerStreet(parcel.getShippingTo().getLocation().getStreet());
 
-        notification.setPickingUpDate(currentDate.toString());
-        notification.setPickingUpTime(currentTime.toString());
+        notification.setPickingUpDate(currentDate().toString());
+        notification.setPickingUpTime(currentTime().toString());
 
         if(parcel.getUser() == null){
             notification.setSenderName(parcel.getSenderName());
@@ -1520,6 +1524,46 @@ public class ParcelServiceImpl implements ParcelService {
         }
 
         return result;
+    }
+
+    //Ügyfél feladja a csomagot
+    public LocalDate date1(){
+        return LocalDate.of(2023,9, 27);
+    }
+    public LocalTime time1(){
+        return LocalTime.of(17,35);
+    }
+
+    //Futár kiveszi a csomagot
+    public LocalDate date2(){
+        return LocalDate.of(2023,9, 28);
+    }
+    public LocalTime time2(){
+        return LocalTime.of(8,9);
+    }
+
+    //Futár leadja a raktárba
+    public LocalDate date3(){
+        return LocalDate.of(2023,9, 28);
+    }
+    public LocalTime time3(){
+        return LocalTime.of(15,35);
+    }
+
+    //Futár felveszi a raktárból
+    public LocalDate date4(){
+        return LocalDate.of(2023,9, 29);
+    }
+    public LocalTime time4(){
+        return LocalTime.of(7,20);
+    }
+
+    //Futár elhelyezi az automatába
+    public LocalDate date5(){
+        return LocalDate.of(2023,9, 29);
+    }
+    public LocalTime time5(){
+        return LocalTime.of(13,22);
     }
 
 }

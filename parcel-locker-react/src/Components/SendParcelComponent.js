@@ -11,6 +11,8 @@ import image12 from '../image12.png';
 
 
 
+
+
 const SendParcelComponent = () => {
 
     const [parcelLockers, setParcelLockers] = useState([{}]);
@@ -19,6 +21,21 @@ const SendParcelComponent = () => {
     const [mediumBoxesFull, setMediumBoxesFull] = useState(false);
     const [largeBoxesFull, setLargeBoxesFull] = useState(false);
     const [sendingMessage, setSendingMessage] = useState("");
+
+    //Kicsi, köezepes vagy nagy rekeszek telítettségének ellenőrzése
+    let checkBoxesInSelectedSize = (size) => {
+
+        if (size === "small") {
+            return smallBoxesFull;
+        }
+        if (size === "medium") {
+            return mediumBoxesFull;
+        }
+        if (size === "large") {
+            return largeBoxesFull;
+        }
+    }
+
 
 
 
@@ -136,19 +153,70 @@ const SendParcelComponent = () => {
                 .required("Add meg az átvevő telefonszámát")
         }),
         onSubmit: (values) => {
-            //Csomagfeladás
-            ParcelService.sendParcelWithCodeFromWebpage(values).then(
-                (respone) => {
-                    if (respone.data.message === "successSending") {
-                        setSendingMessage("Sikeres előzetes csomagfeladás. A feladási kódodat megtalálod az email értesítőben" +
-                            " és a csomagjaim meüpontban.");
-                    }
 
+            //A végleges feladás előtt ismét ellenőrizni kell, hogy van-e szabad hely az automatában
+            //Lehet, hogy közben más is adott fel ebből az automatából és megteltek a rekeszek
+            //Rekeszek tele vannak? Kicsi, közepes, nagy rekeszek ellenőrzése.
+            ParcelLockerService.areBoxesFull(formik.values.parcelLockerFromId).then(
+                (response) => {
+                    //Kicsi rekeszek
+                    if (response.data[0].message === "full") {
+                        setSmallBoxesFull(true);
+                    }
+                    if (response.data[0].message === "notfull") {
+                        setSmallBoxesFull(false);
+                    }
+                    //Közepes rekeszek
+                    if (response.data[1].message === "full") {
+                        setMediumBoxesFull(true);
+                    }
+                    if (response.data[1].message === "notfull") {
+                        setMediumBoxesFull(false);
+                    }
+                    //Nagy rekeszek
+                    if (response.data[2].message === "full") {
+                        setLargeBoxesFull(true);
+                    }
+                    if (response.data[2].message === "notfull") {
+                        setLargeBoxesFull(false);
+                    }
                 },
                 (error) => {
 
                 }
             )
+
+            //Ha megteltek a rekeszek
+            if (checkBoxesInSelectedSize(formik.values.size)) {
+                setSendingMessage("Sajnos a kiválasztott méretű rekeszek megteltek.");
+            }
+            //Mehet a csomagküldés
+            else {
+                //Csomagfeladás
+                ParcelService.sendParcelWithCodeFromWebpage(values).then(
+                    (respone) => {
+                        if (respone.data.message === "successSending") {
+                            setSendingMessage("Sikeres előzetes csomagfeladás. A feladási kódodat megtalálod az email értesítőben" +
+                                " és a csomagjaim menüpontban.");
+
+                            //Formik reset
+                            formik.setValues({
+                                price: 0,
+                                size: '',
+                                parcelLockerFromId: '',
+                                parcelLockerToId: '',
+                                receiverName: '',
+                                receiverEmailAddress: '',
+                                receiverPhoneNumber: '',
+                            });
+                        }
+
+                    },
+                    (error) => {
+
+                    }
+                )
+            }
         }
     })
 
@@ -161,7 +229,7 @@ const SendParcelComponent = () => {
                         <Select
                             id='parcelLockerFromId'
                             name='parcelLockerFromId'
-                            value={formik.parcelLockerFromId}
+                            value={formik.values.parcelLockerFromId}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             fullWidth
@@ -183,7 +251,7 @@ const SendParcelComponent = () => {
                         <Select
                             id='parcelLockerToId'
                             name='parcelLockerToId'
-                            value={formik.parcelLockerToId}
+                            value={formik.values.parcelLockerToId}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             fullWidth
@@ -207,7 +275,7 @@ const SendParcelComponent = () => {
                             defaultValue={"small"}
                             id='size'
                             name='size'
-                            value={formik.size}
+                            value={formik.values.size}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                         >
@@ -239,7 +307,7 @@ const SendParcelComponent = () => {
                                 name='price'
                                 type="number"
                                 label="Csomag ára"
-                                value={formik.price}
+                                value={formik.values.price}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
@@ -254,7 +322,7 @@ const SendParcelComponent = () => {
                                 name='receiverName'
                                 type="text"
                                 label="Átvevő neve"
-                                value={formik.receiverName}
+                                value={formik.values.receiverName}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
@@ -269,7 +337,7 @@ const SendParcelComponent = () => {
                                 name='receiverEmailAddress'
                                 type="email"
                                 label="Átvevő email címe"
-                                value={formik.receiverEmailAddress}
+                                value={formik.values.receiverEmailAddress}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
@@ -284,7 +352,7 @@ const SendParcelComponent = () => {
                                 name='receiverPhoneNumber'
                                 type="text"
                                 label="Átvevő telefonszáma"
-                                value={formik.receiverPhoneNumber}
+                                value={formik.values.receiverPhoneNumber}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
@@ -305,13 +373,15 @@ const SendParcelComponent = () => {
                                     </Box>
                                 )
                         }
-                        <Box>
-                            <Typography>{sendingMessage}</Typography>
-                        </Box>
-
                     </Box>
                 </Box>
             </form >
+
+            <Box className="d-flex justify-content-center">
+                <Box>
+                    <Typography>{sendingMessage}</Typography>
+                </Box>
+            </Box>
 
             <Box className="d-flex justify-content-center">
                 <Box>

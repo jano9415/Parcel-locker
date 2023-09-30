@@ -695,12 +695,4 @@ public class ParcelServiceImpl implements ParcelService {
         return response;
     }
 
-    @PostConstruct
-    public void valami(){
-
-        Parcel parcel = findById("6516cce7b4e1db7478c58155");
-
-        System.out.println(parcel.getPickingUpDate() + " " + parcel.getPickingUpTime());
-    }
-
 }

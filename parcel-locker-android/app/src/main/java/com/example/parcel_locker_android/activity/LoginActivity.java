@@ -32,7 +32,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText loginEmailAddressEt, loginPasswordEt;
-    private Button loginButton;
+    private Button loginButton, futar001Btn, futar002Btn, jano9415Btn;
 
     private TextView backButton1;
 
@@ -48,6 +48,10 @@ public class LoginActivity extends AppCompatActivity {
         loginPasswordEt = findViewById(R.id.loginPasswordEt);
         loginButton = findViewById(R.id.loginButton);
         backButton1 = findViewById(R.id.backButton1);
+
+        futar001Btn = findViewById(R.id.futar001Btn);
+        futar002Btn = findViewById(R.id.futar002Btn);
+        jano9415Btn = findViewById(R.id.jano9415Btn);
 
         LoginRequest loginRequest = new LoginRequest();
 
@@ -124,6 +128,33 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            }
+        });
+
+        futar001Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loginEmailAddressEt.setText("futar001");
+                loginPasswordEt.setText("07 6205 26");
+
+            }
+        });
+
+        futar002Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loginEmailAddressEt.setText("futar002");
+                loginPasswordEt.setText(" A6 40 65 ");
+
+            }
+        });
+
+        jano9415Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loginEmailAddressEt.setText("jano9415@gmail.com");
+                loginPasswordEt.setText("Password1!");
+
             }
         });
 

@@ -64,10 +64,22 @@ public class FollowParcelResponse {
 
     private String senderEmailAddress;
 
+    private String pickingUpDateFromParcelLockerByCourier;
+
+    private String pickingUpTimeFromParcelLockerByCourier;
+
+    private String handingDateToFirstStoreByCourier;
+
+    private String handingTimeToFirstStoreByCourier;
+
+    private String pickingUpDateFromSecondStoreByCourier;
+
+    private String pickingUpTimeFromSecondStoreByCourier;
+
     public FollowParcelResponse() {
     }
 
-    public FollowParcelResponse(String message, int shippingFromPostCode, String shippingFromCounty, String shippingFromCity, String shippingFromStreet, int storePostCode, String storeCounty, String storeCity, String storeStreet, int shippingToPostCode, String shippingToCounty, String shippingToCity, String shippingToStreet, boolean isShipped, boolean isPickedUp, String sendingDate, String sendingTime, String pickingUpDate, String pickingUpTime, String shippingDate, String shippingTime, boolean isPlaced, boolean isPaid, String pickingUpExpirationDate, String pickingUpExpirationTime, boolean isPickingUpExpired, String sendingExpirationDate, String sendingExpirationTime, boolean isSendingExpired, String senderName, String senderEmailAddress) {
+    public FollowParcelResponse(String message, int shippingFromPostCode, String shippingFromCounty, String shippingFromCity, String shippingFromStreet, int storePostCode, String storeCounty, String storeCity, String storeStreet, int shippingToPostCode, String shippingToCounty, String shippingToCity, String shippingToStreet, boolean isShipped, boolean isPickedUp, String sendingDate, String sendingTime, String pickingUpDate, String pickingUpTime, String shippingDate, String shippingTime, boolean isPlaced, boolean isPaid, String pickingUpExpirationDate, String pickingUpExpirationTime, boolean isPickingUpExpired, String sendingExpirationDate, String sendingExpirationTime, boolean isSendingExpired, String senderName, String senderEmailAddress, String pickingUpDateFromParcelLockerByCourier, String pickingUpTimeFromParcelLockerByCourier, String handingDateToFirstStoreByCourier, String handingTimeToFirstStoreByCourier, String pickingUpDateFromSecondStoreByCourier, String pickingUpTimeFromSecondStoreByCourier) {
         this.message = message;
         this.shippingFromPostCode = shippingFromPostCode;
         this.shippingFromCounty = shippingFromCounty;
@@ -99,6 +111,12 @@ public class FollowParcelResponse {
         this.isSendingExpired = isSendingExpired;
         this.senderName = senderName;
         this.senderEmailAddress = senderEmailAddress;
+        this.pickingUpDateFromParcelLockerByCourier = pickingUpDateFromParcelLockerByCourier;
+        this.pickingUpTimeFromParcelLockerByCourier = pickingUpTimeFromParcelLockerByCourier;
+        this.handingDateToFirstStoreByCourier = handingDateToFirstStoreByCourier;
+        this.handingTimeToFirstStoreByCourier = handingTimeToFirstStoreByCourier;
+        this.pickingUpDateFromSecondStoreByCourier = pickingUpDateFromSecondStoreByCourier;
+        this.pickingUpTimeFromSecondStoreByCourier = pickingUpTimeFromSecondStoreByCourier;
     }
 
     public String getMessage() {
@@ -347,5 +365,53 @@ public class FollowParcelResponse {
 
     public void setSenderEmailAddress(String senderEmailAddress) {
         this.senderEmailAddress = senderEmailAddress;
+    }
+
+    public String getPickingUpDateFromParcelLockerByCourier() {
+        return pickingUpDateFromParcelLockerByCourier;
+    }
+
+    public void setPickingUpDateFromParcelLockerByCourier(String pickingUpDateFromParcelLockerByCourier) {
+        this.pickingUpDateFromParcelLockerByCourier = pickingUpDateFromParcelLockerByCourier;
+    }
+
+    public String getPickingUpTimeFromParcelLockerByCourier() {
+        return pickingUpTimeFromParcelLockerByCourier;
+    }
+
+    public void setPickingUpTimeFromParcelLockerByCourier(String pickingUpTimeFromParcelLockerByCourier) {
+        this.pickingUpTimeFromParcelLockerByCourier = pickingUpTimeFromParcelLockerByCourier;
+    }
+
+    public String getHandingDateToFirstStoreByCourier() {
+        return handingDateToFirstStoreByCourier;
+    }
+
+    public void setHandingDateToFirstStoreByCourier(String handingDateToFirstStoreByCourier) {
+        this.handingDateToFirstStoreByCourier = handingDateToFirstStoreByCourier;
+    }
+
+    public String getHandingTimeToFirstStoreByCourier() {
+        return handingTimeToFirstStoreByCourier;
+    }
+
+    public void setHandingTimeToFirstStoreByCourier(String handingTimeToFirstStoreByCourier) {
+        this.handingTimeToFirstStoreByCourier = handingTimeToFirstStoreByCourier;
+    }
+
+    public String getPickingUpDateFromSecondStoreByCourier() {
+        return pickingUpDateFromSecondStoreByCourier;
+    }
+
+    public void setPickingUpDateFromSecondStoreByCourier(String pickingUpDateFromSecondStoreByCourier) {
+        this.pickingUpDateFromSecondStoreByCourier = pickingUpDateFromSecondStoreByCourier;
+    }
+
+    public String getPickingUpTimeFromSecondStoreByCourier() {
+        return pickingUpTimeFromSecondStoreByCourier;
+    }
+
+    public void setPickingUpTimeFromSecondStoreByCourier(String pickingUpTimeFromSecondStoreByCourier) {
+        this.pickingUpTimeFromSecondStoreByCourier = pickingUpTimeFromSecondStoreByCourier;
     }
 }

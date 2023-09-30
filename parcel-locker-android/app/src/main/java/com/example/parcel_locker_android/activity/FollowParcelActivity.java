@@ -29,11 +29,12 @@ public class FollowParcelActivity extends AppCompatActivity {
     private EditText followUniqueParcelIdEt;
 
     private TextView notFoundTv, isPlacedTv, isSentTv, isShippedTv, isPickedUpTv, backBtn3,
-                    senderTv;
+                    senderTv, arrivedInFirstStoreTv, startedFromSecondStoreTv, isExpiredTv;
 
     private Button followUniqueParcelIdBtn;
 
-    private CardView notFoundCv, isPlacedCv, isSentCv, isShippedCv, isPickedUpCv, senderCv;
+    private CardView notFoundCv, isPlacedCv, isSentCv, isShippedCv, isPickedUpCv, senderCv,
+            arrivedInFirstStoreCv, startedFromSecondStoreCv, isExpiredCv ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,9 @@ public class FollowParcelActivity extends AppCompatActivity {
         isShippedCv = findViewById(R.id.isShippedCv);
         isPickedUpCv = findViewById(R.id.isPickedUpCv);
         senderCv = findViewById(R.id.senderCv);
+        arrivedInFirstStoreCv = findViewById(R.id.arrivedInFirstStoreCv);
+        startedFromSecondStoreCv = findViewById(R.id.startedFromSecondStoreCv);
+        isExpiredCv = findViewById(R.id.isExpiredCv);
 
         notFoundTv = findViewById(R.id.notFoundTv);
         isPlacedTv = findViewById(R.id.isPlacedTv);
@@ -57,6 +61,9 @@ public class FollowParcelActivity extends AppCompatActivity {
         isShippedTv = findViewById(R.id.isShippedTv);
         isPickedUpTv = findViewById(R.id.isPickedUpTv);
         senderTv = findViewById(R.id.senderTv);
+        arrivedInFirstStoreTv = findViewById(R.id.arrivedInFirstStoreTv);
+        startedFromSecondStoreTv = findViewById(R.id.startedFromSecondStoreTv);
+        isExpiredTv = findViewById(R.id.isExpiredTv);
 
         notFoundCv.setVisibility(View.INVISIBLE);
         senderCv.setVisibility(View.INVISIBLE);
@@ -64,6 +71,9 @@ public class FollowParcelActivity extends AppCompatActivity {
         isSentCv.setVisibility(View.INVISIBLE);
         isShippedCv.setVisibility(View.INVISIBLE);
         isPickedUpCv.setVisibility(View.INVISIBLE);
+        arrivedInFirstStoreCv.setVisibility(View.INVISIBLE);
+        startedFromSecondStoreCv.setVisibility(View.INVISIBLE);
+        isExpiredCv.setVisibility(View.INVISIBLE);
 
 
 
@@ -78,6 +88,10 @@ public class FollowParcelActivity extends AppCompatActivity {
                 isSentCv.setVisibility(View.INVISIBLE);
                 isShippedCv.setVisibility(View.INVISIBLE);
                 isPickedUpCv.setVisibility(View.INVISIBLE);
+                arrivedInFirstStoreCv.setVisibility(View.INVISIBLE);
+                startedFromSecondStoreCv.setVisibility(View.INVISIBLE);
+                isExpiredCv.setVisibility(View.INVISIBLE);
+
                 String uniqueParcelId = followUniqueParcelIdEt.getText().toString().trim();
 
                 if(validateData(uniqueParcelId)){
@@ -129,6 +143,27 @@ public class FollowParcelActivity extends AppCompatActivity {
 
                             }
 
+                            //Csomag megérkezett a feladási megyei raktárba
+                            if(response.body().getMessage() == null &&
+                                    response.body().getHandingDateToFirstStoreByCourier() != null){
+                                arrivedInFirstStoreCv.setVisibility(View.VISIBLE);
+                                String message = "Csomag leszállítva " + response.body().getHandingDateToFirstStoreByCourier() +
+                                        " " + response.body().getHandingTimeToFirstStoreByCourier() + "-kor a feladási " +
+                                        "megyei raktárba";
+                                arrivedInFirstStoreTv.setText(message);
+
+                            }
+                            //Csomag elindult az átvételi feladási raktárból
+                            if(response.body().getMessage() == null &&
+                                    response.body().getPickingUpDateFromSecondStoreByCourier() != null){
+                                startedFromSecondStoreCv.setVisibility(View.VISIBLE);
+                                String message = "Csomag elindult " + response.body().getPickingUpDateFromSecondStoreByCourier() +
+                                        " " + response.body().getPickingUpTimeFromSecondStoreByCourier() + "-kor " +
+                                        "az érkezési megyei raktárból";
+                                startedFromSecondStoreTv.setText(message);
+
+                            }
+
                             //Csomag leszállítva
                             if(response.body().getMessage() == null && response.body().getShippingDate() != null){
                                 isShippedCv.setVisibility(View.VISIBLE);
@@ -141,6 +176,15 @@ public class FollowParcelActivity extends AppCompatActivity {
                                         + " " + response.body().getPickingUpExpirationTime();
                                 isShippedTv.setText(message);
 
+                            }
+
+                            //Csomag átvételi ideje lejárt
+                            if(response.body().getMessage() == null && response.body().isPickingUpExpired()){
+                                isExpiredCv.setVisibility(View.VISIBLE);
+                                String message = "A csomagot a futár visszaszállította az átvételi megyei raktárba, " +
+                                        "mert lejárt az átvételi ideje. Ha szeretnéd újraindítani a csomagot az " +
+                                        "átvételi automatához, akkor hívd fel az ügyfélszolgálatot.";
+                                isExpiredTv.setText(message);
                             }
 
                             //Csomag átvéve
