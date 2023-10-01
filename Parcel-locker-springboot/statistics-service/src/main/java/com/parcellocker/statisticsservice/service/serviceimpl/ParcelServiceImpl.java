@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -530,7 +531,7 @@ public class ParcelServiceImpl implements ParcelService {
             Duration difference = Duration.between(pickUpByCourierDateTime, handByCourierDateTime);
 
 
-            if(difference.toHours() > 72){
+            if( (difference.toMinutes() / 60.0) > 72){
                 parcelCounter++;
                 response.setMessage(String.valueOf(parcelCounter));
             }
@@ -684,9 +685,13 @@ public class ParcelServiceImpl implements ParcelService {
         //Maximum idő órában nem kerekítve
         double maxTimeInHours = maxTime.toMinutes() / 60.0;
 
-        responseObj1.setMessage(String.valueOf(averageTimeInHours));
-        responseObj2.setMessage(String.valueOf(maxTimeInHours));
-        responseObj3.setMessage(String.valueOf(minTimeInHours));
+        //Értékek kerekítése 3 tizedesjegyre
+        DecimalFormat decimalFormat = new DecimalFormat("#.###");
+
+
+        responseObj1.setMessage(String.valueOf(decimalFormat.format(averageTimeInHours)));
+        responseObj2.setMessage(String.valueOf(decimalFormat.format(maxTimeInHours)));
+        responseObj3.setMessage(String.valueOf(decimalFormat.format(minTimeInHours)));
 
         response.add(responseObj1);
         response.add(responseObj2);

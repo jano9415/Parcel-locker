@@ -1531,7 +1531,7 @@ public class ParcelServiceImpl implements ParcelService {
         return LocalDate.of(2023,9, 27);
     }
     public LocalTime time1(){
-        return LocalTime.of(17,35);
+        return LocalTime.of(13,40);
     }
 
     //Futár kiveszi a csomagot
@@ -1539,7 +1539,7 @@ public class ParcelServiceImpl implements ParcelService {
         return LocalDate.of(2023,9, 28);
     }
     public LocalTime time2(){
-        return LocalTime.of(8,9);
+        return LocalTime.of(8,10);
     }
 
     //Futár leadja a raktárba
@@ -1547,23 +1547,23 @@ public class ParcelServiceImpl implements ParcelService {
         return LocalDate.of(2023,9, 28);
     }
     public LocalTime time3(){
-        return LocalTime.of(15,35);
+        return LocalTime.of(15,10);
     }
 
     //Futár felveszi a raktárból
     public LocalDate date4(){
-        return LocalDate.of(2023,9, 29);
+        return LocalDate.of(2023,10, 1);
     }
     public LocalTime time4(){
-        return LocalTime.of(7,20);
+        return LocalTime.of(8,20);
     }
 
     //Futár elhelyezi az automatába
     public LocalDate date5(){
-        return LocalDate.of(2023,9, 29);
+        return LocalDate.of(2023,10, 1);
     }
     public LocalTime time5(){
-        return LocalTime.of(13,22);
+        return LocalTime.of(8,59);
     }
 
 }
