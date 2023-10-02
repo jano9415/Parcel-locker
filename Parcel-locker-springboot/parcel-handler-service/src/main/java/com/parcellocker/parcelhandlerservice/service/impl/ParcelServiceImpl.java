@@ -1528,42 +1528,42 @@ public class ParcelServiceImpl implements ParcelService {
 
     //Ügyfél feladja a csomagot
     public LocalDate date1(){
-        return LocalDate.of(2023,9, 27);
+        return LocalDate.of(2023,9, 29);
     }
     public LocalTime time1(){
-        return LocalTime.of(13,40);
+        return LocalTime.of(18,40);
     }
 
     //Futár kiveszi a csomagot
     public LocalDate date2(){
-        return LocalDate.of(2023,9, 28);
+        return LocalDate.of(2023,9, 30);
     }
     public LocalTime time2(){
-        return LocalTime.of(8,10);
+        return LocalTime.of(8,38);
     }
 
     //Futár leadja a raktárba
     public LocalDate date3(){
-        return LocalDate.of(2023,9, 28);
+        return LocalDate.of(2023,9, 30);
     }
     public LocalTime time3(){
-        return LocalTime.of(15,10);
+        return LocalTime.of(15,17);
     }
 
     //Futár felveszi a raktárból
     public LocalDate date4(){
-        return LocalDate.of(2023,10, 1);
+        return LocalDate.of(2023,10, 2);
     }
     public LocalTime time4(){
-        return LocalTime.of(8,20);
+        return LocalTime.of(7,30);
     }
 
     //Futár elhelyezi az automatába
     public LocalDate date5(){
-        return LocalDate.of(2023,10, 1);
+        return LocalDate.of(2023,10, 2);
     }
     public LocalTime time5(){
-        return LocalTime.of(8,59);
+        return LocalTime.of(8,44);
     }
 
 }

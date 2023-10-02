@@ -38,7 +38,7 @@ public class ParcelLockerServiceImpl implements ParcelLockerService {
 
     }
 
-    //Csomag automaták lekérése. Ezekből lehet kiválasztani az angular alkalmazásban a feladási automatát.
+    //Csomag automaták lekérése. Ezekből lehet kiválasztani a feladási automatát.
     @Override
     public ResponseEntity<List<ParcelLockerDTO>> getParcelLockersForChoice() {
         List<ParcelLocker> parcelLockers = findAll();
