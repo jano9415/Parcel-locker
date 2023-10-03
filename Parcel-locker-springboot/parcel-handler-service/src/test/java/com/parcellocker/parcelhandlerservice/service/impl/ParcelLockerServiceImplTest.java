@@ -6,6 +6,7 @@ import com.parcellocker.parcelhandlerservice.model.Parcel;
 import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
 import com.parcellocker.parcelhandlerservice.payload.ParcelLockerDTO;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.GetSaturationDatasResponse;
 import com.parcellocker.parcelhandlerservice.repository.ParcelLockerRepository;
 import com.parcellocker.parcelhandlerservice.service.ParcelLockerService;
 import org.junit.jupiter.api.AfterEach;
@@ -309,5 +310,315 @@ class ParcelLockerServiceImplTest {
         assertEquals("notfull", response.getMessage());
         Mockito.verify(parcelLockerRepository).findById(Mockito.anyLong());
 
+    }
+
+    @Test
+    void testAreBoxesFullFunctionWhenEveryBoxShouldNotBeFull(){
+        ParcelLocker parcelLocker = new ParcelLocker();
+        parcelLocker.setAmountOfSmallBoxes(10);
+        parcelLocker.setAmountOfMediumBoxes(10);
+        parcelLocker.setAmountOfLargeBoxes(10);
+
+        Set<Parcel> parcels = new HashSet<>();
+
+        for(int i=0; i<9; i++){
+            Parcel smallParcel = new Parcel();
+            Box box = new Box();
+            box.setSize("small");
+            smallParcel.setBox(box);
+            parcels.add(smallParcel);
+
+        }
+        for(int i=0; i<9; i++){
+
+            Box box = new Box();
+            Parcel mediumParcel = new Parcel();
+            box.setSize("medium");
+            mediumParcel.setBox(box);
+            parcels.add(mediumParcel);
+
+        }
+        for(int i=0; i<9; i++){
+
+            Box box = new Box();
+            Parcel largeParcel = new Parcel();
+            box.setSize("large");
+            largeParcel.setBox(box);
+            parcels.add(largeParcel);
+        }
+        parcelLocker.setParcels(parcels);
+
+        //when
+        Mockito.when(parcelLockerRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(parcelLocker));
+
+        ResponseEntity<List<StringResponse>> response = parcelLockerService.areBoxesFull(Mockito.anyLong());
+
+        assertEquals("notfull", response.getBody().get(0).getMessage());
+        assertEquals("notfull", response.getBody().get(1).getMessage());
+        assertEquals("notfull", response.getBody().get(2).getMessage());
+        assertEquals(200, response.getStatusCodeValue());
+        Mockito.verify(parcelLockerRepository, Mockito.times(3)).findById(Mockito.anyLong());
+
+    }
+
+    @Test
+    void testAreBoxesFullFunctionWhenSmallBoxesShouldBeFull(){
+
+        ParcelLocker parcelLocker = new ParcelLocker();
+        parcelLocker.setAmountOfSmallBoxes(10);
+        parcelLocker.setAmountOfMediumBoxes(10);
+        parcelLocker.setAmountOfLargeBoxes(10);
+
+        Set<Parcel> parcels = new HashSet<>();
+
+        for(int i=0; i<10; i++){
+            Parcel smallParcel = new Parcel();
+            Box box = new Box();
+            box.setSize("small");
+            smallParcel.setBox(box);
+            parcels.add(smallParcel);
+
+        }
+        for(int i=0; i<9; i++){
+
+            Box box = new Box();
+            Parcel mediumParcel = new Parcel();
+            box.setSize("medium");
+            mediumParcel.setBox(box);
+            parcels.add(mediumParcel);
+
+        }
+        for(int i=0; i<9; i++){
+
+            Box box = new Box();
+            Parcel largeParcel = new Parcel();
+            box.setSize("large");
+            largeParcel.setBox(box);
+            parcels.add(largeParcel);
+        }
+        parcelLocker.setParcels(parcels);
+
+        //when
+        Mockito.when(parcelLockerRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(parcelLocker));
+
+        ResponseEntity<List<StringResponse>> response = parcelLockerService.areBoxesFull(Mockito.anyLong());
+
+        assertEquals("full", response.getBody().get(0).getMessage());
+        assertEquals("notfull", response.getBody().get(1).getMessage());
+        assertEquals("notfull", response.getBody().get(2).getMessage());
+        assertEquals(200, response.getStatusCodeValue());
+        Mockito.verify(parcelLockerRepository, Mockito.times(3)).findById(Mockito.anyLong());
+
+    }
+
+    @Test
+    void testAreBoxesFullFunctionWhenMediumBoxesShouldBeFull(){
+
+        ParcelLocker parcelLocker = new ParcelLocker();
+        parcelLocker.setAmountOfSmallBoxes(10);
+        parcelLocker.setAmountOfMediumBoxes(10);
+        parcelLocker.setAmountOfLargeBoxes(10);
+
+        Set<Parcel> parcels = new HashSet<>();
+
+        for(int i=0; i<9; i++){
+            Parcel smallParcel = new Parcel();
+            Box box = new Box();
+            box.setSize("small");
+            smallParcel.setBox(box);
+            parcels.add(smallParcel);
+
+        }
+        for(int i=0; i<10; i++){
+
+            Box box = new Box();
+            Parcel mediumParcel = new Parcel();
+            box.setSize("medium");
+            mediumParcel.setBox(box);
+            parcels.add(mediumParcel);
+
+        }
+        for(int i=0; i<9; i++){
+
+            Box box = new Box();
+            Parcel largeParcel = new Parcel();
+            box.setSize("large");
+            largeParcel.setBox(box);
+            parcels.add(largeParcel);
+        }
+        parcelLocker.setParcels(parcels);
+
+        //when
+        Mockito.when(parcelLockerRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(parcelLocker));
+
+        ResponseEntity<List<StringResponse>> response = parcelLockerService.areBoxesFull(Mockito.anyLong());
+
+        assertEquals("notfull", response.getBody().get(0).getMessage());
+        assertEquals("full", response.getBody().get(1).getMessage());
+        assertEquals("notfull", response.getBody().get(2).getMessage());
+        assertEquals(200, response.getStatusCodeValue());
+        Mockito.verify(parcelLockerRepository, Mockito.times(3)).findById(Mockito.anyLong());
+
+
+    }
+
+    @Test
+    void testAreBoxesFullFunctionWhenLargeBoxesShouldBeFull(){
+
+        ParcelLocker parcelLocker = new ParcelLocker();
+        parcelLocker.setAmountOfSmallBoxes(10);
+        parcelLocker.setAmountOfMediumBoxes(10);
+        parcelLocker.setAmountOfLargeBoxes(10);
+
+        Set<Parcel> parcels = new HashSet<>();
+
+        for(int i=0; i<9; i++){
+            Parcel smallParcel = new Parcel();
+            Box box = new Box();
+            box.setSize("small");
+            smallParcel.setBox(box);
+            parcels.add(smallParcel);
+
+        }
+        for(int i=0; i<9; i++){
+
+            Box box = new Box();
+            Parcel mediumParcel = new Parcel();
+            box.setSize("medium");
+            mediumParcel.setBox(box);
+            parcels.add(mediumParcel);
+
+        }
+        for(int i=0; i<10; i++){
+
+            Box box = new Box();
+            Parcel largeParcel = new Parcel();
+            box.setSize("large");
+            largeParcel.setBox(box);
+            parcels.add(largeParcel);
+        }
+        parcelLocker.setParcels(parcels);
+
+        //when
+        Mockito.when(parcelLockerRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(parcelLocker));
+
+        ResponseEntity<List<StringResponse>> response = parcelLockerService.areBoxesFull(Mockito.anyLong());
+
+        assertEquals("notfull", response.getBody().get(0).getMessage());
+        assertEquals("notfull", response.getBody().get(1).getMessage());
+        assertEquals("full", response.getBody().get(2).getMessage());
+        assertEquals(200, response.getStatusCodeValue());
+        Mockito.verify(parcelLockerRepository, Mockito.times(3)).findById(Mockito.anyLong());
+
+
+    }
+
+    @Test
+    void testAreBoxesFullFunctionWhenEveryBoxShouldBeFull(){
+
+        ParcelLocker parcelLocker = new ParcelLocker();
+        parcelLocker.setAmountOfSmallBoxes(10);
+        parcelLocker.setAmountOfMediumBoxes(10);
+        parcelLocker.setAmountOfLargeBoxes(10);
+
+        Set<Parcel> parcels = new HashSet<>();
+
+        for(int i=0; i<10; i++){
+            Parcel smallParcel = new Parcel();
+            Box box = new Box();
+            box.setSize("small");
+            smallParcel.setBox(box);
+            parcels.add(smallParcel);
+
+        }
+        for(int i=0; i<10; i++){
+
+            Box box = new Box();
+            Parcel mediumParcel = new Parcel();
+            box.setSize("medium");
+            mediumParcel.setBox(box);
+            parcels.add(mediumParcel);
+
+        }
+        for(int i=0; i<10; i++){
+
+            Box box = new Box();
+            Parcel largeParcel = new Parcel();
+            box.setSize("large");
+            largeParcel.setBox(box);
+            parcels.add(largeParcel);
+        }
+        parcelLocker.setParcels(parcels);
+
+        //when
+        Mockito.when(parcelLockerRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(parcelLocker));
+
+        ResponseEntity<List<StringResponse>> response = parcelLockerService.areBoxesFull(Mockito.anyLong());
+
+        assertEquals("full", response.getBody().get(0).getMessage());
+        assertEquals("full", response.getBody().get(1).getMessage());
+        assertEquals("full", response.getBody().get(2).getMessage());
+        assertEquals(200, response.getStatusCodeValue());
+        Mockito.verify(parcelLockerRepository, Mockito.times(3)).findById(Mockito.anyLong());
+
+    }
+
+    @Test
+    void saturationDataShouldBeTwoSmallFourMediumAndOneLarge(){
+
+        ParcelLocker parcelLocker = new ParcelLocker();
+        parcelLocker.setAmountOfBoxes(30);
+        parcelLocker.setAmountOfSmallBoxes(10);
+        parcelLocker.setAmountOfMediumBoxes(10);
+        parcelLocker.setAmountOfLargeBoxes(10);
+
+        Set<Parcel> parcels = new HashSet<>();
+
+        //Kettő kicsi csomag
+        for(int i = 0; i < 2; i++){
+            Parcel parcel = new Parcel();
+            Box box = new Box();
+
+            box.setSize("small");
+            parcel.setBox(box);
+            parcels.add(parcel);
+        }
+
+        //Négy közepes csomag
+        for(int i = 0; i < 4; i++){
+            Parcel parcel = new Parcel();
+            Box box = new Box();
+
+            box.setSize("medium");
+            parcel.setBox(box);
+            parcels.add(parcel);
+        }
+
+        //Egy nagy csomag
+        for(int i = 0; i < 1; i++){
+            Parcel parcel = new Parcel();
+            Box box = new Box();
+
+            box.setSize("large");
+            parcel.setBox(box);
+            parcels.add(parcel);
+        }
+
+        parcelLocker.setParcels(parcels);
+
+        //when
+        Mockito.when(parcelLockerRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(parcelLocker));
+
+        ResponseEntity<GetSaturationDatasResponse> response = parcelLockerService.getSaturationDatas(Mockito.anyLong());
+
+        assertEquals(30, response.getBody().getAmountOfBoxes());
+        assertEquals(10, response.getBody().getAmountOfSmallBoxes());
+        assertEquals(10, response.getBody().getAmountOfMediumBoxes());
+        assertEquals(10, response.getBody().getAmountOfLargeBoxes());
+        assertEquals(2, response.getBody().getAmountOfFullSmallBoxes());
+        assertEquals(4, response.getBody().getAmountOfFullMediumBoxes());
+        assertEquals(1, response.getBody().getAmountOfFullLargeBoxes());
+        assertEquals(200, response.getStatusCodeValue());
+        Mockito.verify(parcelLockerRepository, Mockito.times(2)).findById(Mockito.anyLong());
     }
 }

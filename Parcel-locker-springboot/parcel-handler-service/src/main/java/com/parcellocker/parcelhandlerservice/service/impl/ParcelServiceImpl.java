@@ -16,6 +16,7 @@ import com.parcellocker.parcelhandlerservice.service.ParcelService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -112,6 +113,14 @@ public class ParcelServiceImpl implements ParcelService {
                 emptyBoxes.add(b);
             }
         }
+
+        //Itt lehetne ellenőrizni, hogy az automatában van-e hely
+        //De az már megtörtént küldés előtt
+        //Frontenden csak akkor enged küldeni, ha van szabad hely
+        /*if(emptyBoxes == null){
+            response.setMessage("parcelLockerIsFull");
+            return ResponseEntity.ok(response);
+        }*/
 
         //Csomaghoz rekesz hozzárendelése
         parcel.setBox(emptyBoxes.get(0));
@@ -1528,42 +1537,42 @@ public class ParcelServiceImpl implements ParcelService {
 
     //Ügyfél feladja a csomagot
     public LocalDate date1(){
-        return LocalDate.of(2023,9, 29);
+        return LocalDate.of(2023,9, 30);
     }
     public LocalTime time1(){
-        return LocalTime.of(18,40);
+        return LocalTime.of(16,40);
     }
 
     //Futár kiveszi a csomagot
     public LocalDate date2(){
-        return LocalDate.of(2023,9, 30);
+        return LocalDate.of(2023,10, 1);
     }
     public LocalTime time2(){
-        return LocalTime.of(8,38);
+        return LocalTime.of(8,24);
     }
 
     //Futár leadja a raktárba
     public LocalDate date3(){
-        return LocalDate.of(2023,9, 30);
+        return LocalDate.of(2023,10, 1);
     }
     public LocalTime time3(){
-        return LocalTime.of(15,17);
+        return LocalTime.of(15,48);
     }
 
     //Futár felveszi a raktárból
     public LocalDate date4(){
-        return LocalDate.of(2023,10, 2);
+        return LocalDate.of(2023,10, 3);
     }
     public LocalTime time4(){
-        return LocalTime.of(7,30);
+        return LocalTime.of(6,21);
     }
 
     //Futár elhelyezi az automatába
     public LocalDate date5(){
-        return LocalDate.of(2023,10, 2);
+        return LocalDate.of(2023,10, 3);
     }
     public LocalTime time5(){
-        return LocalTime.of(8,44);
+        return LocalTime.of(8,54);
     }
 
 }

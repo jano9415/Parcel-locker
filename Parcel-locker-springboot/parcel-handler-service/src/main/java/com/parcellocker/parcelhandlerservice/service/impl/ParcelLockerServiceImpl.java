@@ -117,9 +117,11 @@ public class ParcelLockerServiceImpl implements ParcelLockerService {
 
         for(Parcel parcel : parcelLocker.getParcels()){
             if(parcel.getBox().getSize().equals(size)){
+
                 counter++;
             }
         }
+
 
         //Automata kis rekeszeinek ellenőrzése
         if(size.equals("small")){
