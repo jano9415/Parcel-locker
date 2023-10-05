@@ -200,6 +200,7 @@ const SendParcelComponent = () => {
                                 " és a csomagjaim menüpontban.");
 
                             //Formik reset
+                            /*
                             formik.setValues({
                                 price: 0,
                                 size: '',
@@ -209,6 +210,7 @@ const SendParcelComponent = () => {
                                 receiverEmailAddress: '',
                                 receiverPhoneNumber: '',
                             });
+                            */
                         }
 
                     },
