@@ -1246,6 +1246,10 @@ public class ParcelServiceImpl implements ParcelService {
             //Csomag ami már ide lett szállítva, de lejárt az átvételi dátum
             if(isPickingUpDateTimeExpired(parcel)){
                 parcel.setPickingUpExpired(true);
+                parcel.setShippingDate(null);
+                parcel.setShippingTime(null);
+                save(parcel);
+
                 readyParcels.add(parcel);
             }
 
@@ -1537,42 +1541,42 @@ public class ParcelServiceImpl implements ParcelService {
 
     //Ügyfél feladja a csomagot
     public LocalDate date1(){
-        return LocalDate.of(2023,9, 30);
+        return LocalDate.of(2023,10, 6);
     }
     public LocalTime time1(){
-        return LocalTime.of(16,40);
+        return LocalTime.of(17,10);
     }
 
     //Futár kiveszi a csomagot
     public LocalDate date2(){
-        return LocalDate.of(2023,10, 1);
+        return LocalDate.of(2023,10, 7);
     }
     public LocalTime time2(){
-        return LocalTime.of(8,24);
+        return LocalTime.of(9,2);
     }
 
     //Futár leadja a raktárba
     public LocalDate date3(){
-        return LocalDate.of(2023,10, 1);
+        return LocalDate.of(2023,10, 7);
     }
     public LocalTime time3(){
-        return LocalTime.of(15,48);
+        return LocalTime.of(15,31);
     }
 
     //Futár felveszi a raktárból
     public LocalDate date4(){
-        return LocalDate.of(2023,10, 3);
+        return LocalDate.of(2023,10, 9);
     }
     public LocalTime time4(){
-        return LocalTime.of(6,21);
+        return LocalTime.of(7,23);
     }
 
     //Futár elhelyezi az automatába
     public LocalDate date5(){
-        return LocalDate.of(2023,10, 3);
+        return LocalDate.of(2023,10, 9);
     }
     public LocalTime time5(){
-        return LocalTime.of(8,54);
+        return LocalTime.of(9,3);
     }
 
 }

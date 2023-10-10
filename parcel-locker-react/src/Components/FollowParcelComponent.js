@@ -116,17 +116,19 @@ const FollowParcelComponent = () => {
 
             {parcel.message === null && parcel.handingDateToFirstStoreByCourier != null && (
               <Box className='mt-2'>
-                <Divider><Chip label="Feladási megyei raktárban" /></Divider>
+                <Divider><Chip label={parcel.shippingFromCounty + " megyei raktárba megérkezett"}/></Divider>
                 <Typography>Csomag leszállítva {parcel.handingDateToFirstStoreByCourier + " " +
-                  parcel.handingTimeToFirstStoreByCourier + "-kor"}</Typography>
+                  parcel.handingTimeToFirstStoreByCourier + "-kor a " + parcel.shippingFromCounty + " megyei raktárba"}
+                </Typography>
               </Box>
             )}
 
             {parcel.message === null && parcel.pickingUpDateFromSecondStoreByCourier != null && (
               <Box className='mt-2'>
-                <Divider><Chip label="Átvételi megyei raktárból elindult" /></Divider>
+                <Divider><Chip label={parcel.shippingToCounty + " megyei raktárból elindult"} /></Divider>
                 <Typography>Csomag elindult {parcel.pickingUpDateFromSecondStoreByCourier + " " +
-                  parcel.pickingUpTimeFromSecondStoreByCourier + "-kor"}</Typography>
+                  parcel.pickingUpTimeFromSecondStoreByCourier + "-kor a " + parcel.shippingToCounty + " megyei raktárból"}
+                </Typography>
               </Box>
             )}
 
