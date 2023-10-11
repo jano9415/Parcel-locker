@@ -16,6 +16,7 @@ const FollowParcelComponent = () => {
 
   useEffect(() => {
 
+
   }, [])
 
   const formik = useFormik({
@@ -150,7 +151,7 @@ const FollowParcelComponent = () => {
               parcel.message === null && parcel.pickingUpExpired === true && (
                 <Box>
                   <Divider><Chip label="Csomag átvételi ideje lejárt" /></Divider>
-                  <Typography>A csomagot a futár visszaszállította az átvételi megyei raktárba,
+                  <Typography>A csomagot a futár visszaszállította a {parcel.shippingToCounty} megyei raktárba,
                     <Typography>mert lejárt az átvételi ideje.</Typography>
                     <Typography>Ha szeretnéd újraindítani a csomagot az átvételi automatához,</Typography>
                     <Typography>akkor hívd fel az ügyfélszolgálatot.</Typography>

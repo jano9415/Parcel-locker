@@ -220,10 +220,12 @@ public class ParcelServiceImpl implements ParcelService {
             responseObject.setPrice(parcel.getPrice());
 
             responseObject.setSenderParcelLockerPostCode(parcel.getShippingFrom().getLocation().getPostCode());
+            responseObject.setSenderParcelLockerCounty(parcel.getShippingFrom().getLocation().getCounty());
             responseObject.setSenderParcelLockerCity(parcel.getShippingFrom().getLocation().getCity());
             responseObject.setSenderParcelLockerStreet(parcel.getShippingFrom().getLocation().getStreet());
 
             responseObject.setReceiverParcelLockerPostCode(parcel.getShippingTo().getLocation().getPostCode());
+            responseObject.setReceiverParcelLockerCounty(parcel.getShippingTo().getLocation().getCounty());
             responseObject.setReceiverParcelLockerCity(parcel.getShippingTo().getLocation().getCity());
             responseObject.setReceiverParcelLockerStreet(parcel.getShippingTo().getLocation().getStreet());
 
@@ -325,10 +327,12 @@ public class ParcelServiceImpl implements ParcelService {
                     responseObj.setPrice(parcel.getPrice());
 
                     responseObj.setSenderParcelLockerPostCode(parcel.getShippingFrom().getLocation().getPostCode());
+                    responseObj.setSenderParcelLockerCounty(parcel.getShippingFrom().getLocation().getCounty());
                     responseObj.setSenderParcelLockerCity(parcel.getShippingFrom().getLocation().getCity());
                     responseObj.setSenderParcelLockerStreet(parcel.getShippingFrom().getLocation().getStreet());
 
                     responseObj.setReceiverParcelLockerPostCode(parcel.getShippingTo().getLocation().getPostCode());
+                    responseObj.setReceiverParcelLockerCounty(parcel.getShippingTo().getLocation().getCounty());
                     responseObj.setReceiverParcelLockerCity(parcel.getShippingTo().getLocation().getCity());
                     responseObj.setReceiverParcelLockerStreet(parcel.getShippingTo().getLocation().getStreet());
 
@@ -861,6 +865,7 @@ public class ParcelServiceImpl implements ParcelService {
         response.setSendingExpired(parcel.isSendingExpired());
         response.setPickingUpExpired(parcel.isPickingUpExpired());
 
+
         //Futár kiveszi a csomagot időpont
         if(parcel.getPickingUpDateFromParcelLockerByCourier() != null){
             response.setPickingUpDateFromParcelLockerByCourier(parcel.getPickingUpDateFromParcelLockerByCourier().toString());
@@ -1253,25 +1258,6 @@ public class ParcelServiceImpl implements ParcelService {
                 readyParcels.add(parcel);
             }
 
-            /*
-            if(parcel.isShipped() && parcel.getPickingUpExpirationDate() != null && parcel.getPickingUpExpirationTime() != null){
-
-                LocalDate expirationDate = parcel.getPickingUpExpirationDate();
-                LocalTime expirationTime = parcel.getPickingUpExpirationTime();
-                //Ha a jelenlegi dátum és a lejárati dátum megegyezik, akkor az időpontokat kell megvizsgálni
-                if(currentDate.isEqual(expirationDate) && currentTime.isAfter(expirationTime)){
-                    parcel.setPickingUpExpired(true);
-                    readyParcels.add(parcel);
-                }
-                //Ha a jelenlegi dátum nagyobb, mint a lejárati dátum
-                if(currentDate.isAfter(expirationDate)){
-                    parcel.setPickingUpExpired(true);
-                    readyParcels.add(parcel);
-                }
-
-            }
-
-             */
         }
         return readyParcels;
     }
@@ -1541,7 +1527,7 @@ public class ParcelServiceImpl implements ParcelService {
 
     //Ügyfél feladja a csomagot
     public LocalDate date1(){
-        return LocalDate.of(2023,10, 6);
+        return LocalDate.of(2023,10, 7);
     }
     public LocalTime time1(){
         return LocalTime.of(17,10);
@@ -1549,7 +1535,7 @@ public class ParcelServiceImpl implements ParcelService {
 
     //Futár kiveszi a csomagot
     public LocalDate date2(){
-        return LocalDate.of(2023,10, 7);
+        return LocalDate.of(2023,10, 8);
     }
     public LocalTime time2(){
         return LocalTime.of(9,2);
@@ -1557,7 +1543,7 @@ public class ParcelServiceImpl implements ParcelService {
 
     //Futár leadja a raktárba
     public LocalDate date3(){
-        return LocalDate.of(2023,10, 7);
+        return LocalDate.of(2023,10, 8);
     }
     public LocalTime time3(){
         return LocalTime.of(15,31);
@@ -1565,7 +1551,7 @@ public class ParcelServiceImpl implements ParcelService {
 
     //Futár felveszi a raktárból
     public LocalDate date4(){
-        return LocalDate.of(2023,10, 9);
+        return LocalDate.of(2023,10, 10);
     }
     public LocalTime time4(){
         return LocalTime.of(7,23);
@@ -1573,7 +1559,7 @@ public class ParcelServiceImpl implements ParcelService {
 
     //Futár elhelyezi az automatába
     public LocalDate date5(){
-        return LocalDate.of(2023,10, 9);
+        return LocalDate.of(2023,10, 10);
     }
     public LocalTime time5(){
         return LocalTime.of(9,3);

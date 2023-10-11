@@ -52,7 +52,7 @@ public class FollowParcelResponse {
 
     private String pickingUpExpirationTime;
 
-    private boolean isPickingUpExpired;
+    private boolean pickingUpExpired;
 
     private String sendingExpirationDate;
 
@@ -105,7 +105,7 @@ public class FollowParcelResponse {
         this.isPaid = isPaid;
         this.pickingUpExpirationDate = pickingUpExpirationDate;
         this.pickingUpExpirationTime = pickingUpExpirationTime;
-        this.isPickingUpExpired = isPickingUpExpired;
+        this.pickingUpExpired = isPickingUpExpired;
         this.sendingExpirationDate = sendingExpirationDate;
         this.sendingExpirationTime = sendingExpirationTime;
         this.isSendingExpired = isSendingExpired;
@@ -320,11 +320,11 @@ public class FollowParcelResponse {
     }
 
     public boolean isPickingUpExpired() {
-        return isPickingUpExpired;
+        return pickingUpExpired;
     }
 
     public void setPickingUpExpired(boolean pickingUpExpired) {
-        isPickingUpExpired = pickingUpExpired;
+        this.pickingUpExpired = pickingUpExpired;
     }
 
     public String getSendingExpirationDate() {

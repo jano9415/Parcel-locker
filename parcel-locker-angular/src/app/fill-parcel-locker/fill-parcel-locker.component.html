@@ -5,20 +5,18 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Csomagazonosító </th>
         <td mat-cell *matCellDef="let element"> {{element.uniqueParcelId}} </td>
     </ng-container>
-    <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Ár </th>
-        <td mat-cell *matCellDef="let element"> {{element.price}} </td>
-    </ng-container>
     <ng-container matColumnDef="senderParcelLockerPostCode">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Feladás helye </th>
-        <td mat-cell *matCellDef="let element"> {{element.senderParcelLockerPostCode + " " +
+        <td mat-cell *matCellDef="let element"> {{element.senderParcelLockerCounty + " megye, " +
+            element.senderParcelLockerPostCode + " " +
             element.senderParcelLockerCity
             + " " + element.senderParcelLockerStreet}}
         </td>
     </ng-container>
     <ng-container matColumnDef="receiverParcelLockerPostCode">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Érkezés helye </th>
-        <td mat-cell *matCellDef="let element"> {{element.receiverParcelLockerPostCode + " " +
+        <td mat-cell *matCellDef="let element"> {{element.receiverParcelLockerCounty + " megye, " +
+            element.receiverParcelLockerPostCode + " " +
             element.receiverParcelLockerCity
             + " " + element.receiverParcelLockerStreet}}
         </td>
@@ -35,15 +33,16 @@
 
 <div class="d-flex justify-content-center mt-3">
     <div>
-        <button [disabled]="sendButtonVisible === false" (click)="fillParcelLocker()" style="width: 300px; height: 100px;" mat-raised-button
-            color="primary">Automata feltöltése</button>
+        <button [disabled]="sendButtonVisible === false" (click)="fillParcelLocker()"
+            style="width: 300px; height: 100px;" mat-raised-button color="primary">Automata feltöltése</button>
     </div>
 </div>
 
 <div class="d-flex justify-content-center mt-3">
     <div>
         <p *ngFor="let boxNumberMessage of boxNumberMessages">
-            {{boxNumberMessage.uniqueParcelId + " azonosítójú csomagot tedd be a(z)" + boxNumberMessage.boxNumber + ". rekeszbe"}}
+            {{boxNumberMessage.uniqueParcelId + " azonosítójú csomagot tedd be a(z) " + boxNumberMessage.boxNumber + ".
+            rekeszbe"}}
         </p>
     </div>
 </div>

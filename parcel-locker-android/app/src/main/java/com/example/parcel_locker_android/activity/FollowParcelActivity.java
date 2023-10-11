@@ -6,6 +6,7 @@ import androidx.cardview.widget.CardView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -148,8 +149,8 @@ public class FollowParcelActivity extends AppCompatActivity {
                                     response.body().getHandingDateToFirstStoreByCourier() != null){
                                 arrivedInFirstStoreCv.setVisibility(View.VISIBLE);
                                 String message = "Csomag leszállítva " + response.body().getHandingDateToFirstStoreByCourier() +
-                                        " " + response.body().getHandingTimeToFirstStoreByCourier() + "-kor a feladási " +
-                                        "megyei raktárba";
+                                        " " + response.body().getHandingTimeToFirstStoreByCourier() + "-kor a " +
+                                        response.body().getShippingFromCounty() + " megyei raktárba";
                                 arrivedInFirstStoreTv.setText(message);
 
                             }
@@ -158,8 +159,8 @@ public class FollowParcelActivity extends AppCompatActivity {
                                     response.body().getPickingUpDateFromSecondStoreByCourier() != null){
                                 startedFromSecondStoreCv.setVisibility(View.VISIBLE);
                                 String message = "Csomag elindult " + response.body().getPickingUpDateFromSecondStoreByCourier() +
-                                        " " + response.body().getPickingUpTimeFromSecondStoreByCourier() + "-kor " +
-                                        "az érkezési megyei raktárból";
+                                        " " + response.body().getPickingUpTimeFromSecondStoreByCourier() + "-kor a " +
+                                        response.body().getShippingToCounty() + " megyei raktárból";
                                 startedFromSecondStoreTv.setText(message);
 
                             }
@@ -169,7 +170,7 @@ public class FollowParcelActivity extends AppCompatActivity {
                                 isShippedCv.setVisibility(View.VISIBLE);
                                 String message = "Csomag leszállítva " + response.body().getShippingDate()
                                         + " " + response.body().getShippingTime() + "-kor" + "\n"
-                                        + "Érkezési automata: " + response.body().getShippingToPostCode()
+                                        + "Itt tudod átvenni: " + response.body().getShippingToPostCode()
                                         + " " + response.body().getShippingToCity()
                                         + " " + response.body().getShippingToStreet() + "\n"
                                         + "Eddig tudod átvenni: " + response.body().getPickingUpExpirationDate()
@@ -178,12 +179,15 @@ public class FollowParcelActivity extends AppCompatActivity {
 
                             }
 
+
                             //Csomag átvételi ideje lejárt
                             if(response.body().getMessage() == null && response.body().isPickingUpExpired()){
                                 isExpiredCv.setVisibility(View.VISIBLE);
-                                String message = "A csomagot a futár visszaszállította az átvételi megyei raktárba, " +
+                                String message = "A csomagot a futár visszaszállította a " + response.body().getShippingToCounty() +
+                                        " megyei raktárba, " +
                                         "mert lejárt az átvételi ideje. Ha szeretnéd újraindítani a csomagot az " +
                                         "átvételi automatához, akkor hívd fel az ügyfélszolgálatot.";
+
                                 isExpiredTv.setText(message);
                             }
 
@@ -191,10 +195,7 @@ public class FollowParcelActivity extends AppCompatActivity {
                             if(response.body().getMessage() == null && response.body().getPickingUpDate() != null){
                                 isPickedUpCv.setVisibility(View.VISIBLE);
                                 String message = "Csomag átvéve " + response.body().getPickingUpDate()
-                                        + " " + response.body().getPickingUpTime() + "-kor" + "\n"
-                                        + "Érkezési automata: " + response.body().getShippingToPostCode()
-                                        + " " + response.body().getShippingToCity()
-                                        + " " + response.body().getShippingToStreet();
+                                        + " " + response.body().getPickingUpTime() + "-kor" + "\n";
                                 isPickedUpTv.setText(message);
 
                             }

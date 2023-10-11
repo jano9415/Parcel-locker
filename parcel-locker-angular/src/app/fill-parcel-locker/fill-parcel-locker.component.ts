@@ -17,7 +17,7 @@ export class FillParcelLockerComponent {
 
   parcelsForParcelLocker: Array<any> | null = null;
 
-  displayedColumns: string[] = ['uniqueParcelId', 'price', 'senderParcelLockerPostCode', 'receiverParcelLockerPostCode',
+  displayedColumns: string[] = ['uniqueParcelId', 'senderParcelLockerPostCode', 'receiverParcelLockerPostCode',
     'boxNumber'];
 
   dataSourceForTable!: MatTableDataSource<any>;

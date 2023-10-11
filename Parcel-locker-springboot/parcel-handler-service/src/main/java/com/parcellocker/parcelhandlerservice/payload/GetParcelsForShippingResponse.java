@@ -11,11 +11,15 @@ public class GetParcelsForShippingResponse {
 
     private int senderParcelLockerPostCode;
 
+    private String senderParcelLockerCounty;
+
     private String senderParcelLockerCity;
 
     private String senderParcelLockerStreet;
 
     private int receiverParcelLockerPostCode;
+
+    private String receiverParcelLockerCounty;
 
     private String receiverParcelLockerCity;
 
