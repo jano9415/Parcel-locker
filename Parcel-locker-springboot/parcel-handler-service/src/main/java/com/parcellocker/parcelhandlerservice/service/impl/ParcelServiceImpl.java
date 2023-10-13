@@ -1244,9 +1244,6 @@ public class ParcelServiceImpl implements ParcelService {
             }
 
 
-            LocalDate currentDate = LocalDate.now();
-            LocalTime currentTime = LocalTime.now();
-
 
             //Csomag ami már ide lett szállítva, de lejárt az átvételi dátum
             if(isPickingUpDateTimeExpired(parcel)){

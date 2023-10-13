@@ -1,10 +1,8 @@
 package com.parcellocker.parcelhandlerservice.service.impl;
 
 import com.parcellocker.parcelhandlerservice.kafka.Producer;
-import com.parcellocker.parcelhandlerservice.model.Address;
-import com.parcellocker.parcelhandlerservice.model.Box;
-import com.parcellocker.parcelhandlerservice.model.Parcel;
-import com.parcellocker.parcelhandlerservice.model.ParcelLocker;
+import com.parcellocker.parcelhandlerservice.model.*;
+import com.parcellocker.parcelhandlerservice.payload.GetParcelsForShippingResponse;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeResponse;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
@@ -19,11 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
-import javax.xml.stream.Location;
-
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
@@ -44,6 +41,17 @@ class ParcelServiceImplTest {
 
     @InjectMocks
     private ParcelServiceImpl parcelService;
+
+    //Feladási automata
+    private ParcelLocker parcelLocker1 = new ParcelLocker();
+    private Address senderParcelLockerAddress = new Address();
+
+    //Érkezési automata
+    private ParcelLocker parcelLocker2 = new ParcelLocker();
+    private Address receiverParcelLockerAddress = new Address();
+
+    //Futár
+    private Courier courier = new Courier();
 
         //200x70x50
         Box box1 = new Box();
@@ -333,6 +341,28 @@ class ParcelServiceImplTest {
         largeBoxes.add(box29);
         largeBoxes.add(box30);
 
+        //Feladási automata
+        parcelLocker1.setId(1L);
+        senderParcelLockerAddress.setPostCode(8100);
+        senderParcelLockerAddress.setCounty("Veszprém");
+        senderParcelLockerAddress.setCity("Várpalota");
+        senderParcelLockerAddress.setStreet("Újlaky út 8");
+        parcelLocker1.setLocation(senderParcelLockerAddress);
+
+        //Érkezési automata
+        parcelLocker2.setId(2L);
+        receiverParcelLockerAddress.setPostCode(8100);
+        receiverParcelLockerAddress.setCounty("Somoly");
+        receiverParcelLockerAddress.setCity("Marcali");
+        receiverParcelLockerAddress.setStreet("Nagypincei út 15");
+        parcelLocker2.setLocation(receiverParcelLockerAddress);
+
+        //Futár
+        courier.setId(1L);
+        courier.setUniqueCourierId("futar001");
+        courier.setLastName("Nagy");
+        courier.setFirstName("Balázs");
+
     }
 
     @AfterEach
@@ -408,6 +438,117 @@ class ParcelServiceImplTest {
         Mockito.verify(parcelLockerService).findById(1L);
         Mockito.verify(parcelLockerService).findById(2L);
         Mockito.verify(boxService).findBySize("small");
+
+
+    }
+
+    //Az automatában négy csomag van
+    //Kettőt el kell onnan szállítani az érkezési automatába
+    //Egy csomag már megérkezett ide, át lehet venni
+    //Egy csomag már megérkezett ide, de lejárt az átvételi ideje
+    //Tehát a futárnak három darab csomagot kell onnan elszállítania
+    @Test
+    void itShouldGetThreeParcelsThatAreReadyForDelivery(){
+
+        ResponseEntity<List<GetParcelsForShippingResponse>> response;
+
+        //Csomagok, amik az automatában vannak és készen állnak az elszállításra
+        Parcel parcel1 = new Parcel();
+        parcel1.setUniqueParcelId("midj34");
+        parcel1.setPrice(0);
+        parcel1.setShippingFrom(parcelLocker1);
+        parcel1.setShippingTo(parcelLocker2);
+        parcel1.setShipped(false);
+        parcel1.setPlaced(true);
+        parcel1.setPickedUp(false);
+        LocalDate pickingUpExpirationDate1 = LocalDate.of(2023,10,15);
+        LocalTime pickingUpExpirationTime1 = LocalTime.of(17,34);
+        parcel1.setPickingUpExpirationDate(pickingUpExpirationDate1);
+        parcel1.setPickingUpExpirationTime(pickingUpExpirationTime1);
+        parcel1.setBox(box1);
+
+        Parcel parcel2 = new Parcel();
+        parcel2.setUniqueParcelId("lo97gf");
+        parcel2.setPrice(16800);
+        parcel2.setShippingFrom(parcelLocker1);
+        parcel2.setShippingTo(parcelLocker2);
+        parcel2.setShipped(false);
+        parcel2.setPlaced(true);
+        parcel2.setPickedUp(false);
+        LocalDate pickingUpExpirationDate2 = LocalDate.of(2023,10,15);
+        LocalTime pickingUpExpirationTime2 = LocalTime.of(13,15);
+        parcel2.setPickingUpExpirationDate(pickingUpExpirationDate2);
+        parcel2.setPickingUpExpirationTime(pickingUpExpirationTime2);
+        parcel2.setBox(box2);
+
+        //Csomag aminek lejárt az átvételi ideje
+        Parcel parcel3 = new Parcel();
+        parcel3.setUniqueParcelId("loj73n");
+        parcel3.setPrice(4600);
+        parcel3.setShippingFrom(parcelLocker2);
+        parcel3.setShippingTo(parcelLocker1);
+        parcel3.setShipped(true);
+        parcel3.setPlaced(true);
+        parcel3.setPickedUp(false);
+        LocalDate pickingUpExpirationDate3 = LocalDate.of(2023,10,12);
+        LocalTime pickingUpExpirationTime3 = LocalTime.of(15,41);
+        parcel3.setPickingUpExpirationDate(pickingUpExpirationDate3);
+        parcel3.setPickingUpExpirationTime(pickingUpExpirationTime3);
+        parcel3.setBox(box3);
+
+        //Csomag ami már le lett szállítva, de még nem vették át
+        Parcel parcel4 = new Parcel();
+        parcel4.setUniqueParcelId("mj73le");
+        parcel4.setPrice(0);
+        parcel4.setShippingFrom(parcelLocker2);
+        parcel4.setShippingTo(parcelLocker1);
+        parcel4.setShipped(true);
+        parcel4.setPlaced(true);
+        parcel4.setPickedUp(false);
+        LocalDate pickingUpExpirationDate4 = LocalDate.of(2023,10,15);
+        LocalTime pickingUpExpirationTime4 = LocalTime.of(13,10);
+        parcel4.setPickingUpExpirationDate(pickingUpExpirationDate4);
+        parcel4.setPickingUpExpirationTime(pickingUpExpirationTime4);
+        parcel4.setBox(box4);
+
+        //Automata csomagjai
+        parcelLocker1.getParcels().add(parcel1);
+        parcelLocker1.getParcels().add(parcel2);
+        parcelLocker1.getParcels().add(parcel3);
+        parcelLocker1.getParcels().add(parcel4);
+
+        //when parcelLocker
+        Mockito.when(parcelLockerService.findById(1L)).thenReturn(parcelLocker1);
+
+        //when save parcel
+
+
+        response = parcelService.getParcelsForShipping(1L);
+
+        boolean containsParcel1 = false;
+        boolean containsParcel2 = false;
+        boolean containsParcel3 = false;
+
+        for(GetParcelsForShippingResponse parcel : response.getBody()){
+            if(parcel.getUniqueParcelId().equals("midj34")){
+                containsParcel1 = true;
+            }
+            if(parcel.getUniqueParcelId().equals("lo97gf")){
+                containsParcel2 = true;
+            }
+            if(parcel.getUniqueParcelId().equals("loj73n")){
+                containsParcel3 = true;
+            }
+        }
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(3, response.getBody().size());
+        assertTrue(containsParcel1);
+        assertTrue(containsParcel2);
+        assertTrue(containsParcel3);
+        Mockito.verify(parcelLockerService).findById(1L);
+
+
 
 
     }
