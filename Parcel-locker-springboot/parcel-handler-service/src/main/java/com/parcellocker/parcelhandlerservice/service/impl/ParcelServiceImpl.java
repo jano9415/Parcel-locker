@@ -262,6 +262,7 @@ public class ParcelServiceImpl implements ParcelService {
             //Csomag és csomag automata összerendelés megszüntetése
             parcel.setParcelLocker(null);
 
+
             //Dátum és időpont, amikor a futár kiveszi a csomagot
             //parcel.setPickingUpDateFromParcelLockerByCourier(currentDate());
             parcel.setPickingUpDateFromParcelLockerByCourier(date2());

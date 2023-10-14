@@ -5,6 +5,8 @@ import com.parcellocker.parcelhandlerservice.model.*;
 import com.parcellocker.parcelhandlerservice.payload.GetParcelsForShippingResponse;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeResponse;
+import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
+import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,19 +41,22 @@ class ParcelServiceImplTest {
     @Mock
     private Producer producer;
 
+    @Mock
+    private CourierServiceImpl courierService;
+
     @InjectMocks
     private ParcelServiceImpl parcelService;
 
     //Feladási automata
-    private ParcelLocker parcelLocker1 = new ParcelLocker();
-    private Address senderParcelLockerAddress = new Address();
+    private ParcelLocker parcelLocker1;
+    private Address senderParcelLockerAddress;
 
     //Érkezési automata
-    private ParcelLocker parcelLocker2 = new ParcelLocker();
-    private Address receiverParcelLockerAddress = new Address();
+    private ParcelLocker parcelLocker2;
+    private Address receiverParcelLockerAddress;
 
     //Futár
-    private Courier courier = new Courier();
+    private Courier courier1;
 
         //200x70x50
         Box box1 = new Box();
@@ -342,6 +347,8 @@ class ParcelServiceImplTest {
         largeBoxes.add(box30);
 
         //Feladási automata
+        parcelLocker1 = new ParcelLocker();
+        senderParcelLockerAddress = new Address();
         parcelLocker1.setId(1L);
         senderParcelLockerAddress.setPostCode(8100);
         senderParcelLockerAddress.setCounty("Veszprém");
@@ -350,6 +357,8 @@ class ParcelServiceImplTest {
         parcelLocker1.setLocation(senderParcelLockerAddress);
 
         //Érkezési automata
+        parcelLocker2 = new ParcelLocker();
+        receiverParcelLockerAddress = new Address();
         parcelLocker2.setId(2L);
         receiverParcelLockerAddress.setPostCode(8100);
         receiverParcelLockerAddress.setCounty("Somoly");
@@ -358,10 +367,11 @@ class ParcelServiceImplTest {
         parcelLocker2.setLocation(receiverParcelLockerAddress);
 
         //Futár
-        courier.setId(1L);
-        courier.setUniqueCourierId("futar001");
-        courier.setLastName("Nagy");
-        courier.setFirstName("Balázs");
+        courier1 = new Courier();
+        courier1.setId(1L);
+        courier1.setUniqueCourierId("futar001");
+        courier1.setLastName("Nagy");
+        courier1.setFirstName("Balázs");
 
     }
 
@@ -446,7 +456,8 @@ class ParcelServiceImplTest {
     //Kettőt el kell onnan szállítani az érkezési automatába
     //Egy csomag már megérkezett ide, át lehet venni
     //Egy csomag már megérkezett ide, de lejárt az átvételi ideje
-    //Tehát a futárnak három darab csomagot kell onnan elszállítania
+    //Tehát a futárnak három darab csomagot kell onnan elszállítania, de ez a függvény még csak lekéri a csomagokat
+    //Három darab csomag a visszatérési érték
     @Test
     void itShouldGetThreeParcelsThatAreReadyForDelivery(){
 
@@ -461,10 +472,6 @@ class ParcelServiceImplTest {
         parcel1.setShipped(false);
         parcel1.setPlaced(true);
         parcel1.setPickedUp(false);
-        LocalDate pickingUpExpirationDate1 = LocalDate.of(2023,10,15);
-        LocalTime pickingUpExpirationTime1 = LocalTime.of(17,34);
-        parcel1.setPickingUpExpirationDate(pickingUpExpirationDate1);
-        parcel1.setPickingUpExpirationTime(pickingUpExpirationTime1);
         parcel1.setBox(box1);
 
         Parcel parcel2 = new Parcel();
@@ -475,10 +482,6 @@ class ParcelServiceImplTest {
         parcel2.setShipped(false);
         parcel2.setPlaced(true);
         parcel2.setPickedUp(false);
-        LocalDate pickingUpExpirationDate2 = LocalDate.of(2023,10,15);
-        LocalTime pickingUpExpirationTime2 = LocalTime.of(13,15);
-        parcel2.setPickingUpExpirationDate(pickingUpExpirationDate2);
-        parcel2.setPickingUpExpirationTime(pickingUpExpirationTime2);
         parcel2.setBox(box2);
 
         //Csomag aminek lejárt az átvételi ideje
@@ -520,9 +523,6 @@ class ParcelServiceImplTest {
         //when parcelLocker
         Mockito.when(parcelLockerService.findById(1L)).thenReturn(parcelLocker1);
 
-        //when save parcel
-
-
         response = parcelService.getParcelsForShipping(1L);
 
         boolean containsParcel1 = false;
@@ -548,8 +548,149 @@ class ParcelServiceImplTest {
         assertTrue(containsParcel3);
         Mockito.verify(parcelLockerService).findById(1L);
 
+    }
 
 
+    //Az automatában négy csomag van
+    //Kettőt el kell onnan szállítani az érkezési automatába
+    //Egy csomag már megérkezett ide, át lehet venni
+    //Egy csomag már megérkezett ide, de lejárt az átvételi ideje
+    //Tehát a futárnak három darab csomagot kell onnan elszállítania
+    //Ezeket a csomagokat már el is szállítja, nem csak lekéri azokat
+    //Az alábbi rekeszek nyílnak ki - 1,2,3
+    @Test
+    void itShouldEmptyTheParcelLocker(){
+
+        ResponseEntity<List<EmptyParcelLockerResponse>> response;
+
+        EmptyParcelLockerRequest request = new EmptyParcelLockerRequest();
+        request.setParcelLockerId(1L);
+        request.setUniqueCourierId(courier1.getUniqueCourierId());
+
+        //Csomagok, amik az automatában vannak és készen állnak az elszállításra
+        Parcel parcel1 = new Parcel();
+        parcel1.setUniqueParcelId("midj34");
+        parcel1.setPrice(0);
+        parcel1.setShippingFrom(parcelLocker1);
+        parcel1.setShippingTo(parcelLocker2);
+        parcel1.setShipped(false);
+        parcel1.setPlaced(true);
+        parcel1.setPickedUp(false);
+        parcel1.setBox(box1);
+
+        Parcel parcel2 = new Parcel();
+        parcel2.setUniqueParcelId("lo97gf");
+        parcel2.setPrice(16800);
+        parcel2.setShippingFrom(parcelLocker1);
+        parcel2.setShippingTo(parcelLocker2);
+        parcel2.setShipped(false);
+        parcel2.setPlaced(true);
+        parcel2.setPickedUp(false);
+        parcel2.setBox(box2);
+
+        //Csomag aminek lejárt az átvételi ideje
+        Parcel parcel3 = new Parcel();
+        parcel3.setUniqueParcelId("loj73n");
+        parcel3.setPrice(4600);
+        parcel3.setShippingFrom(parcelLocker2);
+        parcel3.setShippingTo(parcelLocker1);
+        parcel3.setShipped(true);
+        parcel3.setPlaced(true);
+        parcel3.setPickedUp(false);
+        LocalDate pickingUpExpirationDate3 = LocalDate.of(2023,10,12);
+        LocalTime pickingUpExpirationTime3 = LocalTime.of(15,41);
+        parcel3.setPickingUpExpirationDate(pickingUpExpirationDate3);
+        parcel3.setPickingUpExpirationTime(pickingUpExpirationTime3);
+        parcel3.setBox(box3);
+
+        //Csomag ami már le lett szállítva, de még nem vették át
+        Parcel parcel4 = new Parcel();
+        parcel4.setUniqueParcelId("mj73le");
+        parcel4.setPrice(0);
+        parcel4.setShippingFrom(parcelLocker2);
+        parcel4.setShippingTo(parcelLocker1);
+        parcel4.setShipped(true);
+        parcel4.setPlaced(true);
+        parcel4.setPickedUp(false);
+        LocalDate pickingUpExpirationDate4 = LocalDate.of(2023,10,20);
+        LocalTime pickingUpExpirationTime4 = LocalTime.of(13,10);
+        parcel4.setPickingUpExpirationDate(pickingUpExpirationDate4);
+        parcel4.setPickingUpExpirationTime(pickingUpExpirationTime4);
+        parcel4.setBox(box4);
+
+        //Automata csomagjai
+        parcelLocker1.getParcels().add(parcel1);
+        parcelLocker1.getParcels().add(parcel2);
+        parcelLocker1.getParcels().add(parcel3);
+        parcelLocker1.getParcels().add(parcel4);
+
+        //when courier
+        Mockito.when(courierService.findByUniqueCourierId(Mockito.anyString())).thenReturn(courier1);
+
+        //when parcelLocker
+        Mockito.when(parcelLockerService.findById(1L)).thenReturn(parcelLocker1);
+
+
+
+        response = parcelService.emptyParcelLocker(request);
+
+
+        boolean containsParcel1 = false;
+        boolean containsParcel2 = false;
+        boolean containsParcel3 = false;
+
+
+        //Futárhoz átkerült csomagok
+        for(Parcel parcel : courier1.getParcels()){
+            if(parcel.getUniqueParcelId().equals("midj34")){
+                containsParcel1 = true;
+            }
+            if(parcel.getUniqueParcelId().equals("lo97gf")){
+                containsParcel2 = true;
+            }
+            if(parcel.getUniqueParcelId().equals("loj73n")){
+                containsParcel3 = true;
+            }
+        }
+
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(3, response.getBody().size());
+        assertEquals(3, courier1.getParcels().size());
+        //Futárnál lévő három csomag
+        assertTrue(containsParcel1);
+        assertTrue(containsParcel2);
+        assertTrue(containsParcel3);
+        //Csomagoknak nincs rekesze
+        assertEquals(null, parcel1.getBox());
+        assertEquals(null, parcel2.getBox());
+        assertEquals(null, parcel3.getBox());
+        //Csomagoknak nincs csomag automatája
+        assertEquals(null, parcel1.getParcelLocker());
+        assertEquals(null, parcel2.getParcelLocker());
+        assertEquals(null, parcel3.getParcelLocker());
+        //Csomagnak van futárja
+        assertEquals(courier1, parcel1.getCourier());
+        assertEquals(courier1, parcel2.getCourier());
+        assertEquals(courier1, parcel3.getCourier());
+        //Csomagnak van dátuma, amikor a futár kiveszi az automatából
+        assertNotEquals(null, parcel1.getPickingUpDateFromParcelLockerByCourier());
+        assertNotEquals(null, parcel1.getPickingUpTimeFromParcelLockerByCourier());
+        assertNotEquals(null, parcel2.getPickingUpDateFromParcelLockerByCourier());
+        assertNotEquals(null, parcel2.getPickingUpTimeFromParcelLockerByCourier());
+        assertNotEquals(null, parcel3.getPickingUpDateFromParcelLockerByCourier());
+        assertNotEquals(null, parcel3.getPickingUpTimeFromParcelLockerByCourier());
+
+        Mockito.verify(parcelLockerService).findById(1L);
+        Mockito.verify(courierService).findByUniqueCourierId(Mockito.anyString());
+
+    }
+
+    //A futárnál van 2 darab csomag az automatához, amit fel szeretne tölteni
+    //Mind a kettőnek van szabad hely
+    //Ez a függvény még nem helyezi el a csomagokat az automatában, csak lekéri azokat
+    @Test
+    void itShouldGetTwoParcelsForTheParcelLocker(){
 
     }
 }
