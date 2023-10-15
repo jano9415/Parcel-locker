@@ -7,6 +7,7 @@ import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeReq
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeResponse;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
 import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.GetParcelsForParcelLockerResponse;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -691,6 +692,98 @@ class ParcelServiceImplTest {
     //Ez a függvény még nem helyezi el a csomagokat az automatában, csak lekéri azokat
     @Test
     void itShouldGetTwoParcelsForTheParcelLocker(){
+
+        ResponseEntity<List<GetParcelsForParcelLockerResponse>> response;
+
+        //Az automatában három darab csomag van
+        Parcel parcel1 = new Parcel();
+        parcel1.setUniqueParcelId("aaa1");
+        parcel1.setPrice(0);
+        parcel1.setShippingFrom(parcelLocker2);
+        parcel1.setShippingTo(parcelLocker1);
+        parcel1.setShipped(false);
+        parcel1.setPlaced(true);
+        parcel1.setPickedUp(false);
+        parcel1.setSize("small");
+        parcel1.setBox(box1);
+
+        Parcel parcel2 = new Parcel();
+        parcel2.setUniqueParcelId("aaa2");
+        parcel2.setPrice(0);
+        parcel2.setShippingFrom(parcelLocker2);
+        parcel2.setShippingTo(parcelLocker1);
+        parcel2.setShipped(false);
+        parcel2.setPlaced(true);
+        parcel2.setPickedUp(false);
+        parcel2.setSize("small");
+        parcel2.setBox(box2);
+
+        Parcel parcel3 = new Parcel();
+        parcel3.setUniqueParcelId("aaa3");
+        parcel3.setPrice(0);
+        parcel3.setShippingFrom(parcelLocker2);
+        parcel3.setShippingTo(parcelLocker1);
+        parcel3.setShipped(false);
+        parcel3.setPlaced(true);
+        parcel3.setPickedUp(false);
+        parcel3.setSize("small");
+        parcel3.setBox(box3);
+
+        parcelLocker2.getParcels().add(parcel1);
+        parcelLocker2.getParcels().add(parcel2);
+        parcelLocker2.getParcels().add(parcel3);
+
+        //Futárnál van kettő csomag
+        Parcel parcel4 = new Parcel();
+        parcel4.setUniqueParcelId("aaa4");
+        parcel4.setPrice(0);
+        parcel4.setShippingFrom(parcelLocker1);
+        parcel4.setShippingTo(parcelLocker2);
+        parcel4.setShipped(false);
+        parcel4.setPlaced(true);
+        parcel4.setPickedUp(false);
+        parcel4.setSize("small");
+
+        Parcel parcel5 = new Parcel();
+        parcel5.setUniqueParcelId("aaa5");
+        parcel5.setPrice(0);
+        parcel5.setShippingFrom(parcelLocker1);
+        parcel5.setShippingTo(parcelLocker2);
+        parcel5.setShipped(false);
+        parcel5.setPlaced(true);
+        parcel5.setPickedUp(false);
+        parcel5.setSize("small");
+
+        courier1.getParcels().add(parcel4);
+        courier1.getParcels().add(parcel5);
+
+
+        //when parcel locker
+        Mockito.when(parcelLockerService.findById(Mockito.anyLong())).thenReturn(parcelLocker2);
+
+        //when courier
+        Mockito.when(courierService.findByUniqueCourierId(Mockito.anyString())).thenReturn(courier1);
+
+        //when box
+        Mockito.when(boxService.findBySize("small")).thenReturn(smallBoxes);
+
+        response = parcelService.getParcelsForParcelLocker(2L, courier1.getUniqueCourierId());
+
+        assertEquals(200, response.getStatusCodeValue());
+        //Mind a kettő csomagnak van hely az automatában
+        assertEquals(2, response.getBody().size());
+
+        //A futárnál még megmarad a két csomag
+        assertEquals(2, courier1.getParcels().size());
+
+        //A négyes és ötös rekeszbe lehet betenni a csomagokat
+        assertEquals(4, response.getBody().get(0).getBoxNumber());
+        assertEquals(5, response.getBody().get(1).getBoxNumber());
+
+        Mockito.verify(parcelLockerService).findById(Mockito.anyLong());
+        Mockito.verify(courierService).findByUniqueCourierId(Mockito.anyString());
+        Mockito.verify(boxService, Mockito.times(2)).findBySize("small");
+
 
     }
 }

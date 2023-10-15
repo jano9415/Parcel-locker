@@ -290,9 +290,6 @@ public class ParcelServiceImpl implements ParcelService {
 
         List<GetParcelsForParcelLockerResponse> response = new ArrayList<>();
 
-        List<Parcel> parcelsForParcelLocker = new ArrayList<>();
-
-
         //Automata teli rekeszei
         List<Box> fullBoxes = new ArrayList<>();
 
