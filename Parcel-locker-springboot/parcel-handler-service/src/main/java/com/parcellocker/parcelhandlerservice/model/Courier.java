@@ -29,18 +29,6 @@ public class Courier {
     @Column(nullable = false)
     private String lastName;
 
-    /*Még nem tudom, hogy kell-e
-    //Courier_roles kapcsolótábla
-    //Ez az osztály a birtokos
-    //Kapcsolat a Role és a Courier között
-    @ManyToMany
-    @JoinTable(
-            name = "courier_roles",
-            joinColumns = {@JoinColumn(name = "courier_id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    private Set<Role> roles;
-     */
-
     //Parcel_during_shipping kapcsolótábla
     //A Parcel osztály a birtokos
     //Kapcsolat a Parcel és a Courier között

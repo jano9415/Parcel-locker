@@ -23,19 +23,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String emailAddress;
 
-    /*
-    //Még nem tudom, hogy kell-e
-    //User_roles kapcsolótábla
-    //Ez az osztály a birtokos
-    //Kapcsolat a Role és a User között
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    @ManyToMany
-    private Set<Role> roles;
-     */
-
     @Column(nullable = false)
     private String firstName;
 

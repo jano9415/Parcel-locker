@@ -45,12 +45,6 @@ public class Address {
     @OneToOne(mappedBy = "address")
     private Store store;
 
-    /*Opcionális adatok
-    //Kapcsolat a User és az Address között
-    //A User osztály a birtokos
-    @OneToMany(mappedBy = "address")
-    private Set<User> users = new HashSet<>();
-    */
 
 
 }

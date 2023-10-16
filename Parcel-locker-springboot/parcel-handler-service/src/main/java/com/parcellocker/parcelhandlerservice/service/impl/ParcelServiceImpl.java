@@ -308,6 +308,7 @@ public class ParcelServiceImpl implements ParcelService {
                     fullBoxes.add(p.getBox());
                 }
 
+
                 //Üres rekeszek keresése
                 List<Box> emptyBoxes = new ArrayList<>();
 
@@ -1522,23 +1523,23 @@ public class ParcelServiceImpl implements ParcelService {
 
     //Ügyfél feladja a csomagot
     public LocalDate date1(){
-        return LocalDate.of(2023,10, 7);
+        return LocalDate.of(2023,10, 13);
     }
     public LocalTime time1(){
-        return LocalTime.of(17,10);
+        return LocalTime.of(18,10);
     }
 
     //Futár kiveszi a csomagot
     public LocalDate date2(){
-        return LocalDate.of(2023,10, 8);
+        return LocalDate.of(2023,10, 14);
     }
     public LocalTime time2(){
-        return LocalTime.of(9,2);
+        return LocalTime.of(8,22);
     }
 
     //Futár leadja a raktárba
     public LocalDate date3(){
-        return LocalDate.of(2023,10, 8);
+        return LocalDate.of(2023,10, 14);
     }
     public LocalTime time3(){
         return LocalTime.of(15,31);
@@ -1546,7 +1547,7 @@ public class ParcelServiceImpl implements ParcelService {
 
     //Futár felveszi a raktárból
     public LocalDate date4(){
-        return LocalDate.of(2023,10, 10);
+        return LocalDate.of(2023,10, 16);
     }
     public LocalTime time4(){
         return LocalTime.of(7,23);
@@ -1554,10 +1555,10 @@ public class ParcelServiceImpl implements ParcelService {
 
     //Futár elhelyezi az automatába
     public LocalDate date5(){
-        return LocalDate.of(2023,10, 10);
+        return LocalDate.of(2023,10, 16);
     }
     public LocalTime time5(){
-        return LocalTime.of(9,3);
+        return LocalTime.of(8,27);
     }
 
 }
