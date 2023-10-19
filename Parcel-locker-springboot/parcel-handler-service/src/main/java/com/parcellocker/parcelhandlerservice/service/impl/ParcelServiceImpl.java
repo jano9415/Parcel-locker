@@ -363,7 +363,6 @@ public class ParcelServiceImpl implements ParcelService {
 
         List<FillParcelLockerResponse> response = new ArrayList<>();
 
-        List<Parcel> parcelsForParcelLocker = new ArrayList<>();
 
         for(Parcel parcel : parcelsOfCourier){
             //Ha a csomag érkezési helye ez az automata és a csomag átvételi ideje még nem járt le.
@@ -411,12 +410,13 @@ public class ParcelServiceImpl implements ParcelService {
                     parcel.setPickingUpExpirationTime(currentTime());
 
 
-                    //Csomag és automata összerendlése
+                    //Csomag és automata összerendelése
                     parcel.setParcelLocker(senderParcelLocker);
                     senderParcelLocker.getParcels().add(parcel);
 
                     //Csomag éa futár összerendelés megszüntetése
                     parcel.setCourier(null);
+
 
                     //Csomaghoz rekesz hozzáadása
                     parcel.setBox(emptyBoxes.get(0));
@@ -454,7 +454,7 @@ public class ParcelServiceImpl implements ParcelService {
                         notification.setSenderEmailAddress(parcel.getUser().getEmailAddress());
                     }
 
-                    //Email küldése az feladójának
+                    //Email küldése a csomag feladójának
                     //Értesítési objektum küldése a(z) ("parcelShippingNotificationForSender") topicnak
                     producer.sendShippingNotificationForSender(notification);
                     //Email küldése az átvevőnek
@@ -467,6 +467,7 @@ public class ParcelServiceImpl implements ParcelService {
                     responseObj.setUniqueParcelId(parcel.getUniqueParcelId());
                     responseObj.setBoxNumber(emptyBoxes.get(0).getBoxNumber());
                     response.add(responseObj);
+
 
                 }
 
