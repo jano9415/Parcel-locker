@@ -1357,6 +1357,9 @@ class ParcelServiceImplTest {
 
     }
 
+    //A futárnál van 2 darab csomag az automatához, amit fel szeretne tölteni
+    //Mind a kettőnek van szabad hely
+    //Csomagok elhelyezése az automatában
     @Test
     @Description("fillParcelLocker function")
     void courierShouldFillTheParcelLockerWithTwoSmallParcels(){
@@ -1480,6 +1483,15 @@ class ParcelServiceImplTest {
         Mockito.verify(parcelLockerService).findById(Mockito.anyLong());
         Mockito.verify(courierService).findByUniqueCourierId(Mockito.anyString());
         Mockito.verify(boxService, Mockito.times(2)).findBySize("small");
+
+    }
+
+    //A futárnál van 2 darab kicsi csomag az automatához, amit fel szeretne tölteni
+    //A 10 darab kicsit rekesz tele van, tehát mindegyik tele van
+    //Egy csomagot se tud elhelyezni az automatában
+    @Test
+    @Description("fillParcelLocker function")
+    void courierShouldNotFillTheParcelLockerButHeHasTwoSmallParcels(){
 
     }
 
