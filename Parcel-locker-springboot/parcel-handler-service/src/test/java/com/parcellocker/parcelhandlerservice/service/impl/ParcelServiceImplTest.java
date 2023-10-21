@@ -1426,7 +1426,9 @@ class ParcelServiceImplTest {
         parcel5.setSize("small");
 
         courier1.getParcels().add(parcel4);
+        parcel4.setCourier(courier1);
         courier1.getParcels().add(parcel5);
+        parcel5.setCourier(courier1);
 
 
         //when parcel locker
@@ -1445,6 +1447,8 @@ class ParcelServiceImplTest {
         assertEquals(2, response.getBody().size());
 
         //'aaa004' azonosítójú csomag
+        //El van helyezve
+        assertTrue(parcel4.isShipped());
         //Van elhelyezési dátum és időpont
         assertNotEquals(null, parcel4.getShippingDate());
         assertNotEquals(null, parcel4.getShippingTime());
@@ -1460,6 +1464,8 @@ class ParcelServiceImplTest {
         assertNotEquals(null, parcel4.getBox());
 
         //'aaa005' azonosítójú csomag
+        //El van helyezve
+        assertTrue(parcel5.isShipped());
         //Van elhelyezési dátum és időpont
         assertNotEquals(null, parcel5.getShippingDate());
         assertNotEquals(null, parcel5.getShippingTime());
@@ -1492,6 +1498,481 @@ class ParcelServiceImplTest {
     @Test
     @Description("fillParcelLocker function")
     void courierShouldNotFillTheParcelLockerButHeHasTwoSmallParcels(){
+
+        ResponseEntity<List<FillParcelLockerResponse>> response;
+
+        //Az automatában tíz darab csomag van
+        Parcel parcel1 = new Parcel();
+        parcel1.setUniqueParcelId("aaa1");
+        parcel1.setPrice(0);
+        parcel1.setShippingFrom(parcelLocker2);
+        parcel1.setShippingTo(parcelLocker1);
+        parcel1.setShipped(false);
+        parcel1.setPlaced(true);
+        parcel1.setPickedUp(false);
+        parcel1.setSize("small");
+        parcel1.setBox(box1);
+
+        Parcel parcel2 = new Parcel();
+        parcel2.setUniqueParcelId("aaa2");
+        parcel2.setPrice(0);
+        parcel2.setShippingFrom(parcelLocker2);
+        parcel2.setShippingTo(parcelLocker1);
+        parcel2.setShipped(false);
+        parcel2.setPlaced(true);
+        parcel2.setPickedUp(false);
+        parcel2.setSize("small");
+        parcel2.setBox(box2);
+
+        Parcel parcel3 = new Parcel();
+        parcel3.setUniqueParcelId("aaa3");
+        parcel3.setPrice(0);
+        parcel3.setShippingFrom(parcelLocker2);
+        parcel3.setShippingTo(parcelLocker1);
+        parcel3.setShipped(false);
+        parcel3.setPlaced(true);
+        parcel3.setPickedUp(false);
+        parcel3.setSize("small");
+        parcel3.setBox(box3);
+
+        Parcel parcel4 = new Parcel();
+        parcel4.setUniqueParcelId("aaa4");
+        parcel4.setPrice(3600);
+        parcel4.setShippingFrom(parcelLocker2);
+        parcel4.setShippingTo(parcelLocker1);
+        parcel4.setShipped(false);
+        parcel4.setPlaced(true);
+        parcel4.setPickedUp(false);
+        parcel4.setSize("small");
+        parcel4.setBox(box4);
+
+        Parcel parcel5 = new Parcel();
+        parcel5.setUniqueParcelId("aaa5");
+        parcel5.setPrice(15000);
+        parcel5.setShippingFrom(parcelLocker2);
+        parcel5.setShippingTo(parcelLocker1);
+        parcel5.setShipped(false);
+        parcel5.setPlaced(true);
+        parcel5.setPickedUp(false);
+        parcel5.setSize("small");
+        parcel5.setBox(box5);
+
+        Parcel parcel6 = new Parcel();
+        parcel6.setUniqueParcelId("aaa6");
+        parcel6.setPrice(12000);
+        parcel6.setShippingFrom(parcelLocker2);
+        parcel6.setShippingTo(parcelLocker1);
+        parcel6.setShipped(false);
+        parcel6.setPlaced(true);
+        parcel6.setPickedUp(false);
+        parcel6.setSize("small");
+        parcel6.setBox(box6);
+
+        Parcel parcel7 = new Parcel();
+        parcel7.setUniqueParcelId("aaa7");
+        parcel7.setPrice(0);
+        parcel7.setShippingFrom(parcelLocker2);
+        parcel7.setShippingTo(parcelLocker1);
+        parcel7.setShipped(false);
+        parcel7.setPlaced(true);
+        parcel7.setPickedUp(false);
+        parcel7.setSize("small");
+        parcel7.setBox(box7);
+
+        Parcel parcel8 = new Parcel();
+        parcel8.setUniqueParcelId("aaa8");
+        parcel8.setPrice(9800);
+        parcel8.setShippingFrom(parcelLocker2);
+        parcel8.setShippingTo(parcelLocker1);
+        parcel8.setShipped(false);
+        parcel8.setPlaced(true);
+        parcel8.setPickedUp(false);
+        parcel8.setSize("small");
+        parcel8.setBox(box8);
+
+        Parcel parcel9 = new Parcel();
+        parcel9.setUniqueParcelId("aaa9");
+        parcel9.setPrice(0);
+        parcel9.setShippingFrom(parcelLocker2);
+        parcel9.setShippingTo(parcelLocker1);
+        parcel9.setShipped(false);
+        parcel9.setPlaced(true);
+        parcel9.setPickedUp(false);
+        parcel9.setSize("small");
+        parcel9.setBox(box9);
+
+        Parcel parcel10 = new Parcel();
+        parcel10.setUniqueParcelId("aaa10");
+        parcel10.setPrice(4820);
+        parcel10.setShippingFrom(parcelLocker2);
+        parcel10.setShippingTo(parcelLocker1);
+        parcel10.setShipped(false);
+        parcel10.setPlaced(true);
+        parcel10.setPickedUp(false);
+        parcel10.setSize("small");
+        parcel10.setBox(box10);
+
+        parcelLocker2.getParcels().add(parcel1);
+        parcelLocker2.getParcels().add(parcel2);
+        parcelLocker2.getParcels().add(parcel3);
+        parcelLocker2.getParcels().add(parcel4);
+        parcelLocker2.getParcels().add(parcel5);
+        parcelLocker2.getParcels().add(parcel6);
+        parcelLocker2.getParcels().add(parcel7);
+        parcelLocker2.getParcels().add(parcel8);
+        parcelLocker2.getParcels().add(parcel9);
+        parcelLocker2.getParcels().add(parcel10);
+
+        //Futárnál van kettő csomag
+        Parcel parcel11 = new Parcel();
+        parcel11.setUniqueParcelId("aaa11");
+        parcel11.setPrice(0);
+        parcel11.setShippingFrom(parcelLocker1);
+        parcel11.setShippingTo(parcelLocker2);
+        parcel11.setShipped(false);
+        parcel11.setPlaced(true);
+        parcel11.setPickedUp(false);
+        parcel11.setSize("small");
+
+        Parcel parcel12 = new Parcel();
+        parcel12.setUniqueParcelId("aaa12");
+        parcel12.setPrice(0);
+        parcel12.setShippingFrom(parcelLocker1);
+        parcel12.setShippingTo(parcelLocker2);
+        parcel12.setShipped(false);
+        parcel12.setPlaced(true);
+        parcel12.setPickedUp(false);
+        parcel12.setSize("small");
+
+        courier1.getParcels().add(parcel11);
+        parcel11.setCourier(courier1);
+        courier1.getParcels().add(parcel12);
+        parcel12.setCourier(courier1);
+
+        //when parcel locker
+        Mockito.when(parcelLockerService.findById(Mockito.anyLong())).thenReturn(parcelLocker2);
+
+        //when courier
+        Mockito.when(courierService.findByUniqueCourierId(Mockito.anyString())).thenReturn(courier1);
+
+        //when box
+        Mockito.when(boxService.findBySize("small")).thenReturn(smallBoxes);
+
+        response = parcelService.fillParcelLocker(2L, courier1.getUniqueCourierId());
+
+        assertEquals(200, response.getStatusCodeValue());
+        //Egyik csomagnak sincs hely
+        assertEquals(response.getBody().size(), 0);
+
+        //'aaa11' azonosítójú csomag
+        //Nincs elhelyezve
+        assertFalse(parcel11.isShipped());
+        //Továbbra sincs elhelyezési dátum és időpont
+        assertEquals(null, parcel11.getShippingDate());
+        assertEquals(null, parcel11.getShippingTime());
+        //Továbbra sincs átvételi lejárati dátum és időpont
+        assertEquals(null, parcel11.getPickingUpExpirationDate());
+        assertEquals(null, parcel11.getPickingUpExpirationTime());
+        //Csomag éa automata összerendelés nem jön létre
+        assertNotEquals(parcelLocker2, parcel11.getParcelLocker());
+        assertFalse(parcelLocker2.getParcels().contains(parcel11));
+        //Csomag és futár összerendelés megmarad
+        assertNotEquals(null, parcel11.getCourier());
+        //Csomag és rekesz kapcsolat nem jön létre
+        assertEquals(null, parcel11.getBox());
+
+        //'aaa12' azonosítójú csomag
+        //Nincs elhelyezve
+        assertFalse(parcel12.isShipped());
+        //Továbbra sincs elhelyezési dátum és időpont
+        assertEquals(null, parcel12.getShippingDate());
+        assertEquals(null, parcel12.getShippingTime());
+        //Továbbra sincs átvételi lejárati dátum és időpont
+        assertEquals(null, parcel12.getPickingUpExpirationDate());
+        assertEquals(null, parcel12.getPickingUpExpirationTime());
+        //Csomag éa automata összerendelés nem jön létre
+        assertNotEquals(parcelLocker2, parcel12.getParcelLocker());
+        assertFalse(parcelLocker2.getParcels().contains(parcel12));
+        //Csomag és futár összerendelés megmarad
+        assertNotEquals(null, parcel12.getCourier());
+        //Csomag és rekesz kapcsolat nem jön létre
+        assertEquals(null, parcel12.getBox());
+
+        Mockito.verify(parcelLockerService).findById(Mockito.anyLong());
+        Mockito.verify(courierService).findByUniqueCourierId(Mockito.anyString());
+        Mockito.verify(boxService, Mockito.times(2)).findBySize("small");
+
+    }
+
+    //A futárnál van 3 darab kicsi csomag, kettő az automatához, amit fel szeretne tölteni
+    //9 darab kicsit rekesz tele van, tehát csak egy csomagot tud elhelyezni az automatában
+    @Test
+    @Description("fillParcelLocker function")
+    void courierShouldFillTheParcelLockerWithOneParcelButHeHasTwo(){
+
+        ResponseEntity<List<FillParcelLockerResponse>> response;
+
+        //Az automatában kilenc darab csomag van
+        Parcel parcel1 = new Parcel();
+        parcel1.setUniqueParcelId("aaa1");
+        parcel1.setPrice(0);
+        parcel1.setShippingFrom(parcelLocker2);
+        parcel1.setShippingTo(parcelLocker1);
+        parcel1.setShipped(false);
+        parcel1.setPlaced(true);
+        parcel1.setPickedUp(false);
+        parcel1.setSize("small");
+        parcel1.setBox(box1);
+
+        Parcel parcel2 = new Parcel();
+        parcel2.setUniqueParcelId("aaa2");
+        parcel2.setPrice(0);
+        parcel2.setShippingFrom(parcelLocker2);
+        parcel2.setShippingTo(parcelLocker1);
+        parcel2.setShipped(false);
+        parcel2.setPlaced(true);
+        parcel2.setPickedUp(false);
+        parcel2.setSize("small");
+        parcel2.setBox(box2);
+
+        Parcel parcel3 = new Parcel();
+        parcel3.setUniqueParcelId("aaa3");
+        parcel3.setPrice(0);
+        parcel3.setShippingFrom(parcelLocker2);
+        parcel3.setShippingTo(parcelLocker1);
+        parcel3.setShipped(false);
+        parcel3.setPlaced(true);
+        parcel3.setPickedUp(false);
+        parcel3.setSize("small");
+        parcel3.setBox(box3);
+
+        Parcel parcel4 = new Parcel();
+        parcel4.setUniqueParcelId("aaa4");
+        parcel4.setPrice(3600);
+        parcel4.setShippingFrom(parcelLocker2);
+        parcel4.setShippingTo(parcelLocker1);
+        parcel4.setShipped(false);
+        parcel4.setPlaced(true);
+        parcel4.setPickedUp(false);
+        parcel4.setSize("small");
+        parcel4.setBox(box4);
+
+        Parcel parcel5 = new Parcel();
+        parcel5.setUniqueParcelId("aaa5");
+        parcel5.setPrice(15000);
+        parcel5.setShippingFrom(parcelLocker2);
+        parcel5.setShippingTo(parcelLocker1);
+        parcel5.setShipped(false);
+        parcel5.setPlaced(true);
+        parcel5.setPickedUp(false);
+        parcel5.setSize("small");
+        parcel5.setBox(box5);
+
+        Parcel parcel6 = new Parcel();
+        parcel6.setUniqueParcelId("aaa6");
+        parcel6.setPrice(12000);
+        parcel6.setShippingFrom(parcelLocker2);
+        parcel6.setShippingTo(parcelLocker1);
+        parcel6.setShipped(false);
+        parcel6.setPlaced(true);
+        parcel6.setPickedUp(false);
+        parcel6.setSize("small");
+        parcel6.setBox(box6);
+
+        Parcel parcel7 = new Parcel();
+        parcel7.setUniqueParcelId("aaa7");
+        parcel7.setPrice(0);
+        parcel7.setShippingFrom(parcelLocker2);
+        parcel7.setShippingTo(parcelLocker1);
+        parcel7.setShipped(false);
+        parcel7.setPlaced(true);
+        parcel7.setPickedUp(false);
+        parcel7.setSize("small");
+        parcel7.setBox(box7);
+
+        Parcel parcel8 = new Parcel();
+        parcel8.setUniqueParcelId("aaa8");
+        parcel8.setPrice(9800);
+        parcel8.setShippingFrom(parcelLocker2);
+        parcel8.setShippingTo(parcelLocker1);
+        parcel8.setShipped(false);
+        parcel8.setPlaced(true);
+        parcel8.setPickedUp(false);
+        parcel8.setSize("small");
+        parcel8.setBox(box8);
+
+        Parcel parcel9 = new Parcel();
+        parcel9.setUniqueParcelId("aaa9");
+        parcel9.setPrice(0);
+        parcel9.setShippingFrom(parcelLocker2);
+        parcel9.setShippingTo(parcelLocker1);
+        parcel9.setShipped(false);
+        parcel9.setPlaced(true);
+        parcel9.setPickedUp(false);
+        parcel9.setSize("small");
+        parcel9.setBox(box9);
+
+        parcelLocker2.getParcels().add(parcel1);
+        parcelLocker2.getParcels().add(parcel2);
+        parcelLocker2.getParcels().add(parcel3);
+        parcelLocker2.getParcels().add(parcel4);
+        parcelLocker2.getParcels().add(parcel5);
+        parcelLocker2.getParcels().add(parcel6);
+        parcelLocker2.getParcels().add(parcel7);
+        parcelLocker2.getParcels().add(parcel8);
+        parcelLocker2.getParcels().add(parcel9);
+
+        //Futárnál van kettő csomag ehhez az automatához
+        Parcel parcel11 = new Parcel();
+        parcel11.setUniqueParcelId("aaa11");
+        parcel11.setPrice(0);
+        parcel11.setShippingFrom(parcelLocker1);
+        parcel11.setShippingTo(parcelLocker2);
+        parcel11.setShipped(false);
+        parcel11.setPlaced(true);
+        parcel11.setPickedUp(false);
+        parcel11.setSize("small");
+
+        Parcel parcel12 = new Parcel();
+        parcel12.setUniqueParcelId("aaa12");
+        parcel12.setPrice(0);
+        parcel12.setShippingFrom(parcelLocker1);
+        parcel12.setShippingTo(parcelLocker2);
+        parcel12.setShipped(false);
+        parcel12.setPlaced(true);
+        parcel12.setPickedUp(false);
+        parcel12.setSize("small");
+
+        //Ez egy másik automatához van
+        Parcel parcel13 = new Parcel();
+        parcel13.setUniqueParcelId("aaa13");
+        parcel13.setPrice(0);
+        parcel13.setShippingFrom(parcelLocker1);
+        parcel13.setShippingTo(parcelLocker3);
+        parcel13.setShipped(false);
+        parcel13.setPlaced(true);
+        parcel13.setPickedUp(false);
+        parcel13.setSize("medium");
+
+        courier1.getParcels().add(parcel11);
+        parcel11.setCourier(courier1);
+        courier1.getParcels().add(parcel12);
+        parcel12.setCourier(courier1);
+        courier1.getParcels().add(parcel13);
+        parcel13.setCourier(courier1);
+
+        //when parcel locker
+        Mockito.when(parcelLockerService.findById(Mockito.anyLong())).thenReturn(parcelLocker2);
+
+        //when courier
+        Mockito.when(courierService.findByUniqueCourierId(Mockito.anyString())).thenReturn(courier1);
+
+        //when small box
+        Mockito.when(boxService.findBySize("small")).thenReturn(smallBoxes);
+
+        response = parcelService.fillParcelLocker(2L, courier1.getUniqueCourierId());
+
+        assertEquals(200, response.getStatusCodeValue());
+        //Csak egy csomagnak van hely
+        assertEquals(response.getBody().size(), 1);
+        //Ezt a csomagot a 10. rekeszbe tudja majd betenni
+        assertEquals(10, response.getBody().get(0).getBoxNumber());
+
+        //'aaa11' azonosítójú csomag
+        //Ha ezt a csomagot helyezi be az automatába
+        if(parcel11.getParcelLocker() != null){
+            //El van helyezve
+            assertTrue(parcel11.isShipped());
+            //Van elhelyezési dátum és időpont
+            assertNotEquals(null, parcel11.getShippingDate());
+            assertNotEquals(null, parcel11.getShippingTime());
+            //Van átvételi lejárati dátum és időpont
+            assertNotEquals(null, parcel11.getPickingUpExpirationDate());
+            assertNotEquals(null, parcel11.getPickingUpExpirationTime());
+            //Csomag éa automata összerendelés ellenőrzése
+            assertEquals(parcelLocker2, parcel11.getParcelLocker());
+            assertTrue(parcelLocker2.getParcels().contains(parcel11));
+            //Csomag és futár összerendelés megszüntetése, ellenőrzés
+            assertEquals(null, parcel11.getCourier());
+            //Csomag és rekesz kapcsolat ellenőrzése
+            assertNotEquals(null, parcel11.getBox());
+        }
+        else{
+            //Nincs elhelyezve
+            assertFalse(parcel11.isShipped());
+            //Továbbra sincs elhelyezési dátum és időpont
+            assertEquals(null, parcel11.getShippingDate());
+            assertEquals(null, parcel11.getShippingTime());
+            //Továbbra sincs átvételi lejárati dátum és időpont
+            assertEquals(null, parcel11.getPickingUpExpirationDate());
+            assertEquals(null, parcel11.getPickingUpExpirationTime());
+            //Csomag éa automata összerendelés nem jön létre
+            assertNotEquals(parcelLocker2, parcel11.getParcelLocker());
+            assertFalse(parcelLocker2.getParcels().contains(parcel11));
+            //Csomag és futár összerendelés megmarad
+            assertNotEquals(null, parcel11.getCourier());
+            //Csomag és rekesz kapcsolat nem jön létre
+            assertEquals(null, parcel11.getBox());
+        }
+
+
+        //'aaa12' azonosítójú csomag
+        //Ha ezt a csomagot helyezi be az automatába
+        if(parcel12.getParcelLocker() != null){
+            //El van helyezve
+            assertTrue(parcel12.isShipped());
+            //Van elhelyezési dátum és időpont
+            assertNotEquals(null, parcel12.getShippingDate());
+            assertNotEquals(null, parcel12.getShippingTime());
+            //Van átvételi lejárati dátum és időpont
+            assertNotEquals(null, parcel12.getPickingUpExpirationDate());
+            assertNotEquals(null, parcel12.getPickingUpExpirationTime());
+            //Csomag éa automata összerendelés ellenőrzése
+            assertEquals(parcelLocker2, parcel12.getParcelLocker());
+            assertTrue(parcelLocker2.getParcels().contains(parcel12));
+            //Csomag és futár összerendelés megszüntetése, ellenőrzés
+            assertEquals(null, parcel12.getCourier());
+            //Csomag és rekesz kapcsolat ellenőrzése
+            assertNotEquals(null, parcel12.getBox());
+        }
+        else{
+            //Nincs elhelyezve
+            assertFalse(parcel12.isShipped());
+            //Továbbra sincs elhelyezési dátum és időpont
+            assertEquals(null, parcel12.getShippingDate());
+            assertEquals(null, parcel12.getShippingTime());
+            //Továbbra sincs átvételi lejárati dátum és időpont
+            assertEquals(null, parcel12.getPickingUpExpirationDate());
+            assertEquals(null, parcel12.getPickingUpExpirationTime());
+            //Csomag éa automata összerendelés nem jön létre
+            assertNotEquals(parcelLocker2, parcel12.getParcelLocker());
+            assertFalse(parcelLocker2.getParcels().contains(parcel12));
+            //Csomag és futár összerendelés megmarad
+            assertNotEquals(null, parcel12.getCourier());
+            //Csomag és rekesz kapcsolat nem jön létre
+            assertEquals(null, parcel12.getBox());
+        }
+
+        //'aaa13' azonosítójú csomag. Ez nem ehhez az automatához van
+        //Nincs elhelyezve
+        assertFalse(parcel13.isShipped());
+        //Továbbra sincs elhelyezési dátum és időpont
+        assertEquals(null, parcel13.getShippingDate());
+        assertEquals(null, parcel13.getShippingTime());
+        //Továbbra sincs átvételi lejárati dátum és időpont
+        assertEquals(null, parcel13.getPickingUpExpirationDate());
+        assertEquals(null, parcel13.getPickingUpExpirationTime());
+        //Csomag éa automata összerendelés nem jön létre
+        assertNotEquals(parcelLocker2, parcel13.getParcelLocker());
+        assertFalse(parcelLocker2.getParcels().contains(parcel13));
+        //Csomag és futár összerendelés megmarad
+        assertNotEquals(null, parcel13.getCourier());
+        //Csomag és rekesz kapcsolat nem jön létre
+        assertEquals(null, parcel13.getBox());
+
+        Mockito.verify(parcelLockerService).findById(Mockito.anyLong());
+        Mockito.verify(courierService).findByUniqueCourierId(Mockito.anyString());
+        Mockito.verify(boxService, Mockito.times(2)).findBySize("small");
 
     }
 
