@@ -9,6 +9,7 @@ import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRe
 import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
 import com.parcellocker.parcelhandlerservice.payload.response.FillParcelLockerResponse;
 import com.parcellocker.parcelhandlerservice.payload.response.GetParcelsForParcelLockerResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.PickUpParcelResponse;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,9 +19,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Description;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -43,6 +48,9 @@ class ParcelServiceImplTest {
 
     @Mock
     private Producer producer;
+
+    @Mock
+    private WebClient.Builder webClientBuilder;
 
     @Mock
     private CourierServiceImpl courierService;
@@ -2280,6 +2288,64 @@ class ParcelServiceImplTest {
         Mockito.verify(courierService).findByUniqueCourierId(Mockito.anyString());
         Mockito.verify(boxService, Mockito.times(2)).findBySize("small");
         Mockito.verify(boxService).findBySize("medium");
+
+    }
+
+    //Ügyfél sikeresen átveszi a csomagját
+    //A csomagot már előre kifizette
+    @Test
+    @Description("pickUpParcel function")
+    void customerShouldPickUpItsParcel(){
+
+        ResponseEntity<PickUpParcelResponse> response;
+
+        Parcel parcel1 = new Parcel();
+        parcel1.setUniqueParcelId("aaa1");
+        parcel1.setPickingUpCode("abc12");
+        parcel1.setPrice(0);
+        parcel1.setShippingFrom(parcelLocker2);
+        parcel1.setShippingTo(parcelLocker1);
+        parcel1.setSendingDate(LocalDate.of(2023,10,23));
+        parcel1.setSendingTime(LocalTime.of(15,31));
+        parcel1.setPickingUpDateFromParcelLockerByCourier(LocalDate.of(2023,10,24));
+        parcel1.setPickingUpTimeFromParcelLockerByCourier(LocalTime.of(8,40));
+        parcel1.setHandingDateToFirstStoreByCourier(LocalDate.of(2023,10,24));
+        parcel1.setHandingTimeToFirstStoreByCourier(LocalTime.of(15,49));
+        parcel1.setPickingUpDateFromSecondStoreByCourier(LocalDate.of(2023,10,26));
+        parcel1.setPickingUpTimeFromSecondStoreByCourier(LocalTime.of(7,14));
+        parcel1.setShippingDate(LocalDate.of(2023,10,26));
+        parcel1.setShippingTime(LocalTime.of(8,29));
+        parcel1.setPickingUpExpirationDate(LocalDate.of(2023,10,29));
+        parcel1.setPickingUpExpirationTime(LocalTime.of(8,29));
+        parcel1.setShipped(true);
+        parcel1.setPlaced(true);
+        parcel1.setPickedUp(false);
+        parcel1.setPaid(true);
+        parcel1.setSize("small");
+        parcel1.setBox(box1);
+
+        //Csomag és automata összerendelése
+        parcel1.setParcelLocker(parcelLocker1);
+        parcelLocker1.getParcels().add(parcel1);
+
+        //when parcel
+        Mockito.when(parcelService.findByPickingUpCode("abc12")).thenReturn(parcel1);
+
+        //when webclient
+
+
+        response = parcelService.pickUpParcel("abc12", 1L);
+
+        //Az 1-es rekesz nyílik ki
+        assertEquals(1, response.getBody().getBoxNumber());
+        //Csomag ára szerepel a válaszban
+        assertEquals(parcel1.getPrice(), response.getBody().getPrice());
+        //Csomagot át lehet venni üzenet
+        assertEquals("pickedUp", response.getBody().getMessage());
+
+        Mockito.verify(parcelService).findByPickingUpCode("abc12");
+
+
 
     }
 

@@ -1368,8 +1368,6 @@ public class ParcelServiceImpl implements ParcelService {
         }
 
 
-
-
         //Válasz objektum
         StringResponse responseFromStatisticsService;
 
