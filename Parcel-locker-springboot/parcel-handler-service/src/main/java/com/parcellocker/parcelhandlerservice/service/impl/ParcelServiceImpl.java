@@ -496,17 +496,19 @@ public class ParcelServiceImpl implements ParcelService {
             return ResponseEntity.ok(response);
         }
 
+        //Már át van véve
+        if(parcel.isPickedUp()){
+            response.setMessage("notFound");
+            return ResponseEntity.ok(response);
+        }
+
         //A csomag átvételi ideje már lejárt
         if(isPickingUpDateTimeExpired(parcel)){
             response.setMessage("expired");
             return ResponseEntity.ok(response);
         }
 
-        //Már át van véve
-        if(parcel.isPickedUp()){
-            response.setMessage("notFound");
-            return ResponseEntity.ok(response);
-        }
+
 
 
         //Válasz objektum

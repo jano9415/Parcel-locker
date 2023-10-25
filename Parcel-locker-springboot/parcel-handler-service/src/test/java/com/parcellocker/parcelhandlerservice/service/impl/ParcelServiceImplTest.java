@@ -5,6 +5,7 @@ import com.parcellocker.parcelhandlerservice.model.*;
 import com.parcellocker.parcelhandlerservice.payload.GetParcelsForShippingResponse;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeRequest;
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeResponse;
+import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
 import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
 import com.parcellocker.parcelhandlerservice.payload.response.FillParcelLockerResponse;
@@ -25,7 +26,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Description;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -2343,9 +2346,195 @@ class ParcelServiceImplTest {
         //Csomagot át lehet venni üzenet
         assertEquals("pickedUp", response.getBody().getMessage());
 
-        Mockito.verify(parcelService).findByPickingUpCode("abc12");
+        //Mockito.verify(parcelService, Mockito.times(2)).findByPickingUpCode("abc12");
+
+    }
+
+    //Ügyfél nem tudja átvenni a csomagját, mert nem létezik ilyen csomag
+    @Test
+    @Description("pickUpParcel function")
+    void customerShouldNotPickUpItsParcelBecauseItDoesNotExist(){
+
+        ResponseEntity<PickUpParcelResponse> response;
+
+        //when parcel
+        Mockito.when(parcelService.findByPickingUpCode("abc12")).thenReturn(null);
+
+        //when webclient
+
+        response = parcelService.pickUpParcel("abc12", 1L);
+
+        //Nincs rekesz szám
+        assertEquals(0, response.getBody().getBoxNumber());
+        //Csomag ára nem szerepel a válaszban
+        assertEquals(0, response.getBody().getPrice());
+        //Csomag nem található hibaüzenet
+        assertEquals("notFound", response.getBody().getMessage());
+
+        //Mockito.verify(parcelService).findByPickingUpCode("abc12");
+
+    }
+
+    //Ügyfél nem tudja átvenni a csomagját, mert az egy másik automatában van
+    @Test
+    @Description("pickUpParcel function")
+    void customerShouldNotPickUpItsParcelBecauseItIsInAnOtherParcelLocker(){
+
+        ResponseEntity<PickUpParcelResponse> response;
+
+        Parcel parcel1 = new Parcel();
+        parcel1.setUniqueParcelId("aaa1");
+        parcel1.setPickingUpCode("abc12");
+        parcel1.setPrice(0);
+        parcel1.setShippingFrom(parcelLocker2);
+        parcel1.setShippingTo(parcelLocker1);
+        parcel1.setSendingDate(LocalDate.of(2023,10,23));
+        parcel1.setSendingTime(LocalTime.of(15,31));
+        parcel1.setPickingUpDateFromParcelLockerByCourier(LocalDate.of(2023,10,24));
+        parcel1.setPickingUpTimeFromParcelLockerByCourier(LocalTime.of(8,40));
+        parcel1.setHandingDateToFirstStoreByCourier(LocalDate.of(2023,10,24));
+        parcel1.setHandingTimeToFirstStoreByCourier(LocalTime.of(15,49));
+        parcel1.setPickingUpDateFromSecondStoreByCourier(LocalDate.of(2023,10,26));
+        parcel1.setPickingUpTimeFromSecondStoreByCourier(LocalTime.of(7,14));
+        parcel1.setShippingDate(LocalDate.of(2023,10,26));
+        parcel1.setShippingTime(LocalTime.of(8,29));
+        parcel1.setPickingUpExpirationDate(LocalDate.of(2023,10,29));
+        parcel1.setPickingUpExpirationTime(LocalTime.of(8,29));
+        parcel1.setShipped(true);
+        parcel1.setPlaced(true);
+        parcel1.setPickedUp(false);
+        parcel1.setPaid(true);
+        parcel1.setSize("small");
+        parcel1.setBox(box1);
+
+        //Csomag és automata összerendelése
+        parcel1.setParcelLocker(parcelLocker1);
+        parcelLocker1.getParcels().add(parcel1);
+
+        //when parcel
+        Mockito.when(parcelService.findByPickingUpCode("abc12")).thenReturn(parcel1);
+
+        //when webclient
 
 
+        response = parcelService.pickUpParcel("abc12", 2L);
+
+        //Nincs rekesz szám
+        assertEquals(0, response.getBody().getBoxNumber());
+        //Csomag ára nem szerepel a válaszban
+        assertEquals(0, response.getBody().getPrice());
+        //Csomag nem található hibaüzenet
+        assertEquals("notFound", response.getBody().getMessage());
+
+        //Mockito.verify(parcelService).findByPickingUpCode("abc12");
+
+    }
+
+    //Ügyfél nem tudja átvenni a csomagját, mert lejárt az átvételi idő
+    @Test
+    @Description("pickUpParcel function")
+    void customerShouldNotPickUpItsParcelBecauseItExpired(){
+
+        ResponseEntity<PickUpParcelResponse> response;
+
+        Parcel parcel1 = new Parcel();
+        parcel1.setUniqueParcelId("aaa1");
+        parcel1.setPickingUpCode("abc12");
+        parcel1.setPrice(0);
+        parcel1.setShippingFrom(parcelLocker2);
+        parcel1.setShippingTo(parcelLocker1);
+        parcel1.setSendingDate(LocalDate.of(2023,10,23));
+        parcel1.setSendingTime(LocalTime.of(15,31));
+        parcel1.setPickingUpDateFromParcelLockerByCourier(LocalDate.of(2023,10,24));
+        parcel1.setPickingUpTimeFromParcelLockerByCourier(LocalTime.of(8,40));
+        parcel1.setHandingDateToFirstStoreByCourier(LocalDate.of(2023,10,24));
+        parcel1.setHandingTimeToFirstStoreByCourier(LocalTime.of(15,49));
+        parcel1.setPickingUpDateFromSecondStoreByCourier(LocalDate.of(2023,10,26));
+        parcel1.setPickingUpTimeFromSecondStoreByCourier(LocalTime.of(7,14));
+        parcel1.setShippingDate(LocalDate.of(2023,10,26));
+        parcel1.setShippingTime(LocalTime.of(8,29));
+        parcel1.setPickingUpExpirationDate(LocalDate.of(2023,10,25));
+        parcel1.setPickingUpExpirationTime(LocalTime.of(8,29));
+        parcel1.setShipped(true);
+        parcel1.setPlaced(true);
+        parcel1.setPickedUp(false);
+        parcel1.setPaid(true);
+        parcel1.setSize("small");
+        parcel1.setBox(box1);
+
+        //Csomag és automata összerendelése
+        parcel1.setParcelLocker(parcelLocker1);
+        parcelLocker1.getParcels().add(parcel1);
+
+        //when parcel
+        Mockito.when(parcelService.findByPickingUpCode("abc12")).thenReturn(parcel1);
+
+        //when webclient
+
+
+        response = parcelService.pickUpParcel("abc12", 1L);
+
+        //Nincs rekesz szám
+        assertEquals(0, response.getBody().getBoxNumber());
+        //Csomag ára nem szerepel a válaszban
+        assertEquals(0, response.getBody().getPrice());
+        //Csomag nem található hibaüzenet
+        assertEquals("expired", response.getBody().getMessage());
+
+        //Mockito.verify(parcelService).findByPickingUpCode("abc12");
+
+    }
+
+    //Ügyfél nem tudja átvenni a csomagját, mert már átvette azt
+    @Test
+    @Description("pickUpParcel function")
+    void customerShouldNotPickUpItsParcelBecauseAlredyPickedUp(){
+
+        ResponseEntity<PickUpParcelResponse> response;
+
+        Parcel parcel1 = new Parcel();
+        parcel1.setUniqueParcelId("aaa1");
+        parcel1.setPickingUpCode("abc12");
+        parcel1.setPrice(0);
+        parcel1.setShippingFrom(parcelLocker2);
+        parcel1.setShippingTo(parcelLocker1);
+        parcel1.setSendingDate(LocalDate.of(2023,10,23));
+        parcel1.setSendingTime(LocalTime.of(15,31));
+        parcel1.setPickingUpDate(LocalDate.of(2023, 10, 27));
+        parcel1.setPickingUpTime(LocalTime.of(18,49));
+
+        parcel1.setPickingUpDateFromParcelLockerByCourier(LocalDate.of(2023,10,24));
+        parcel1.setPickingUpTimeFromParcelLockerByCourier(LocalTime.of(8,40));
+        parcel1.setHandingDateToFirstStoreByCourier(LocalDate.of(2023,10,24));
+        parcel1.setHandingTimeToFirstStoreByCourier(LocalTime.of(15,49));
+        parcel1.setPickingUpDateFromSecondStoreByCourier(LocalDate.of(2023,10,26));
+        parcel1.setPickingUpTimeFromSecondStoreByCourier(LocalTime.of(7,14));
+        parcel1.setShippingDate(LocalDate.of(2023,10,26));
+        parcel1.setShippingTime(LocalTime.of(8,29));
+        parcel1.setPickingUpExpirationDate(LocalDate.of(2023,10,25));
+        parcel1.setPickingUpExpirationTime(LocalTime.of(8,29));
+        parcel1.setShipped(true);
+        parcel1.setPlaced(true);
+        parcel1.setPickedUp(true);
+        parcel1.setPaid(true);
+        parcel1.setSize("small");
+
+        //when parcel
+        Mockito.when(parcelService.findByPickingUpCode("abc12")).thenReturn(parcel1);
+
+        //when webclient
+
+
+        response = parcelService.pickUpParcel("abc12", 1L);
+
+        //Nincs rekesz szám
+        assertEquals(0, response.getBody().getBoxNumber());
+        //Csomag ára nem szerepel a válaszban
+        assertEquals(0, response.getBody().getPrice());
+        //Csomag nem található hibaüzenet
+        assertEquals("notFound", response.getBody().getMessage());
+
+        //Mockito.verify(parcelService).findByPickingUpCode("abc12");
 
     }
 
