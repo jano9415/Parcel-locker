@@ -41,7 +41,7 @@ public interface UserService {
     ResponseEntity<?> courierLogin(LoginCourier request, Long parcelLockerId);
 
     //Regisztráció aktiválása
-    ResponseEntity<?> signUpActivation(String activationCode);
+    ResponseEntity<StringResponse> signUpActivation(String activationCode);
 
     //Keresés aktivációs kód szerint
     User findByActivationCode(String activationCode);

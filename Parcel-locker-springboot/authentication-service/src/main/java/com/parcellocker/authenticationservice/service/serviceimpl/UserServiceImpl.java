@@ -157,7 +157,6 @@ public class UserServiceImpl implements UserService {
         List<String> roles = user.getRoles().stream().map(item -> item.getRoleName())
                 .collect(Collectors.toList());
 
-        //Itt még át kéne adni a szerepköröket is
         String token = jwtUtil.generateToken(logInRequest.getEmailAddress(), roles);
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setUserId(user.getId());
@@ -215,8 +214,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> courierLogin(LoginCourier request, Long parcelLockerId) {
 
-        System.out.println(request + "----------------" + parcelLockerId);
-        System.out.println("Ez a jelszó:" + request.getPassword());
 
         String sha256Password = sha256Encode(request.getPassword());
 
@@ -269,18 +266,21 @@ public class UserServiceImpl implements UserService {
     //Aktivációs kód null-ra állítása
     //Enable mező true-ra állítása
     @Override
-    public ResponseEntity<?> signUpActivation(String signUpActivationCode) {
+    public ResponseEntity<StringResponse> signUpActivation(String signUpActivationCode) {
         User user = findByActivationCode(signUpActivationCode);
+        StringResponse response = new StringResponse();
 
         if(user == null){
-            return ResponseEntity.badRequest().body("Sikertelen regisztráció aktiválás");
+            response.setMessage("unSuccessfulActivation");
+            return ResponseEntity.ok(response);
         }
 
         user.setActivationCode(null);
         user.setEnable(true);
         userRepository.save(user);
 
-        return ResponseEntity.ok("Felhasználói fiók sikeresen aktiválva");
+        response.setMessage("successfulActivation");
+        return ResponseEntity.ok(response);
 
     }
 

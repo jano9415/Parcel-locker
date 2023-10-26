@@ -72,11 +72,16 @@ const LoginComponent = () => {
         if (signUpActivationCode) {
             AuthService.signUpActivation(signUpActivationCode).then(
                 (response) => {
-                    setSignUpActivationMessage(response.data)
+                    if (response.data.message === "successfulActivation") {
+                        setSignUpActivationMessage("Felhasználói fiók sikeresen aktiválva");
+                    }
+                    if (response.data.message === "unSuccessfulActivation") {
+                        setSignUpActivationErrorMessage("Sikertelen regisztráció aktiválás");
+                    }
 
                 },
                 (error) => {
-                    setSignUpActivationErrorMessage(error.response.data)
+                    
 
                 }
             )

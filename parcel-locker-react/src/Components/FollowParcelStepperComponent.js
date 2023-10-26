@@ -10,8 +10,8 @@ const FollowParcelStepperComponent = (props) => {
     const stepsWithPreSending = [
         'Előzetesen feladva',
         'Csomag feladva',
-        'Csomag a ' + props.parcel.shippingFromCounty + ' megyei raktárba megérkezett',
-        'Csomag a ' + props.parcel.shippingToCounty +  ' megyei raktárból elindult',
+        'Csomag a ' + props.parcel.shippingFromCounty + ' megyei raktárban',
+        'Csomag a ' + props.parcel.shippingToCounty +  ' megyei raktárban',
         'Csomag megérkezett',
         'Csomag átvéve'
     ];
@@ -19,8 +19,8 @@ const FollowParcelStepperComponent = (props) => {
     //2. verzió
     const stepsWithOutPreSending = [
         'Csomag feladva',
-        'Csomag a ' + props.parcel.shippingFromCounty + ' megyei raktárba megérkezett',
-        'Csomag a ' + props.parcel.shippingToCounty +  ' megyei raktárból elindult',
+        'Csomag a ' + props.parcel.shippingFromCounty + ' megyei raktárban',
+        'Csomag a ' + props.parcel.shippingToCounty +  ' megyei raktárban',
         'Csomag megérkezett',
         'Csomag átvéve'
     ];
@@ -29,8 +29,8 @@ const FollowParcelStepperComponent = (props) => {
     const stepsWithPreSendingAndExpired = [
         'Előzetesen feladva',
         'Csomag feladva',
-        'Csomag a ' + props.parcel.shippingFromCounty + ' megyei raktárba megérkezett',
-        'Csomag a ' + props.parcel.shippingToCounty +  ' megyei raktárból elindult',
+        'Csomag a ' + props.parcel.shippingFromCounty + ' megyei raktárban',
+        'Csomag a ' + props.parcel.shippingToCounty +  ' megyei raktárban',
         'Csomag megérkezett',
         'Csomag átvételi ideje lejárt',
         'Csomag átvéve'
@@ -39,8 +39,8 @@ const FollowParcelStepperComponent = (props) => {
     //4. verzió
     const stepsWithOutPreSendingAndExpired = [
         'Csomag feladva',
-        'Csomag a ' + props.parcel.shippingFromCounty + ' megyei raktárba megérkezett',
-        'Csomag a ' + props.parcel.shippingToCounty +  ' megyei raktárból elindult',
+        'Csomag a ' + props.parcel.shippingFromCounty + ' megyei raktárban',
+        'Csomag a ' + props.parcel.shippingToCounty +  ' megyei raktárban',
         'Csomag megérkezett',
         'Csomag átvételi ideje lejárt',
         'Csomag átvéve'

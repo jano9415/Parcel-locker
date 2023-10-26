@@ -45,7 +45,7 @@ public class AuthController {
     //Regisztráció aktiválása
     //Nem szükséges jwt token
     @GetMapping("/activation/{signUpActivationCode}")
-    public ResponseEntity<?> signUpActivation(@PathVariable String signUpActivationCode) {
+    public ResponseEntity<StringResponse> signUpActivation(@PathVariable String signUpActivationCode) {
         return userService.signUpActivation(signUpActivationCode);
     }
 
