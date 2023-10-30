@@ -7,10 +7,7 @@ import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeReq
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeResponse;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
-import com.parcellocker.parcelhandlerservice.payload.response.EmptyParcelLockerResponse;
-import com.parcellocker.parcelhandlerservice.payload.response.FillParcelLockerResponse;
-import com.parcellocker.parcelhandlerservice.payload.response.GetParcelsForParcelLockerResponse;
-import com.parcellocker.parcelhandlerservice.payload.response.PickUpParcelResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.*;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -2538,4 +2536,123 @@ class ParcelServiceImplTest {
 
     }
 
+    //Csomag küldése feladási kóddal az automatától, de ilyen feladási kóddal csomag nem létezik
+    @Test
+    @Description("getParcelForSendingWithCode")
+    void sendParcelWithCodeFromParcelLockerButParcelShouldNotBeFound(){
+
+        ResponseEntity<GetParcelForSendingWithCodeResponse> response;
+
+        //when parcel
+        Mockito.when(parcelService.findBySendingCode("abc45")).thenReturn(null);
+
+        response = parcelService.getParcelForSendingWithCode("abc45", 1L);
+
+        //Csomag nem található hibaüzenet
+        assertEquals("notFound", response.getBody().getMessage());
+
+        //Mockito.verify(parcelService).findBySendingCode("abc45");
+    }
+
+    //Csomag küldése feladási kóddal az automatától, de a csomagot nem ebbe az automatába kell elhelyezni
+    @Test
+    @Description("getParcelForSendingWithCode")
+    void sendParcelWithCodeFromParcelLockerButParcelShouldBePlacedNotHere(){
+
+        ResponseEntity<GetParcelForSendingWithCodeResponse> response;
+
+        Parcel parcel1 = new Parcel();
+        parcel1.setUniqueParcelId("aaa1");
+        parcel1.setPickingUpCode("abc12");
+        parcel1.setSendingCode("abc45");
+        parcel1.setPlaced(false);
+        parcel1.setSize("small");
+        parcel1.setPrice(0);
+        parcel1.setShippingFrom(parcelLocker2);
+        parcel1.setShippingTo(parcelLocker1);
+        parcel1.setBox(box1);
+
+        parcelLocker2.getParcels().add(parcel1);
+        parcel1.setParcelLocker(parcelLocker2);
+
+        //when parcel
+        Mockito.when(parcelService.findBySendingCode("abc45")).thenReturn(parcel1);
+
+        response = parcelService.getParcelForSendingWithCode("abc45", 3L);
+
+        //Csomag nem található hibaüzenet
+        assertEquals("notFound", response.getBody().getMessage());
+
+        //Mockito.verify(parcelService).findBySendingCode("abc45");
+
+    }
+
+    //Csomag küldése feladási kóddal az automatától, de a csomagot már elhelyeztük az automatába
+    @Test
+    @Description("getParcelForSendingWithCode")
+    void sendParcelWithCodeFromParcelLockerButParcelShouldBeAlredySent(){
+
+        ResponseEntity<GetParcelForSendingWithCodeResponse> response;
+
+        Parcel parcel1 = new Parcel();
+        parcel1.setUniqueParcelId("aaa1");
+        parcel1.setPickingUpCode("abc12");
+        parcel1.setSendingCode("abc45");
+        parcel1.setPlaced(true);
+        parcel1.setPrice(9700);
+        parcel1.setSize("small");
+        parcel1.setBox(box1);
+        parcel1.setShippingFrom(parcelLocker2);
+        parcel1.setShippingTo(parcelLocker1);
+
+        parcelLocker2.getParcels().add(parcel1);
+        parcel1.setParcelLocker(parcelLocker2);
+
+        //when parcel
+        Mockito.when(parcelService.findBySendingCode("abc45")).thenReturn(parcel1);
+
+        response = parcelService.getParcelForSendingWithCode("abc45", 2L);
+
+        //Csomag nem található hibaüzenet
+        assertEquals("notFound", response.getBody().getMessage());
+
+        //Mockito.verify(parcelService).findBySendingCode("abc45");
+
+    }
+
+    //Csomag küldése feladási kóddal az automatától. Ez még csak megkeresi a csomagot és visszatér a rekesz számával
+    @Test
+    @Description("getParcelForSendingWithCode")
+    void sendParcelWithCodeFromParcelLockerAndTheParcelShouldBeFound(){
+
+        ResponseEntity<GetParcelForSendingWithCodeResponse> response;
+
+        Parcel parcel1 = new Parcel();
+        parcel1.setUniqueParcelId("aaa1");
+        parcel1.setPickingUpCode("abc12");
+        parcel1.setSendingCode("abc45");
+        parcel1.setPlaced(false);
+        parcel1.setPrice(5000);
+        parcel1.setShippingFrom(parcelLocker2);
+        parcel1.setShippingTo(parcelLocker1);
+        parcel1.setSize("small");
+        parcel1.setBox(box1);
+
+        parcelLocker2.getParcels().add(parcel1);
+        parcel1.setParcelLocker(parcelLocker2);
+
+        //when parcel
+        Mockito.when(parcelService.findBySendingCode("abc45")).thenReturn(parcel1);
+
+        response = parcelService.getParcelForSendingWithCode("abc45", 2L);
+
+        //Csomag megtalálva
+        assertEquals("found", response.getBody().getMessage());
+
+        //Csomagot majd az egyes rekeszbe tudod betenni
+        assertEquals(1, response.getBody().getBoxNumber());
+
+        //Mockito.verify(parcelService).findBySendingCode("abc45");
+
+    }
 }

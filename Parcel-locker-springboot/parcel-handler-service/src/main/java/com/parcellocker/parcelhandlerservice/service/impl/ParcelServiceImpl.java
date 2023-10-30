@@ -591,7 +591,7 @@ public class ParcelServiceImpl implements ParcelService {
         return ResponseEntity.ok(response);
     }
 
-    //Csomag küldése feladási kóddal
+    //Csomag küldése feladási kóddal az automatától
     //Az előző kérésben már ellenőrizve lett, hogy megtalálható a csomag
     //Ez a kérés már fizetés után van
     //Itt már csak frissítem a csomag adatait és elküldöm az email értesítéseket
