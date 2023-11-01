@@ -2655,4 +2655,13 @@ class ParcelServiceImplTest {
         //Mockito.verify(parcelService).findBySendingCode("abc45");
 
     }
+
+    //Csomag küldése feladási kóddal az automatától. Az ügyfél sikeresen elhelyezi a csomagját az automatába
+    @Test
+    @Description("sendParcelWithCode function")
+    void sendParcelWithCodeFromParcelLockerAndTheParcelShouldBePlaced(){
+
+        ResponseEntity<StringResponse> response;
+
+    }
 }
