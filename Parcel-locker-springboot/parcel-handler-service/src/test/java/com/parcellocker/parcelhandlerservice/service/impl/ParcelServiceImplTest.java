@@ -23,6 +23,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Description;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -73,43 +74,46 @@ class ParcelServiceImplTest {
     //Futár
     private Courier courier1;
 
-        //200x70x50
-        Box box1 = new Box();
-        Box box2 = new Box();
-        Box box3 = new Box();
-        Box box4 = new Box();
-        Box box5 = new Box();
-        Box box6 = new Box();
-        Box box7 = new Box();
-        Box box8 = new Box();
-        Box box9 = new Box();
-        Box box10 = new Box();
-        //200x120x100
-        Box box11 = new Box();
-        Box box12 = new Box();
-        Box box13 = new Box();
-        Box box14 = new Box();
-        Box box15 = new Box();
-        Box box16 = new Box();
-        Box box17 = new Box();
-        Box box18 = new Box();
-        Box box19 = new Box();
-        Box box20 = new Box();
-        //200x170x150
-        Box box21 = new Box();
-        Box box22 = new Box();
-        Box box23 = new Box();
-        Box box24 = new Box();
-        Box box25 = new Box();
-        Box box26 = new Box();
-        Box box27 = new Box();
-        Box box28 = new Box();
-        Box box29 = new Box();
-        Box box30 = new Box();
+    //User
+    private User user;
 
-        List<Box> smallBoxes = new ArrayList<>();
-        List<Box> mediumBoxes = new ArrayList<>();
-        List<Box> largeBoxes = new ArrayList<>();
+    //200x70x50
+    Box box1 = new Box();
+    Box box2 = new Box();
+    Box box3 = new Box();
+    Box box4 = new Box();
+    Box box5 = new Box();
+    Box box6 = new Box();
+    Box box7 = new Box();
+    Box box8 = new Box();
+    Box box9 = new Box();
+    Box box10 = new Box();
+    //200x120x100
+    Box box11 = new Box();
+    Box box12 = new Box();
+    Box box13 = new Box();
+    Box box14 = new Box();
+    Box box15 = new Box();
+    Box box16 = new Box();
+    Box box17 = new Box();
+    Box box18 = new Box();
+    Box box19 = new Box();
+    Box box20 = new Box();
+    //200x170x150
+    Box box21 = new Box();
+    Box box22 = new Box();
+    Box box23 = new Box();
+    Box box24 = new Box();
+    Box box25 = new Box();
+    Box box26 = new Box();
+    Box box27 = new Box();
+    Box box28 = new Box();
+    Box box29 = new Box();
+    Box box30 = new Box();
+
+    List<Box> smallBoxes = new ArrayList<>();
+    List<Box> mediumBoxes = new ArrayList<>();
+    List<Box> largeBoxes = new ArrayList<>();
 
 
     @BeforeEach
@@ -397,6 +401,14 @@ class ParcelServiceImplTest {
         courier1.setUniqueCourierId("futar001");
         courier1.setLastName("Nagy");
         courier1.setFirstName("Balázs");
+
+        //User
+        user = new User();
+        user.setId(1L);
+        user.setLastName("Bíró");
+        user.setFirstName("Andrea");
+        user.setPhoneNumber("06309673319");
+        user.setEmailAddress("andi@gmail.com");
 
     }
 
@@ -2662,6 +2674,48 @@ class ParcelServiceImplTest {
     void sendParcelWithCodeFromParcelLockerAndTheParcelShouldBePlaced(){
 
         ResponseEntity<StringResponse> response;
+
+        Parcel parcel1 = new Parcel();
+        parcel1.setUniqueParcelId("aaa1");
+        parcel1.setPickingUpCode("abc12");
+        parcel1.setSendingCode("abc45");
+        parcel1.setPlaced(false);
+        parcel1.setPrice(5000);
+        parcel1.setShippingFrom(parcelLocker2);
+        parcel1.setShippingTo(parcelLocker1);
+        parcel1.setSize("small");
+        parcel1.setBox(box1);
+
+        parcelLocker2.getParcels().add(parcel1);
+        parcel1.setParcelLocker(parcelLocker2);
+
+        parcel1.setUser(user);
+
+        //when parcel
+        Mockito.when(parcelRepository.findBySendingCode("abc45")).thenReturn(parcel1);
+
+        //when sender parcel locker
+        Mockito.when(parcelLockerService.findById(parcelLocker2.getId())).thenReturn(parcelLocker2);
+
+        //when receiver parcel locker
+        Mockito.when(parcelLockerService.findById(parcelLocker1.getId())).thenReturn(parcelLocker1);
+
+        response = parcelService.sendParcelWithCode("abc45", 2L);
+
+        //Van feladási dátum és időpont
+        assertNotEquals(null, parcel1.getSendingDate());
+        assertNotEquals(null, parcel1.getSendingTime());
+
+        //Csomag el van helyezve
+        assertTrue(parcel1.isPlaced());
+
+        //Visszatérés
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("successSending", response.getBody().getMessage());
+
+        Mockito.verify(parcelRepository).findBySendingCode("abc45");
+        Mockito.verify(parcelLockerService).findById(parcelLocker1.getId());
+        Mockito.verify(parcelLockerService).findById(parcelLocker2.getId());
 
     }
 }
