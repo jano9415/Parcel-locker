@@ -14,6 +14,7 @@ The main components of the software:
 There is a spring boot server side application based on microservice architecture that serves the clients applications.
 On the server side I use the following technologies:
 Spring Data JPA, JWT token for authentication and authorization, Spring Cloud Eureka Netflix for discovery service, Spring Cloud Gateway for API Gateway service, Apache Kafka for the asynchronous communication between the services, Spring Webflux for the synchronous communication between the services, Postgre SQL with JPA and MongoDB.
+I have been creating this same backend in nodejs with expressjs framework. The name of the repository: Parcel-locker-with-expressjs.
 
 There is an angular client side application. This software runs on the parcel lockers.
 In the angular application I use the following technologies:
