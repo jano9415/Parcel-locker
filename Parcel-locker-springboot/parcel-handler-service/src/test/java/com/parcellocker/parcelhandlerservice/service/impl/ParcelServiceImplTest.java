@@ -7,6 +7,7 @@ import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeReq
 import com.parcellocker.parcelhandlerservice.payload.ParcelSendingWithoutCodeResponse;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
 import com.parcellocker.parcelhandlerservice.payload.request.EmptyParcelLockerRequest;
+import com.parcellocker.parcelhandlerservice.payload.request.SendParcelWithCodeFromWebpageRequest;
 import com.parcellocker.parcelhandlerservice.payload.response.*;
 import com.parcellocker.parcelhandlerservice.repository.ParcelRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -56,6 +57,9 @@ class ParcelServiceImplTest {
 
     @Mock
     private CourierServiceImpl courierService;
+
+    @Mock
+    private UserServiceImpl userService;
 
     @InjectMocks
     private ParcelServiceImpl parcelService;
@@ -2716,6 +2720,50 @@ class ParcelServiceImplTest {
         Mockito.verify(parcelRepository).findBySendingCode("abc45");
         Mockito.verify(parcelLockerService).findById(parcelLocker1.getId());
         Mockito.verify(parcelLockerService).findById(parcelLocker2.getId());
+
+    }
+
+    //Csomag küldése a webes vagy mobilos alklamazásból. Ez az előzetes feladás.
+    //A feladás sikeresen lezajlik
+    @Test
+    @Description("sendParcelWithCodeFromWebpage function")
+    void sendParcelWithCodeFromWebApplicationAndTheSendingIsSuccessful(){
+
+        ResponseEntity<StringResponse> response;
+
+        SendParcelWithCodeFromWebpageRequest request = new SendParcelWithCodeFromWebpageRequest();
+        request.setParcelLockerFromId(parcelLocker1.getId());
+        request.setParcelLockerToId(parcelLocker2.getId());
+        request.setSize("small");
+        request.setPrice(8600);
+        request.setReceiverName("Kis Kamilla");
+        request.setReceiverEmailAddress("kami@gmail.com");
+        request.setReceiverPhoneNumber("06308673315");
+        request.setSenderEmailAddress("andi@gmail.com");
+
+        //when sender parcel locker
+        Mockito.when(parcelLockerService.findById(parcelLocker1.getId())).thenReturn(parcelLocker1);
+
+        //when receiver parcel locker
+        Mockito.when(parcelLockerService.findById(parcelLocker2.getId())).thenReturn(parcelLocker2);
+
+        //when user
+        Mockito.when(userService.findByEmailAddress(user.getEmailAddress())).thenReturn(user);
+
+        //when boxes
+        Mockito.when(boxService.findBySize("small")).thenReturn(smallBoxes);
+
+        response = parcelService.sendParcelWithCodeFromWebpage(request);
+
+        //Visszatérési érték
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("successSending", response.getBody().getMessage());
+
+        Mockito.verify(parcelLockerService).findById(parcelLocker1.getId());
+        Mockito.verify(parcelLockerService).findById(parcelLocker2.getId());
+        Mockito.verify(userService).findByEmailAddress(user.getEmailAddress());
+        Mockito.verify(boxService).findBySize("small");
+
 
     }
 }

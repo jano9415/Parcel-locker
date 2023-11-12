@@ -747,7 +747,7 @@ public class ParcelServiceImpl implements ParcelService {
 
         //Feladási lejárati dátum és idő
         //A dátum a feladási dátum + három nap
-        //A lejárati időpont minden csomag esetnén 5:29
+        //A lejárati időpont minden csomag esetén 5:29
         //A rendszer automatikusan minden nap 5:30-kor törli az aznap lejárt előzetes feladásokat
         parcel.setSendingExpirationDate(currentDate.plusDays(3));
         //Megegyezik a feladási időpnttal
@@ -1524,42 +1524,42 @@ public class ParcelServiceImpl implements ParcelService {
 
     //Ügyfél feladja a csomagot
     public LocalDate date1(){
-        return LocalDate.of(2023,10, 29);
+        return LocalDate.of(2023,11, 6);
     }
     public LocalTime time1(){
-        return LocalTime.of(18,10);
+        return LocalTime.of(17,55);
     }
 
     //Futár kiveszi a csomagot
     public LocalDate date2(){
-        return LocalDate.of(2023,10, 30);
+        return LocalDate.of(2023,11, 7);
     }
     public LocalTime time2(){
-        return LocalTime.of(8,14);
+        return LocalTime.of(8,11);
     }
 
     //Futár leadja a raktárba
     public LocalDate date3(){
-        return LocalDate.of(2023,10, 30);
+        return LocalDate.of(2023,11, 7);
     }
     public LocalTime time3(){
-        return LocalTime.of(15,44);
+        return LocalTime.of(15,34);
     }
 
     //Futár felveszi a raktárból
     public LocalDate date4(){
-        return LocalDate.of(2023,11, 1);
+        return LocalDate.of(2023,11, 9);
     }
     public LocalTime time4(){
-        return LocalTime.of(7,23);
+        return LocalTime.of(7,4);
     }
 
     //Futár elhelyezi az automatába
     public LocalDate date5(){
-        return LocalDate.of(2023,11, 1);
+        return LocalDate.of(2023,11, 9);
     }
     public LocalTime time5(){
-        return LocalTime.of(8,6);
+        return LocalTime.of(8,22);
     }
 
 }

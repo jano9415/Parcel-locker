@@ -128,7 +128,7 @@ class ParcelLockerServiceImplIntegrationTest {
         }
         assertTrue(isJsonType);
 
-        //Az automata nics tele
+        //Az automata nincs tele
         assertEquals("notfull", responseEntity.getBody().getMessage());
 
 
