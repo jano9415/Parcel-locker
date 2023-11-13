@@ -25,6 +25,10 @@ public class User {
 
     private boolean enable;
 
+    private boolean isTwoFactorAuthentication;
+
+    private String secondFactorCode;
+
     private Set<Role> roles = new HashSet<Role>();
 
 }

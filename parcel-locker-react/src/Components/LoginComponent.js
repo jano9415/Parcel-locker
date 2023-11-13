@@ -47,6 +47,10 @@ const LoginComponent = () => {
                         setErrorMessage("Még nem aktiváltad a felhasználói fiókodat");
                         setLoading(false);
                     }
+                    //Második faktor szükséges a bejelentkezéshez
+                    if(response.message === "twoFactorAuthentication"){
+                        navigate("/loginwithsecondfactor");
+                    }
                     if (response.emailAddress) {
                         navigate("/");
                         window.location.reload();

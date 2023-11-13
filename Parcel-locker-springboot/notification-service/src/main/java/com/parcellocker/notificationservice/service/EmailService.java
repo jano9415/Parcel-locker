@@ -7,6 +7,7 @@ import com.parcellocker.notificationservice.payload.SignUpActivationDTO;
 import com.parcellocker.notificationservice.payload.kafka.ParcelPickingUpNotification;
 import com.parcellocker.notificationservice.payload.kafka.ParcelSendingFromWebPageNotification;
 import com.parcellocker.notificationservice.payload.kafka.ParcelShippingNotification;
+import com.parcellocker.notificationservice.payload.kafka.SecondFactorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -231,4 +232,24 @@ public class EmailService {
             System.out.println("Email server error.");
         }
     }
+
+    //Email értesítés küldése, ami tartalmazza a második faktort a bejelentkezéshez
+    public void sendSecondFactorCode(SecondFactorDTO notification) {
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+
+            message.setFrom("${spring.mail.username}");
+            message.setTo(notification.getEmailAddress());
+            message.setSubject("Kétfaktoros bejelentkezés");
+            message.setText("A bejelentkezéshez szükséges kód: " + notification.getSecondFactorCode() + "\n\n");
+            javaMailSender.send(message);
+
+        }
+        catch (Exception e){
+            System.out.println("Email server error.");
+        }
+    }
+
+
 }

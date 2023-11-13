@@ -10,6 +10,7 @@ import com.parcellocker.notificationservice.payload.SignUpActivationDTO;
 import com.parcellocker.notificationservice.payload.kafka.ParcelPickingUpNotification;
 import com.parcellocker.notificationservice.payload.kafka.ParcelSendingFromWebPageNotification;
 import com.parcellocker.notificationservice.payload.kafka.ParcelShippingNotification;
+import com.parcellocker.notificationservice.payload.kafka.SecondFactorDTO;
 import com.parcellocker.notificationservice.service.EmailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,6 +180,23 @@ public class Consumer {
         }
 
         emailService.parcelSendingFromWebPageNotification(jsonObject);
+    }
+
+    //Második faktor kód küldése a bejelentkezéshez email-ben
+    //secondFactor nevű topic
+    @KafkaListener(topics = "secondFactor", groupId = "${spring.kafka.consumer.group-id}")
+    public void sendSecondFactorCode(String notification){
+
+        //String konvertálása objektumba
+        SecondFactorDTO jsonObject;
+
+        try {
+            jsonObject = objectMapper.readValue(notification, SecondFactorDTO.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        emailService.sendSecondFactorCode(jsonObject);
     }
 
 

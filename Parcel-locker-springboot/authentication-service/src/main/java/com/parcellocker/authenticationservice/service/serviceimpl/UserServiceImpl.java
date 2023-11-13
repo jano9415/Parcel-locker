@@ -3,6 +3,7 @@ package com.parcellocker.authenticationservice.service.serviceimpl;
 import com.parcellocker.authenticationservice.kafka.Producer;
 import com.parcellocker.authenticationservice.model.Role;
 import com.parcellocker.authenticationservice.model.User;
+import com.parcellocker.authenticationservice.payload.kafka.SecondFactorDTO;
 import com.parcellocker.authenticationservice.payload.request.*;
 import com.parcellocker.authenticationservice.payload.response.LoginResponse;
 import com.parcellocker.authenticationservice.payload.response.SignUpActivationDTO;
@@ -67,6 +68,8 @@ public class UserServiceImpl implements UserService {
         //Új felhasználó létrehozása
         User user = new User();
         user.setEnable(false);
+        user.setTwoFactorAuthentication(false);
+        user.setSecondFactorCode(null);
         user.setEmailAddress(signUpRequest.getEmailAddress());
         String sha256Password = sha256Encode(signUpRequest.getPassword());
         user.setPassword(sha256Password);
@@ -153,6 +156,27 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(response);
         }
 
+        //A két faktoros azonosítás be van kapcsolva
+        //Visszatérés: második faktor szükséges a bejelentkezéshez
+        if(user.isTwoFactorAuthentication()){
+
+
+            //Második faktor kód mentése az adatbázisban
+            String secondFactorCode = generateRandomString(5);
+            String secondFactorCodeSha256 = sha256Encode(secondFactorCode);
+            user.setSecondFactorCode(secondFactorCodeSha256);
+            userRepository.save(user);
+
+            //Második faktor kód küldése email-ben
+            SecondFactorDTO secondFactorDTO = new SecondFactorDTO();
+            secondFactorDTO.setEmailAddress(user.getEmailAddress());
+            secondFactorDTO.setSecondFactorCode(secondFactorCode);
+            producer.sendSecondFactorCode(secondFactorDTO);
+
+            response.setMessage("twoFactorAuthentication");
+            return ResponseEntity.ok(response);
+        }
+
         //User szerepkörei
         List<String> roles = user.getRoles().stream().map(item -> item.getRoleName())
                 .collect(Collectors.toList());
@@ -168,6 +192,7 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(loginResponse);
 
     }
+
 
     //Létezik ez az email cím?
     @Override
@@ -290,6 +315,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByActivationCode(activationCode);
     }
 
+    //Keresés második faktor szerint
+    @Override
+    public User findBySecondFactorCode(String secondFactorCode) {
+        return userRepository.findBySecondFactorCode(secondFactorCode);
+    }
+
     //Új futár létrehozása
     //Futár objektum küldése a parcel handler service-nek
     @Override
@@ -315,6 +346,8 @@ public class UserServiceImpl implements UserService {
         //Új futár létrehozása
         User user = new User();
         user.setEnable(true);
+        user.setTwoFactorAuthentication(false);
+        user.setSecondFactorCode(null);
         user.setEmailAddress(courierDTO.getUniqueCourierId());
         user.setPassword(sha256Password);
 
@@ -365,6 +398,8 @@ public class UserServiceImpl implements UserService {
         //Új admin létrehozása
         User user = new User();
         user.setEnable(true);
+        user.setTwoFactorAuthentication(false);
+        user.setSecondFactorCode(null);
         user.setEmailAddress(adminDTO.getEmailAddress());
         user.setPassword(sha256Password);
 
@@ -384,6 +419,8 @@ public class UserServiceImpl implements UserService {
 
     //Futár valamely adatának módosítása
     //A kérés a parcel handler service-ből jön
+    //A parcel handler service-ben tranzakció kezelés van. Ha itt nem sikerül módosítani az adatokat az adatbázisban,
+    //akkor a parcel handler adatbázisból is visszavonjuk a módosításokat
     @Override
     public ResponseEntity<StringResponse> updateCourier(UpdateCourierRequest request) {
 
@@ -398,7 +435,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.ok(response);
         }
 
-        //A megadott egyedi futár azonosító már létezik az adatbázisban
+        //A megadott egyedi futár azonosító már létezik az adatbázisban, vizsgálat
         //Azt is meg kell nézni, hogy a régi és az új futár azonosító megegyezik-e
         //Mert ha megegyezik, akkor mindig már létezik az adatbázisban hibát fog visszaküldeni
         if(!request.getPreviousUniqueCourierId().equals(request.getNewUniqueCourierId()) &&
@@ -421,6 +458,7 @@ public class UserServiceImpl implements UserService {
                 return ResponseEntity.ok(response);
             }
 
+            //Futár új jelszava (rfid azonosítója)
             user.setPassword(sha256Password);
         }
 
@@ -430,6 +468,40 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         response.setMessage("successfulUpdating");
         return ResponseEntity.ok(response);
+    }
+
+    //Bejelentkezés a második faktorral
+    @Override
+    public ResponseEntity<?> loginWithSecondFactor(SecondFactorDTO request) {
+
+        StringResponse response = new StringResponse();
+
+        //Felhasználó keresése második faktor szerint
+        User user = findBySecondFactorCode(sha256Encode(request.getSecondFactorCode()));
+
+        //User nem található
+        if(user == null){
+            response.setMessage("notFound");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        //Sikeres bejelentkezés a második faktorral
+        user.setSecondFactorCode(null);
+        userRepository.save(user);
+
+        //User szerepkörei
+        List<String> roles = user.getRoles().stream().map(item -> item.getRoleName())
+                .collect(Collectors.toList());
+
+        String token = jwtUtil.generateToken(user.getEmailAddress(), roles);
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setUserId(user.getId());
+        loginResponse.setEmailAddress(user.getEmailAddress());
+        loginResponse.setToken(token);
+
+        loginResponse.setRoles(roles);
+
+        return ResponseEntity.ok(loginResponse);
     }
 
     //Random string generálása a regisztrációhoz szükséges aktivációs kód számára
@@ -446,6 +518,31 @@ public class UserServiceImpl implements UserService {
 
         int length = 8;
 
+        for(int i = 0; i < length; i++) {
+
+            int index = random.nextInt(alphaNumeric.length());
+
+            char randomChar = alphaNumeric.charAt(index);
+
+            sb.append(randomChar);
+        }
+
+        String randomString = sb.toString();
+
+        return randomString;
+    }
+
+    //Random string generálása
+    public String generateRandomString(int length) {
+        String upperAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerAlphabet = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+
+        String alphaNumeric = upperAlphabet + lowerAlphabet + numbers;
+
+        StringBuilder sb = new StringBuilder();
+
+        Random random = new Random();
         for(int i = 0; i < length; i++) {
 
             int index = random.nextInt(alphaNumeric.length());

@@ -1,7 +1,9 @@
 package com.parcellocker.authenticationservice.service;
 
 import com.parcellocker.authenticationservice.model.User;
+import com.parcellocker.authenticationservice.payload.kafka.SecondFactorDTO;
 import com.parcellocker.authenticationservice.payload.request.*;
+import com.parcellocker.authenticationservice.payload.response.LoginResponse;
 import com.parcellocker.authenticationservice.payload.response.StringResponse;
 import org.springframework.http.ResponseEntity;
 
@@ -46,6 +48,9 @@ public interface UserService {
     //Keresés aktivációs kód szerint
     User findByActivationCode(String activationCode);
 
+    //Keresés második faktor szerint
+    User findBySecondFactorCode(String secondFactorCode);
+
     //Új futár létrehozása
     ResponseEntity<?> createCourier(CreateCourierDTO courierDTO);
 
@@ -55,4 +60,7 @@ public interface UserService {
     //Futár valamely adatának módosítása
     //A kérés a parcel handler service-ből jön
     ResponseEntity<StringResponse> updateCourier(UpdateCourierRequest request);
+
+    //Bejelentkezés a második faktorral
+    ResponseEntity<?> loginWithSecondFactor(SecondFactorDTO request);
 }

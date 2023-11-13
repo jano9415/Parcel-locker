@@ -1,6 +1,8 @@
 package com.parcellocker.authenticationservice.controller;
 
+import com.parcellocker.authenticationservice.payload.kafka.SecondFactorDTO;
 import com.parcellocker.authenticationservice.payload.request.*;
+import com.parcellocker.authenticationservice.payload.response.LoginResponse;
 import com.parcellocker.authenticationservice.payload.response.StringResponse;
 import com.parcellocker.authenticationservice.service.serviceimpl.UserServiceImpl;
 import io.jsonwebtoken.Jwts;
@@ -71,6 +73,12 @@ public class AuthController {
     public ResponseEntity<StringResponse> updateCourier(@RequestBody UpdateCourierRequest request){
         return userService.updateCourier(request);
 
+    }
+
+    //Bejelentkezés a második faktorral
+    @PostMapping("/loginwithsecondfactor")
+    public ResponseEntity<?> loginWithSecondFactor(@RequestBody SecondFactorDTO request){
+        return userService.loginWithSecondFactor(request);
     }
 
 

@@ -15,10 +15,20 @@ public class KafkaTopicConfig {
     @Value("${spring.kafka.topic.name}")
     private String topicName;
 
+    //A topic neve: secondFactor
+    private String topic2 = "secondFactor";
+
     //Topic objektum létrehozása
     @Bean
     public NewTopic topic(){
         return TopicBuilder.name(topicName)
+                .build();
+    }
+
+    //Topic objektum létrehozása
+    @Bean
+    public NewTopic topic2(){
+        return TopicBuilder.name(topic2)
                 .build();
     }
 }

@@ -120,7 +120,7 @@ const UpdateCourierComponent = () => {
             <form onSubmit={formik.handleSubmit}>
                 <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
                     <Box>
-                        <Typography sx={{ fontSize: 40 }}>Új futár hozzáadása</Typography>
+                        <Typography sx={{ fontSize: 40 }}>Futár módosítása</Typography>
                         <Box className='mt-2'>
                             <TextField
                                 id='uniqueCourierId'

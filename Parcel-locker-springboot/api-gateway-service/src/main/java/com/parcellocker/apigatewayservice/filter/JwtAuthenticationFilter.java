@@ -44,6 +44,8 @@ public class JwtAuthenticationFilter implements GatewayFilter {
                 "/auth/activation",
                 //Felhasználói bejelentkezés
                 "/auth/login",
+                //Felhasználói bejelentkezés a második faktorral
+                "/auth/loginwithsecondfactor",
                 //Futár bejelentkezés
                 "/auth/courierlogin",
                 //Csomag automaták lekérése

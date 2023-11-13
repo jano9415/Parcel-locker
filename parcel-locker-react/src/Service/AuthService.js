@@ -33,6 +33,20 @@ const logIn = async (emailAddress, password) => {
     });
 };
 
+//Bejelentkezés a második faktorral
+const loginWithSecondFactor = async (formValues) => {
+  return axios
+    .post(API_URL + "loginwithsecondfactor", formValues
+    )
+    .then((response) => {
+      if (response.data.token) {
+        Cookies.set('user', JSON.stringify(response.data));
+      }
+
+      return response.data;
+    });
+};
+
 
 //Futár bejelentkezés
 //Nem fog kelleni
@@ -103,7 +117,8 @@ const AuthService = {
   getCurrentUser,
   signUpActivation,
   createCourier,
-  createAdmin
+  createAdmin,
+  loginWithSecondFactor,
 
 
 };
