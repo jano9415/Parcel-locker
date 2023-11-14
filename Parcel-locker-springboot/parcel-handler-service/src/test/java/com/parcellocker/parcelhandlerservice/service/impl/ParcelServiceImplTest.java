@@ -2766,4 +2766,24 @@ class ParcelServiceImplTest {
 
 
     }
+
+    //Csomag követése
+    //A csomag nem található
+    @Test
+    @Description("followParcel function")
+    void followParcelButParcelIsNotFound(){
+
+        ResponseEntity<FollowParcelResponse> response;
+
+        //when parcel
+        Mockito.when(parcelRepository.findByUniqueParcelId(Mockito.anyString())).thenReturn(null);
+
+        response = parcelService.followParcel(Mockito.anyString());
+
+        //Visszatérési érték
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("notFound", response.getBody().getMessage());
+
+        Mockito.verify(parcelRepository).findByUniqueParcelId(Mockito.anyString());
+    }
 }
