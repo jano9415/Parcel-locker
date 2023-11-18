@@ -63,4 +63,7 @@ public interface UserService {
 
     //Bejelentkezés a második faktorral
     ResponseEntity<?> loginWithSecondFactor(SecondFactorDTO request);
+
+    //Személyes adatok lekérése
+    ResponseEntity<?> getPersonalData(String emailAddress);
 }

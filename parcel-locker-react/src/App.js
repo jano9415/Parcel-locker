@@ -26,6 +26,8 @@ import GetParcelsOfStoreComponent from './Components/GetParcelsOfStoreComponent'
 import GetParcelsOfCourierComponent from './Components/GetParcelsOfCourierComponent';
 import GetParcelsOfParcelLockerComponent from './Components/GetParcelsOfParcelLockerComponent';
 import LoginWithSecondFactorComponent from './Components/LoginWithSecondFactorComponent';
+import MyProfileSettingsComponent from './Components/MyProfileSettingsComponent';
+import PersonalDataComponent from './Components/PersonalDataComponent';
 
 
 const App = () => {
@@ -95,6 +97,8 @@ const App = () => {
             <Route path='/getparcelsofcourier' element={ <GetParcelsOfCourierComponent /> } />
             <Route path='/getparcelsofparcellocker' element={ <GetParcelsOfParcelLockerComponent /> } />
             <Route path='/loginwithsecondfactor' element={ <LoginWithSecondFactorComponent /> } />
+            <Route path='/myprofilesettings' element={ <MyProfileSettingsComponent /> } />
+            <Route path='/personaldata' element={ <PersonalDataComponent /> } />
             
 
           </Routes>

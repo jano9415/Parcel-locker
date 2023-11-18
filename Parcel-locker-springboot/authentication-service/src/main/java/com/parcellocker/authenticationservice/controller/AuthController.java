@@ -81,5 +81,11 @@ public class AuthController {
         return userService.loginWithSecondFactor(request);
     }
 
+    //Személyes adatok lekérése
+    @GetMapping("/getpersonaldata/{emailAddress}")
+    public ResponseEntity<?> getPersonalData(@PathVariable String emailAddress){
+    return userService.getPersonalData(emailAddress);
+    }
+
 
 }

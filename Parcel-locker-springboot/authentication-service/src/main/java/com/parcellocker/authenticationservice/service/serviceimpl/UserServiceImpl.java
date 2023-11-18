@@ -5,6 +5,7 @@ import com.parcellocker.authenticationservice.model.Role;
 import com.parcellocker.authenticationservice.model.User;
 import com.parcellocker.authenticationservice.payload.kafka.SecondFactorDTO;
 import com.parcellocker.authenticationservice.payload.request.*;
+import com.parcellocker.authenticationservice.payload.response.GetPersonalDataResponse;
 import com.parcellocker.authenticationservice.payload.response.LoginResponse;
 import com.parcellocker.authenticationservice.payload.response.SignUpActivationDTO;
 import com.parcellocker.authenticationservice.payload.response.StringResponse;
@@ -502,6 +503,26 @@ public class UserServiceImpl implements UserService {
         loginResponse.setRoles(roles);
 
         return ResponseEntity.ok(loginResponse);
+    }
+
+    //Személyes adatok lekérése
+    //Fiók aktív? Kétfaktoros bejelentkezés be van kapcsolva?
+    @Override
+    public ResponseEntity<?> getPersonalData(String emailAddress) {
+
+        User user = findByEmailAddress(emailAddress);
+        StringResponse response = new StringResponse();
+
+        //Nem valószínű, mert bejelentkezés után jön a kérés
+        if(user == null){
+            response.setMessage("notFound");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        GetPersonalDataResponse responseDTO = new GetPersonalDataResponse();
+        responseDTO.setEnable(user.isEnable());
+        responseDTO.setTwoFactorAuthentication(user.isTwoFactorAuthentication());
+        return ResponseEntity.ok(responseDTO);
     }
 
     //Random string generálása a regisztrációhoz szükséges aktivációs kód számára

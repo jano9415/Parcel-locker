@@ -30,8 +30,14 @@ const ProfileMenuComponent = () => {
         setAnchorEl(null);
     };
 
+    //Profilom menü
     const myProfile = () => {
         navigate('/myparcels');
+    }
+
+    //Profilom szerkesztése menü
+    const myProfileSettings = () => {
+        navigate('/myprofilesettings');
     }
 
     //Kijelentkezés
@@ -115,7 +121,7 @@ const ProfileMenuComponent = () => {
                             <Avatar /> Profilom
                         </MenuItem>
                         <Divider />
-                        <MenuItem onClick={handleClose}>
+                        <MenuItem onClick={myProfileSettings}>
                             <ListItemIcon>
                                 <Settings fontSize="small" />
                             </ListItemIcon>

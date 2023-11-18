@@ -1,0 +1,151 @@
+import { Box, Button, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
+import MyProfileMenuComponent from "./MyProfileMenuComponent";
+import { useFormik } from "formik";
+import { useEffect, useState } from "react";
+import * as Yup from 'yup';
+import AuthService from "../Service/AuthService";
+
+
+const PersonalDataComponent = () => {
+
+    const [isTwoFactor, setIsTwoFactor] = useState(false);
+
+    useEffect(() => {
+
+        //Személyes adatok lekérése az authentication service-ből
+        AuthService.getPersonalData(AuthService.getCurrentUser().emailAddress).then(
+            (response) => {
+                console.log(response.data.twoFactorAuthentication);
+                setIsTwoFactor(response.data.twoFactorAuthentication);
+
+                formik.setValues({
+                    emailAddress: AuthService.getCurrentUser().emailAddress || '',
+                    isTwoFactorAuthentication: response.data.twoFactorAuthentication,
+                });
+
+            },
+            (error) => {
+
+            }
+        )
+
+
+    }, []);
+
+    const formik = useFormik({
+        initialValues: {
+            emailAddress: '',
+            firstName: '',
+            lastName: '',
+            phoneNumber: '',
+            isTwoFactorAuthentication: Yup.boolean,
+
+        },
+        validationSchema: Yup.object({
+            emailAddress: Yup.string()
+                .required("Add meg az email címet")
+                .email("Nem valódi email cím"),
+            lastName: Yup.string()
+                .required("Add meg a vezetéknevet"),
+            firstName: Yup.string()
+                .required("Add meg a keresztnevet"),
+            phoneNumber: Yup.string()
+                .required("Add meg a telefonszámot"),
+
+
+        }),
+        onSubmit: (values) => {
+
+            console.log(values);
+
+        }
+    });
+
+    return (
+        <Box>
+            <MyProfileMenuComponent></MyProfileMenuComponent>
+
+            <form onSubmit={formik.handleSubmit}>
+                <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
+                    <Box>
+                        <Typography sx={{ fontSize: 40 }}>Személyes adatok</Typography>
+                        <Box className='mt-2'>
+                            <TextField
+                                id='emailAddress'
+                                name='emailAddress'
+                                type="text"
+                                label="Email cím"
+                                value={formik.values.emailAddress}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                        </Box>
+                        {formik.touched.emailAddress && formik.errors.emailAddress && (
+                            <Typography sx={{ color: 'red' }}>{formik.errors.emailAddress}</Typography>
+                        )
+                        }
+                        <Box className='mt-2'>
+                            <TextField
+                                id='lastName'
+                                name='lastName'
+                                type="text"
+                                label="Vezetéknév"
+                                value={formik.values.lastName}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                        </Box>
+                        {formik.touched.lastName && formik.errors.lastName && (
+                            <Typography sx={{ color: 'red' }}>{formik.errors.lastName}</Typography>
+                        )
+                        }
+                        <Box className='mt-2'>
+                            <TextField
+                                id='firstName'
+                                name='firstName'
+                                type="text"
+                                label="Keresztnév"
+                                value={formik.values.firstName}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                        </Box>
+                        {formik.touched.firstName && formik.errors.firstName && (
+                            <Typography sx={{ color: 'red' }}>{formik.errors.firstName}</Typography>
+                        )
+                        }
+                        <Box className='mt-2'>
+                            <TextField
+                                id='phoneNumber'
+                                name='phoneNumber'
+                                type="text"
+                                label="Telefonszám"
+                                value={formik.values.phoneNumber}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                            />
+                        </Box>
+                        {formik.touched.phoneNumber && formik.errors.phoneNumber && (
+                            <Typography sx={{ color: 'red' }}>{formik.errors.phoneNumber}</Typography>
+                        )
+                        }
+                        <FormControlLabel control={<Switch id='isTwoFactorAuthentication'
+                            name="isTwoFactorAuthentication"
+                            value={formik.values.isTwoFactorAuthentication}
+                            checked={isTwoFactor}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                        />} label="Kétfaktoros bejelentkezés">
+                        </FormControlLabel>
+
+                        <Box>
+                            <Button disabled={!formik.isValid} type='submit'>Küldés</Button>
+                        </Box>
+                    </Box>
+                </Box>
+            </form>
+        </Box>
+    );
+}
+
+export default PersonalDataComponent;

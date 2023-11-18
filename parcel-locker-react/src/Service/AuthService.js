@@ -108,6 +108,13 @@ const createAdmin = (emailAddress, password) => {
     { headers: authHeader() });
 };
 
+//Személyes adatok lekérése
+//Új admin létrehozása
+const getPersonalData = (emailAddress) => {
+  return axios.get(API_URL + "getpersonaldata/" + emailAddress,
+    { headers: authHeader() });
+};
+
 
 const AuthService = {
   signUp,
@@ -119,7 +126,7 @@ const AuthService = {
   createCourier,
   createAdmin,
   loginWithSecondFactor,
-
+  getPersonalData,
 
 };
 
