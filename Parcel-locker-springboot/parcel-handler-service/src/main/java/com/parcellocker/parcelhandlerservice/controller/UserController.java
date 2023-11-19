@@ -21,6 +21,14 @@ public class UserController {
 
     }
 
+    //Felhasználói adatok lekérése
+    @GetMapping("/getpersonaldata")
+    public ResponseEntity<?> getPersonalData(@RequestParam String emailAddress){
+        return userService.getPersonalData(emailAddress);
+    }
+
+    //Felhasználói adatok módosítása
+
 
 
 }

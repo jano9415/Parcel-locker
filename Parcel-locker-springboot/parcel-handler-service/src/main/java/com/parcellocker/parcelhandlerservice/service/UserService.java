@@ -25,4 +25,6 @@ public interface UserService {
     //Keresés email cím alapján
     User findByEmailAddress(String emailAddress);
 
+    //Felhasználói adatok lekérése
+    ResponseEntity<?> getPersonalData(String emailAddress);
 }

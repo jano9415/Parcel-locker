@@ -5,6 +5,8 @@ import com.parcellocker.parcelhandlerservice.model.Courier;
 import com.parcellocker.parcelhandlerservice.model.User;
 import com.parcellocker.parcelhandlerservice.payload.CreateCourierDTO;
 import com.parcellocker.parcelhandlerservice.payload.ParcelHandlerServiceUserDTO;
+import com.parcellocker.parcelhandlerservice.payload.StringResponse;
+import com.parcellocker.parcelhandlerservice.payload.response.GetPersonalDataResponse;
 import com.parcellocker.parcelhandlerservice.repository.UserRepository;
 import com.parcellocker.parcelhandlerservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +57,29 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByEmailAddress(String emailAddress) {
         return userRepository.findByEmailAddress(emailAddress);
+    }
+
+    //Felhasználói adatok lekérése
+    //Vezetéknév, keresztnév, telefonszám
+    @Override
+    public ResponseEntity<?> getPersonalData(String emailAddress) {
+
+        StringResponse response = new StringResponse();
+
+        User user = userRepository.findByEmailAddress(emailAddress);
+
+        //Nem valószínű, mert bejelentkezés után jön a kérés
+        if(user == null){
+            response.setMessage("notFound");
+            ResponseEntity.badRequest().body(response);
+        }
+
+        GetPersonalDataResponse responseDTO = new GetPersonalDataResponse();
+        responseDTO.setLastName(user.getLastName());
+        responseDTO.setFirstName(user.getFirstName());
+        responseDTO.setPhoneNumber(user.getPhoneNumber());
+
+        return ResponseEntity.ok(responseDTO);
     }
 
 
