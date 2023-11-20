@@ -4,24 +4,49 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import * as Yup from 'yup';
 import AuthService from "../Service/AuthService";
+import { CheckBox } from "@mui/icons-material";
+import UserService from "../Service/ParcelHandler/UserService";
 
 
 const PersonalDataComponent = () => {
 
-    const [isTwoFactor, setIsTwoFactor] = useState(false);
 
     useEffect(() => {
 
         //Személyes adatok lekérése az authentication service-ből
         AuthService.getPersonalData(AuthService.getCurrentUser().emailAddress).then(
             (response) => {
-                console.log(response.data.twoFactorAuthentication);
-                setIsTwoFactor(response.data.twoFactorAuthentication);
 
+                /*
                 formik.setValues({
                     emailAddress: AuthService.getCurrentUser().emailAddress || '',
                     isTwoFactorAuthentication: response.data.twoFactorAuthentication,
                 });
+                */
+                formik.setFieldValue("emailAddress", AuthService.getCurrentUser().emailAddress);
+                formik.setFieldValue("isTwoFactorAuthentication", response.data.twoFactorAuthentication);
+
+            },
+            (error) => {
+
+            }
+        )
+
+        //Személyes adatok lekérése a parcel handler service-ből
+        UserService.getPersonalData(AuthService.getCurrentUser().emailAddress).then(
+            (response) => {
+
+                /*
+                formik.setValues({
+                    lastName: response.data.lastName || '',
+                    firstName: response.data.firstName || '',
+                    phoneNumber: response.data.phoneNumber || '',
+                });
+                */
+
+                formik.setFieldValue("lastName", response.data.lastName);
+                formik.setFieldValue("firstName", response.data.firstName);
+                formik.setFieldValue("phoneNumber", response.data.phoneNumber);
 
             },
             (error) => {
@@ -38,7 +63,7 @@ const PersonalDataComponent = () => {
             firstName: '',
             lastName: '',
             phoneNumber: '',
-            isTwoFactorAuthentication: Yup.boolean,
+            isTwoFactorAuthentication: false,
 
         },
         validationSchema: Yup.object({
@@ -132,7 +157,6 @@ const PersonalDataComponent = () => {
                         <FormControlLabel control={<Switch id='isTwoFactorAuthentication'
                             name="isTwoFactorAuthentication"
                             value={formik.values.isTwoFactorAuthentication}
-                            checked={isTwoFactor}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                         />} label="Kétfaktoros bejelentkezés">
