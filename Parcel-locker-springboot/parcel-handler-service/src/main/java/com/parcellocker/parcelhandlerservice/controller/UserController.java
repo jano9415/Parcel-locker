@@ -2,6 +2,9 @@ package com.parcellocker.parcelhandlerservice.controller;
 
 import com.parcellocker.parcelhandlerservice.payload.CreateCourierDTO;
 import com.parcellocker.parcelhandlerservice.payload.ParcelHandlerServiceUserDTO;
+import com.parcellocker.parcelhandlerservice.payload.StringResponse;
+import com.parcellocker.parcelhandlerservice.payload.request.UpdateCourierRequest;
+import com.parcellocker.parcelhandlerservice.payload.request.UpdateUserRequest;
 import com.parcellocker.parcelhandlerservice.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +30,14 @@ public class UserController {
         return userService.getPersonalData(emailAddress);
     }
 
-    //Felhasználói adatok módosítása
+    //Felhasználó valamely adatának módosítása
+    //Jwt token szükséges
+    //User szerepkör szükséges
+    @PutMapping("/updateuser")
+    public ResponseEntity<StringResponse> updateUser(@RequestBody UpdateUserRequest request){
+        return userService.updateUser(request);
+
+    }
 
 
 

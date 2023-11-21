@@ -4,6 +4,8 @@ import com.parcellocker.parcelhandlerservice.model.Address;
 import com.parcellocker.parcelhandlerservice.model.User;
 import com.parcellocker.parcelhandlerservice.payload.CreateCourierDTO;
 import com.parcellocker.parcelhandlerservice.payload.ParcelHandlerServiceUserDTO;
+import com.parcellocker.parcelhandlerservice.payload.StringResponse;
+import com.parcellocker.parcelhandlerservice.payload.request.UpdateUserRequest;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -27,4 +29,7 @@ public interface UserService {
 
     //Felhasználói adatok lekérése
     ResponseEntity<?> getPersonalData(String emailAddress);
+
+    //Felhasználó valamely adatának módosítása
+    ResponseEntity<StringResponse> updateUser(UpdateUserRequest request);
 }
