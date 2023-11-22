@@ -7,15 +7,19 @@ import com.parcellocker.parcelhandlerservice.model.User;
 import com.parcellocker.parcelhandlerservice.payload.CreateCourierDTO;
 import com.parcellocker.parcelhandlerservice.payload.ParcelHandlerServiceUserDTO;
 import com.parcellocker.parcelhandlerservice.payload.StringResponse;
+import com.parcellocker.parcelhandlerservice.payload.request.UpdateCourierRequestToAuthService;
 import com.parcellocker.parcelhandlerservice.payload.request.UpdateUserRequest;
 import com.parcellocker.parcelhandlerservice.payload.request.UpdateUserRequestToAuthService;
 import com.parcellocker.parcelhandlerservice.payload.response.GetPersonalDataResponse;
 import com.parcellocker.parcelhandlerservice.repository.UserRepository;
 import com.parcellocker.parcelhandlerservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -24,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private WebClient.Builder webClientBuilder;
 
 
     @Override
@@ -79,6 +86,7 @@ public class UserServiceImpl implements UserService {
         }
 
         GetPersonalDataResponse responseDTO = new GetPersonalDataResponse();
+        responseDTO.setId(user.getId());
         responseDTO.setLastName(user.getLastName());
         responseDTO.setFirstName(user.getFirstName());
         responseDTO.setPhoneNumber(user.getPhoneNumber());
@@ -125,13 +133,61 @@ public class UserServiceImpl implements UserService {
         //Ha megváltoztatta az email címét vagy a kétfaktoros bejelentkezési lehetőséget
         //akkor módosítani kell az auth database-t is
         //Kérés objektum az authentication service-nek
-        UpdateUserRequestToAuthService requestToAuthService = new UpdateUserRequestToAuthService();
-        requestToAuthService.setPreviousEmailAddress(previousEmailAddress);
-        requestToAuthService.setNewEmailAddress(newEmailAddress);
-        requestToAuthService.setTwoFactorAuthentication(request.isTwoFactorAuthentication());
+        UpdateUserRequestToAuthService requestForAuthService = new UpdateUserRequestToAuthService();
+        requestForAuthService.setPreviousEmailAddress(previousEmailAddress);
+        requestForAuthService.setNewEmailAddress(newEmailAddress);
+        requestForAuthService.setTwoFactorAuthentication(request.isTwoFactorAuthentication());
+
+        //Válasz objektum
+        StringResponse responseFromAuthService;
+
+        responseFromAuthService = webClientBuilder.build().put()
+                .uri("http://authentication-service/auth/updateuser")
+                .body(Mono.just(requestForAuthService), UpdateUserRequestToAuthService.class)
+                .retrieve()
+                .bodyToMono(StringResponse.class)
+                .block();
 
 
-        return null;
+        //Az auth service-ben minden frissítés sikeres volt
+        if(responseFromAuthService.getMessage().equals("successfulUpdating")){
+
+            response.setMessage("successfulUpdating");
+            return ResponseEntity.ok(response);
+        }
+
+        //Tranzakció kezelés
+        //Ha az authentication database-ben nem sikerül módosítani az adatokat,
+        //akkor itt a parcel handler database-be se módosuljanak
+        //Futár nem található
+        if(responseFromAuthService.getMessage().equals("notFound")){
+
+            throw new DataAccessException("notFound") {
+                @Override
+                public String getMessage() {
+                    return super.getMessage();
+                }
+            };
+
+        }
+
+        //Ilyen email cím már létezik az adatbázisban
+        if(responseFromAuthService.getMessage().equals("emailAddressExists")){
+
+            throw new DataAccessException("emailAddressExists") {
+                @Override
+                public String getMessage() {
+                    return super.getMessage();
+                }
+            };
+
+
+        }
+
+
+        //Minden módosítás sikeres volt
+        response.setMessage("successfulUpdating");
+        return ResponseEntity.ok(response);
     }
 
 

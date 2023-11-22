@@ -66,4 +66,8 @@ public interface UserService {
 
     //Személyes adatok lekérése
     ResponseEntity<?> getPersonalData(String emailAddress);
+
+    //Felhasználó valamely adatának módosítása
+    //A kérés a parcel handler service-ből jön
+    ResponseEntity<StringResponse> updateUser(UpdateUserRequestToAuthService request);
 }

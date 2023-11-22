@@ -11,12 +11,13 @@ import UserService from "../Service/ParcelHandler/UserService";
 const PersonalDataComponent = () => {
 
 
+    const [errorMessage, setErrorMessage] = useState("");
+
     useEffect(() => {
 
         //Személyes adatok lekérése az authentication service-ből
         AuthService.getPersonalData(AuthService.getCurrentUser().emailAddress).then(
             (response) => {
-
                 /*
                 formik.setValues({
                     emailAddress: AuthService.getCurrentUser().emailAddress || '',
@@ -44,6 +45,7 @@ const PersonalDataComponent = () => {
                 });
                 */
 
+                formik.setFieldValue("id", response.data.id);
                 formik.setFieldValue("lastName", response.data.lastName);
                 formik.setFieldValue("firstName", response.data.firstName);
                 formik.setFieldValue("phoneNumber", response.data.phoneNumber);
@@ -59,6 +61,7 @@ const PersonalDataComponent = () => {
 
     const formik = useFormik({
         initialValues: {
+            id: '',
             emailAddress: '',
             firstName: '',
             lastName: '',
@@ -81,8 +84,25 @@ const PersonalDataComponent = () => {
         }),
         onSubmit: (values) => {
 
-            console.log(values);
+            //Személyes adatok módosítása
+            UserService.updateUser(values).then(
+                (response) => {
 
+                    if(response.data.message === "successfulUpdating"){
+                        console.log("sikeres");
+                    }
+
+                },
+                (error) => {
+                    if(error.response.data.message === "notFound"){
+
+                    }
+                    if(error.response.data.message === "emailAddressExists"){
+                        setErrorMessage("Ez az email cím már regisztrálva van");
+                    }
+
+                }
+            )
         }
     });
 
@@ -165,6 +185,7 @@ const PersonalDataComponent = () => {
                         <Box>
                             <Button disabled={!formik.isValid} type='submit'>Küldés</Button>
                         </Box>
+                        {errorMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{errorMessage}</Typography>}
                     </Box>
                 </Box>
             </form>

@@ -84,7 +84,14 @@ public class AuthController {
     //Személyes adatok lekérése
     @GetMapping("/getpersonaldata/{emailAddress}")
     public ResponseEntity<?> getPersonalData(@PathVariable String emailAddress){
-    return userService.getPersonalData(emailAddress);
+        return userService.getPersonalData(emailAddress);
+    }
+
+    //Felhasználó valamely adatának módosítása
+    //A kérés a parcel handler service-ből jön
+    @PutMapping("/updateuser")
+    public ResponseEntity<StringResponse> updateUser(@RequestBody UpdateUserRequestToAuthService request){
+        return userService.updateUser(request);
     }
 
 

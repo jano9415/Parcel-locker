@@ -12,9 +12,16 @@ const getPersonalData = (emailAddress) => {
         { headers: authHeader() });
 };
 
+//Személyes adatok módosítása
+const updateUser = (formValues) => {
+    return axios.put(API_URL + "updateuser", formValues,
+        { headers: authHeader() });
+}
+
 
 const UserService = {
     getPersonalData,
+    updateUser,
 
 };
 

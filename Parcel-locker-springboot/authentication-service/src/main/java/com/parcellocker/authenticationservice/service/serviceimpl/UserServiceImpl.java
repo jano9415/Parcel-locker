@@ -525,6 +525,42 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(responseDTO);
     }
 
+    //Felhasználó valamely adatának módosítása
+    //A kérés a parcel handler service-ből jön
+    //A parcel handler service-ben tranzakció kezelés van. Ha itt nem sikerül módosítani az adatokat az adatbázisban,
+    //akkor a parcel handler adatbázisból is visszavonjuk a módosításokat
+    @Override
+    public ResponseEntity<StringResponse> updateUser(UpdateUserRequestToAuthService request) {
+
+        StringResponse response = new StringResponse();
+
+        //Felhasználó keresése a régi email címmel
+        User user = findByEmailAddress(request.getPreviousEmailAddress());
+
+        //Nem valószínű, mert a frontenden bejelentkezés után jön a kérés
+        if(user == null){
+            response.setMessage("notFound");
+            ResponseEntity.badRequest().body(response);
+        }
+
+        //A megadott email cím már létezik az adatbázisban, vizsgálat
+        //Azt is meg kell nézni, hogy a régi és az új email cím megegyezik-e
+        //Mert ha megegyezik, akkor mindig már létezik az adatbázisban hibát fog visszaküldeni
+        if(!request.getPreviousEmailAddress().equals(request.getNewEmailAddress()) &&
+                findByEmailAddress(request.getNewEmailAddress()) != null){
+            response.setMessage("emailAddressExists");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        //Email cím és kétfaktoros bejelentkezés frissítése
+        user.setEmailAddress(request.getNewEmailAddress());
+        user.setTwoFactorAuthentication(request.isTwoFactorAuthentication());
+        userRepository.save(user);
+
+        response.setMessage("successfulUpdating");
+        return ResponseEntity.ok(response);
+    }
+
     //Random string generálása a regisztrációhoz szükséges aktivációs kód számára
     public String generateRandomStringForActivationCode() {
         String upperAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
