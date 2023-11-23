@@ -6,24 +6,21 @@ import * as Yup from 'yup';
 import AuthService from "../Service/AuthService";
 import { CheckBox } from "@mui/icons-material";
 import UserService from "../Service/ParcelHandler/UserService";
+import { useNavigate } from "react-router-dom";
 
 
 const PersonalDataComponent = () => {
 
 
     const [errorMessage, setErrorMessage] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
 
         //Személyes adatok lekérése az authentication service-ből
         AuthService.getPersonalData(AuthService.getCurrentUser().emailAddress).then(
             (response) => {
-                /*
-                formik.setValues({
-                    emailAddress: AuthService.getCurrentUser().emailAddress || '',
-                    isTwoFactorAuthentication: response.data.twoFactorAuthentication,
-                });
-                */
+
                 formik.setFieldValue("emailAddress", AuthService.getCurrentUser().emailAddress);
                 formik.setFieldValue("isTwoFactorAuthentication", response.data.twoFactorAuthentication);
 
@@ -36,14 +33,6 @@ const PersonalDataComponent = () => {
         //Személyes adatok lekérése a parcel handler service-ből
         UserService.getPersonalData(AuthService.getCurrentUser().emailAddress).then(
             (response) => {
-
-                /*
-                formik.setValues({
-                    lastName: response.data.lastName || '',
-                    firstName: response.data.firstName || '',
-                    phoneNumber: response.data.phoneNumber || '',
-                });
-                */
 
                 formik.setFieldValue("id", response.data.id);
                 formik.setFieldValue("lastName", response.data.lastName);
@@ -88,16 +77,23 @@ const PersonalDataComponent = () => {
             UserService.updateUser(values).then(
                 (response) => {
 
-                    if(response.data.message === "successfulUpdating"){
-                        console.log("sikeres");
+                    //Sikeres módosítás email cím változtatás nélkül
+                    if (response.data.message === "successfulUpdating") {
+                        window.location.reload();
+                    }
+                    //Sikeres módosítás, de megváltozott az email cím is, ezért ki kell jelentkeztetni a felhasználót
+                    if (response.data.message === "successfulUpdatingWithEmailAddress") {
+                        AuthService.logOut();
+                        navigate("/login");
+                        window.location.reload();
                     }
 
                 },
                 (error) => {
-                    if(error.response.data.message === "notFound"){
+                    if (error.response.data.message === "notFound") {
 
                     }
-                    if(error.response.data.message === "emailAddressExists"){
+                    if (error.response.data.message === "emailAddressExists") {
                         setErrorMessage("Ez az email cím már regisztrálva van");
                     }
 
@@ -109,11 +105,15 @@ const PersonalDataComponent = () => {
     return (
         <Box>
             <MyProfileMenuComponent></MyProfileMenuComponent>
+            <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
+                <Box>
+                    <Typography sx={{ fontSize: 40 }}>Személyes adatok</Typography>
+                </Box>
+            </Box>
 
             <form onSubmit={formik.handleSubmit}>
                 <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
                     <Box>
-                        <Typography sx={{ fontSize: 40 }}>Személyes adatok</Typography>
                         <Box className='mt-2'>
                             <TextField
                                 id='emailAddress'
@@ -181,10 +181,12 @@ const PersonalDataComponent = () => {
                             onBlur={formik.handleBlur}
                         />} label="Kétfaktoros bejelentkezés">
                         </FormControlLabel>
+                    </Box>
+                </Box>
 
-                        <Box>
-                            <Button disabled={!formik.isValid} type='submit'>Küldés</Button>
-                        </Box>
+                <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
+                    <Box>
+                        <Button disabled={!formik.isValid} type='submit'>Küldés</Button>
                         {errorMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{errorMessage}</Typography>}
                     </Box>
                 </Box>

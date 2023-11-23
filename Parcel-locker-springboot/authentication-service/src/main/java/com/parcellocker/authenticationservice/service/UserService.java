@@ -70,4 +70,7 @@ public interface UserService {
     //Felhasználó valamely adatának módosítása
     //A kérés a parcel handler service-ből jön
     ResponseEntity<StringResponse> updateUser(UpdateUserRequestToAuthService request);
+
+    //Felhasználó módosítja a jelszavát
+    ResponseEntity<StringResponse> updateUserPassword(UpdateUserPasswordRequest request);
 }

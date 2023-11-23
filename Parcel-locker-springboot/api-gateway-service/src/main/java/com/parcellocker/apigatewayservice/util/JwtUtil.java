@@ -24,7 +24,15 @@ public class JwtUtil {
             //Felhasználó csomagjainak lekérése
             "/parcelhandler/parcel/getparcelsofuser",
             //Felhasználó kitörli az előzetes csomagfeladást
-            "/parcelhandler/parcel/deletemyparcel"
+            "/parcelhandler/parcel/deletemyparcel",
+            //Személyes adatok lekérése az authentication service-ből
+            "/auth/getpersonaldata",
+            //Személyes adatok lekérése a parcel handler service-ből
+            "/parcelhandler/user/getpersonaldata",
+            //Felhasználó valamely adatának módosítása
+            "/parcelhandler/user/updateuser",
+            //Felhasználó módosítja a jelszavát
+            "/auth/updateuserpassword"
     );
 
     //A courier szerepkör ezeket a végpontokat érheti el

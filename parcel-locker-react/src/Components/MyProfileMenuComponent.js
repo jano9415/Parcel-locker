@@ -15,6 +15,7 @@ const MyProfileMenuComponent = () => {
             <Tabs value={value} onChange={handleChange} centered>
                 <Tab label={<Link to={"/myparcels"} className='nav-link'>Csomagjaim</Link>} />
                 <Tab label={<Link to={"/personaldata"} className='nav-link'>Személyes adatok</Link>} />
+                <Tab label={<Link to={"/updatepassword"} className='nav-link'>Jelszó módosítása</Link>} />
             </Tabs>
         </Box>
     );

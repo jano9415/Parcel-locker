@@ -152,6 +152,12 @@ public class UserServiceImpl implements UserService {
         //Az auth service-ben minden frissítés sikeres volt
         if(responseFromAuthService.getMessage().equals("successfulUpdating")){
 
+            //Megváltoztatta az email címet is, ezért frontend-en ki kell jelentkeztetni
+            if(!previousEmailAddress.equals(newEmailAddress)){
+                response.setMessage("successfulUpdatingWithEmailAddress");
+                return ResponseEntity.ok(response);
+            }
+
             response.setMessage("successfulUpdating");
             return ResponseEntity.ok(response);
         }
@@ -186,6 +192,12 @@ public class UserServiceImpl implements UserService {
 
 
         //Minden módosítás sikeres volt
+        //Megváltoztatta az email címet is, ezért frontend-en ki kell jelentkeztetni
+        if(!previousEmailAddress.equals(newEmailAddress)){
+            response.setMessage("successfulUpdatingWithEmailAddress");
+            return ResponseEntity.ok(response);
+        }
+
         response.setMessage("successfulUpdating");
         return ResponseEntity.ok(response);
     }

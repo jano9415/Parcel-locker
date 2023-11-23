@@ -561,6 +561,32 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok(response);
     }
 
+    //Felhasználó módosítja a jelszavát
+    @Override
+    public ResponseEntity<StringResponse> updateUserPassword(UpdateUserPasswordRequest request) {
+
+        User user = findByEmailAddress(request.getEmailAddress());
+        StringResponse response = new StringResponse();
+
+        //Nem valószínű, mert a kérés bejelentkezés után jön
+        if(user == null){
+            response.setMessage("notFound");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        //A felhasználó rossz jelenlegi jelszót adott meg
+        if(!user.getPassword().equals(sha256Encode(request.getPassword()))){
+            response.setMessage("wrongPassword");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        user.setPassword(sha256Encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        response.setMessage("successfulUpdating");
+        return ResponseEntity.ok(response);
+    }
+
     //Random string generálása a regisztrációhoz szükséges aktivációs kód számára
     public String generateRandomStringForActivationCode() {
         String upperAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

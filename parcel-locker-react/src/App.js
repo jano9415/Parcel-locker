@@ -28,6 +28,8 @@ import GetParcelsOfParcelLockerComponent from './Components/GetParcelsOfParcelLo
 import LoginWithSecondFactorComponent from './Components/LoginWithSecondFactorComponent';
 import MyProfileSettingsComponent from './Components/MyProfileSettingsComponent';
 import PersonalDataComponent from './Components/PersonalDataComponent';
+import UpdateUserPasswordComponent from './Components/UpdateUserPasswordComponent';
+import ForgotPasswordComponent from './Components/ForgotPasswordComponent';
 
 
 const App = () => {
@@ -99,6 +101,8 @@ const App = () => {
             <Route path='/loginwithsecondfactor' element={ <LoginWithSecondFactorComponent /> } />
             <Route path='/myprofilesettings' element={ <MyProfileSettingsComponent /> } />
             <Route path='/personaldata' element={ <PersonalDataComponent /> } />
+            <Route path='/updatepassword' element={ <UpdateUserPasswordComponent /> } />
+            <Route path='/forgotpassword' element={ <ForgotPasswordComponent /> } />
             
 
           </Routes>

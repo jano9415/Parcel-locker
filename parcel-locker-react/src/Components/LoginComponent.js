@@ -48,7 +48,7 @@ const LoginComponent = () => {
                         setLoading(false);
                     }
                     //Második faktor szükséges a bejelentkezéshez
-                    if(response.message === "twoFactorAuthentication"){
+                    if (response.message === "twoFactorAuthentication") {
                         navigate("/loginwithsecondfactor");
                     }
                     if (response.emailAddress) {
@@ -85,7 +85,7 @@ const LoginComponent = () => {
 
                 },
                 (error) => {
-                    
+
 
                 }
             )
@@ -161,6 +161,7 @@ const LoginComponent = () => {
                     )}
                     <span>Bejelentkezés</span>
                 </Button>
+                <Button onClick={() => { navigate("/forgotpassword") }}>Elfelejtettem a jelszót</Button>
                 {everyInputMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{everyInputMessage}</Typography>}
                 <Typography sx={{ color: 'red', marginBottom: '16px' }}>{errorMessage}</Typography>
                 {showSignUpActivationMessage()}

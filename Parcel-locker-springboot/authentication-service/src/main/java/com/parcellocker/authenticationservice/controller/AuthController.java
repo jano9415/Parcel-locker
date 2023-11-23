@@ -94,5 +94,11 @@ public class AuthController {
         return userService.updateUser(request);
     }
 
+    //Felhasználó módosítja a jelszavát
+    @PutMapping("/updateuserpassword")
+    public ResponseEntity<StringResponse> updateUserPassword(@RequestBody UpdateUserPasswordRequest request){
+        return userService.updateUserPassword(request);
+    }
+
 
 }
