@@ -73,4 +73,7 @@ public interface UserService {
 
     //Felhasználó módosítja a jelszavát
     ResponseEntity<StringResponse> updateUserPassword(UpdateUserPasswordRequest request);
+
+    //Elfelejtett jelszó. Új jelszó küldése email-ben
+    ResponseEntity<StringResponse> forgotPassword(String emailAddress);
 }

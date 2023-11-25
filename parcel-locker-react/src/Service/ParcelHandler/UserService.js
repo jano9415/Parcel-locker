@@ -20,12 +20,7 @@ const updateUser = (formValues) => {
         { headers: authHeader() });
 }
 
-//Jelszó módosítása
-//User szerepkör szükséges
-const updateUserPassword = (formValues) => {
-    return axios.put(API_URL + "updateuserpassword", formValues,
-    { headers: authHeader() });
-}
+
 
 
 const UserService = {

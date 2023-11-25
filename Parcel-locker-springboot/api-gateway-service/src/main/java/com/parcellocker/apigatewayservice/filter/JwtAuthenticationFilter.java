@@ -65,7 +65,9 @@ public class JwtAuthenticationFilter implements GatewayFilter {
                 //Automata telítettségi adatok lekérése
                 "/parcelhandler/parcellocker/getsaturationdatas",
                 //Csomag követése
-                "/parcelhandler/parcel/followparcel"
+                "/parcelhandler/parcel/followparcel",
+                //Elfelejtett jelszó. Új jelszó küldése email-ban
+                "/auth/forgotpassword"
         );
 
         Predicate<ServerHttpRequest> isApiSecured = r -> apiEndpoints.stream()

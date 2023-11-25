@@ -69,6 +69,7 @@ public class AuthController {
 
     //Futár valamely adatának módosítása
     //A kérés a parcel handler service-ből jön
+    //Admin szerepkör szükséges
     @PutMapping("/updatecourier")
     public ResponseEntity<StringResponse> updateCourier(@RequestBody UpdateCourierRequest request){
         return userService.updateCourier(request);
@@ -82,6 +83,7 @@ public class AuthController {
     }
 
     //Személyes adatok lekérése
+    //User szerepkör szükséges
     @GetMapping("/getpersonaldata/{emailAddress}")
     public ResponseEntity<?> getPersonalData(@PathVariable String emailAddress){
         return userService.getPersonalData(emailAddress);
@@ -95,9 +97,17 @@ public class AuthController {
     }
 
     //Felhasználó módosítja a jelszavát
+    //User szerepkör szükséges
     @PutMapping("/updateuserpassword")
     public ResponseEntity<StringResponse> updateUserPassword(@RequestBody UpdateUserPasswordRequest request){
         return userService.updateUserPassword(request);
+    }
+
+    //Elfelejtett jelszó. Új jelszó küldése email-ben
+    //Nem szükséges jwt token
+    @PutMapping("/forgotpassword/{emailAddress}")
+    public ResponseEntity<StringResponse> forgotPassword(@PathVariable String emailAddress){
+        return userService.forgotPassword(emailAddress);
     }
 
 

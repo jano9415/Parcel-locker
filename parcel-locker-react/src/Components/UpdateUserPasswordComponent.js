@@ -4,7 +4,6 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import * as Yup from 'yup';
 import AuthService from "../Service/AuthService";
-import { CheckBox } from "@mui/icons-material";
 
 const UpdateUserPasswordComponent = () => {
 
@@ -24,11 +23,7 @@ const UpdateUserPasswordComponent = () => {
         },
         validationSchema: Yup.object({
             password: Yup.string()
-                .required("Add meg a jelenlegi jelszót")
-                .matches(
-                    /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                    'A jelszónak legalább 8 karakterből kell állnia, tartalmaznia kell nagybetűt, kisbetűt, számot és speciális karaktert.'
-                ),
+                .required("Add meg a jelenlegi jelszót"),
             newPassword: Yup.string()
                 .required("Add meg az új jelszót")
                 .matches(

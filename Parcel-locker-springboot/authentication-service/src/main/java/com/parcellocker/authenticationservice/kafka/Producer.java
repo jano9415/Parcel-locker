@@ -2,6 +2,7 @@ package com.parcellocker.authenticationservice.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.parcellocker.authenticationservice.payload.kafka.ForgotPasswordDTO;
 import com.parcellocker.authenticationservice.payload.kafka.SecondFactorDTO;
 import com.parcellocker.authenticationservice.payload.response.SignUpActivationDTO;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,9 @@ public class Producer {
     @Autowired
     private NewTopic topic2;
 
+    @Autowired
+    private NewTopic topic3;
+
     //String -> Object, Object -> String
     ObjectMapper objectMapper = new ObjectMapper();
 
@@ -34,6 +38,9 @@ public class Producer {
 
     @Autowired
     private KafkaTemplate<String, SecondFactorDTO> kafkaTemplate2;
+
+    @Autowired
+    private KafkaTemplate<String, ForgotPasswordDTO> kafkaTemplate3;
 
     //Regisztrációhoz szükséges aktiváló kód küldése a "signup_email_topic" nevű topic-nak
     public void sendActivationCodeForSignUp(SignUpActivationDTO signUpActivationDTO){
@@ -74,6 +81,27 @@ public class Producer {
                 .setHeader(KafkaHeaders.TOPIC , topic2.name())
                 .build();
         kafkaTemplate2.send(message);
+
+    }
+
+    //Új jelszó küldése a "forgotPassword" topic-nak
+    public void forgotPassword(ForgotPasswordDTO forgotPasswordDTO){
+
+        //Objektum konvertálása string-be
+        String jsonString;
+
+        try {
+            jsonString = objectMapper.writeValueAsString(forgotPasswordDTO);
+        }
+        catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        Message<String> message = MessageBuilder
+                .withPayload(jsonString)
+                .setHeader(KafkaHeaders.TOPIC , topic3.name())
+                .build();
+        kafkaTemplate3.send(message);
 
     }
 }

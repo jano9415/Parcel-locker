@@ -94,12 +94,14 @@ const logOut = () => {
 }
 
 //Új futár létrehozása
+//Admin szerepkör szükséges
 const createCourier = (formValues) => {
   return axios.post(API_URL + "createcourier", formValues,
     { headers: authHeader() });
 };
 
 //Új admin létrehozása
+//Admin szerepkör szükséges
 const createAdmin = (emailAddress, password) => {
   return axios.post(API_URL + "createadmin", {
     emailAddress,
@@ -109,6 +111,7 @@ const createAdmin = (emailAddress, password) => {
 };
 
 //Személyes adatok lekérése
+//User szerepkör szükséges
 const getPersonalData = (emailAddress) => {
   return axios.get(API_URL + "getpersonaldata/" + emailAddress,
     { headers: authHeader() });
@@ -120,6 +123,12 @@ const getPersonalData = (emailAddress) => {
 const updateUserPassword = (formValues) => {
   return axios.put(API_URL + "updateuserpassword", formValues,
     { headers: authHeader() });
+}
+
+//Elfelejtett jelszó. Új jelszó küldése email-ben
+//Nem szükséges jwt token
+const forgotPassword = (emailAddress) => {
+  return axios.put(API_URL + "forgotpassword/" + emailAddress)
 }
 
 
@@ -135,6 +144,7 @@ const AuthService = {
   loginWithSecondFactor,
   getPersonalData,
   updateUserPassword,
+  forgotPassword,
 
 };
 

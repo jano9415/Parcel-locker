@@ -4,10 +4,7 @@ package com.parcellocker.notificationservice.service;
 
 import com.parcellocker.notificationservice.payload.ParcelSendingNotification;
 import com.parcellocker.notificationservice.payload.SignUpActivationDTO;
-import com.parcellocker.notificationservice.payload.kafka.ParcelPickingUpNotification;
-import com.parcellocker.notificationservice.payload.kafka.ParcelSendingFromWebPageNotification;
-import com.parcellocker.notificationservice.payload.kafka.ParcelShippingNotification;
-import com.parcellocker.notificationservice.payload.kafka.SecondFactorDTO;
+import com.parcellocker.notificationservice.payload.kafka.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -252,4 +249,23 @@ public class EmailService {
     }
 
 
+    //Új jelszó küldése email-ben
+    //forgotPassword nevű topic
+    public void forgotPassword(ForgotPasswordDTO notification) {
+
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+
+            message.setFrom("${spring.mail.username}");
+            message.setTo(notification.getEmailAddress());
+            message.setSubject("Új jelszó");
+            message.setText("A bejelentkezéshez szükséges új jelszó: " + notification.getNewPassword() + "\n\n"
+            + "Bejelentkezés után változtasd meg a jelszódat a profilom, jelszó módosítása menüpontban.");
+            javaMailSender.send(message);
+
+        }
+        catch (Exception e){
+            System.out.println("Email server error.");
+        }
+    }
 }

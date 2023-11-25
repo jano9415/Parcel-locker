@@ -7,10 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.parcellocker.notificationservice.payload.ParcelSendingNotification;
 import com.parcellocker.notificationservice.payload.SignUpActivationDTO;
-import com.parcellocker.notificationservice.payload.kafka.ParcelPickingUpNotification;
-import com.parcellocker.notificationservice.payload.kafka.ParcelSendingFromWebPageNotification;
-import com.parcellocker.notificationservice.payload.kafka.ParcelShippingNotification;
-import com.parcellocker.notificationservice.payload.kafka.SecondFactorDTO;
+import com.parcellocker.notificationservice.payload.kafka.*;
 import com.parcellocker.notificationservice.service.EmailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,6 +194,23 @@ public class Consumer {
         }
 
         emailService.sendSecondFactorCode(jsonObject);
+    }
+
+    //Új jelszó küldése email-ben
+    //forgotPassword nevű topic
+    @KafkaListener(topics = "forgotPassword", groupId = "${spring.kafka.consumer.group-id}")
+    public void forgotPassword(String notification){
+
+        //String konvertálása objektumba
+        ForgotPasswordDTO jsonObject;
+
+        try {
+            jsonObject = objectMapper.readValue(notification, ForgotPasswordDTO.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        emailService.forgotPassword(jsonObject);
     }
 
 

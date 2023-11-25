@@ -7,7 +7,7 @@ import AuthService from "../Service/AuthService";
 
 const ForgotPasswordComponent = () => {
 
-    const [errorMessage, setErrorMessage] = useState("");
+    const [responseMessage, setResponseMessage] = useState("");
 
     useEffect(() => {
 
@@ -25,6 +25,23 @@ const ForgotPasswordComponent = () => {
 
         }),
         onSubmit: (values) => {
+
+            AuthService.forgotPassword(values.emailAddress).then(
+                (response) => {
+
+                    if (response.data.message === "newPasswordCreated") {
+                        setResponseMessage("Az új jelszódat elküldtük email-ben. Bejelentkezés után változtasd meg");
+                    }
+
+                },
+                (error) => {
+
+                    if (error.response.data.message === "notFound") {
+                        setResponseMessage("Ez az email cím nincs regisztrálva.");
+                    }
+
+                }
+            )
 
 
         }
@@ -62,7 +79,7 @@ const ForgotPasswordComponent = () => {
                 <Box sx={{ textAlign: 'center' }} className="d-flex justify-content-center">
                     <Box>
                         <Button disabled={!formik.isValid} type='submit'>Küldés</Button>
-                        {errorMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{errorMessage}</Typography>}
+                        {responseMessage && <Typography sx={{ color: 'red', marginBottom: '16px' }}>{responseMessage}</Typography>}
                     </Box>
                 </Box>
             </form>

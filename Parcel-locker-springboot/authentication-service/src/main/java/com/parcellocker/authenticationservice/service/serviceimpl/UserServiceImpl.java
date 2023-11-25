@@ -3,6 +3,7 @@ package com.parcellocker.authenticationservice.service.serviceimpl;
 import com.parcellocker.authenticationservice.kafka.Producer;
 import com.parcellocker.authenticationservice.model.Role;
 import com.parcellocker.authenticationservice.model.User;
+import com.parcellocker.authenticationservice.payload.kafka.ForgotPasswordDTO;
 import com.parcellocker.authenticationservice.payload.kafka.SecondFactorDTO;
 import com.parcellocker.authenticationservice.payload.request.*;
 import com.parcellocker.authenticationservice.payload.response.GetPersonalDataResponse;
@@ -584,6 +585,35 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         response.setMessage("successfulUpdating");
+        return ResponseEntity.ok(response);
+    }
+
+    //Elfelejtett jelszó. Új jelszó küldése email-ben
+    @Override
+    public ResponseEntity<StringResponse> forgotPassword(String emailAddress) {
+
+        User user = findByEmailAddress(emailAddress);
+        StringResponse response = new StringResponse();
+
+        //Ilyen email cím nincs regisztrálva
+        if(user == null){
+            response.setMessage("notFound");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        //Új jelszó létrehozása
+        String newPassword = generateRandomString(12);
+        user.setPassword(sha256Encode(newPassword));
+        userRepository.save(user);
+
+        //Jelszó küldése email-ben
+        //ForgotPassword objektum küldése a "forgotPassword" nevű topic-nak
+        ForgotPasswordDTO forgotPasswordDTO = new ForgotPasswordDTO();
+        forgotPasswordDTO.setEmailAddress(emailAddress);
+        forgotPasswordDTO.setNewPassword(newPassword);
+        producer.forgotPassword(forgotPasswordDTO);
+
+        response.setMessage("newPasswordCreated");
         return ResponseEntity.ok(response);
     }
 

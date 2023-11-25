@@ -18,6 +18,9 @@ public class KafkaTopicConfig {
     //A topic neve: secondFactor
     private String topic2 = "secondFactor";
 
+    //A topic neve: newPassword
+    private String topic3 = "forgotPassword";
+
     //Topic objektum létrehozása
     @Bean
     public NewTopic topic(){
@@ -29,6 +32,13 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic topic2(){
         return TopicBuilder.name(topic2)
+                .build();
+    }
+
+    //Topic objektum létrehozása
+    @Bean
+    public NewTopic topic3(){
+        return TopicBuilder.name(topic3)
                 .build();
     }
 }
