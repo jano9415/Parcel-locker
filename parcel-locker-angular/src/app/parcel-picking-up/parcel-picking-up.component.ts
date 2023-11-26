@@ -2,6 +2,11 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ParcelService } from '../Service/parcel.service';
 
+//Javascript függvények meghívása az assets mappából
+declare function serialWrite(): string;
+declare function connectToArduino(): string;
+declare function printPort(): string;
+
 @Component({
   selector: 'app-parcel-picking-up',
   templateUrl: './parcel-picking-up.component.html',
@@ -29,8 +34,18 @@ export class ParcelPickingUpComponent {
 
   }
 
+  proba1(): void {
+    printPort();
+  }
+
+  proba2(): void {
+    connectToArduino();
+  }
+
   //Csomag átvétele
   pickUpParcel(form: FormGroup): void {
+
+    serialWrite();
 
     const formValues = this.parcelPickingUpForm.value;
 
