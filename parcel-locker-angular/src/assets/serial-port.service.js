@@ -120,6 +120,7 @@ const serialRead = async () => {
                     for (let i = 0; i < uId.length; i++) {
                         console.log("+" + uId[i]);
                     }
+                    reader.close();
                     uniqueCourierId = uId;
                     return uId;
 
@@ -167,6 +168,7 @@ const serialRead = async () => {
             for (let i = 0; i < uId.length; i++) {
                 console.log("+" + uId[i]);
             }
+            reader.close();
             uniqueCourierId = uId;
             return uId;
 
@@ -184,7 +186,7 @@ const getUniqueCourierId = () => {
     return uniqueCourierId;
 }
 
-const serialWrite = async () => {
+const serialWrite = async (pickingUpCode) => {
 
     //Az oldal frissítése után a selectedPort értéke null lesz
     //Ha null, akkor előbb újra kapcsolódni kell az arduino-hoz
@@ -201,7 +203,7 @@ const serialWrite = async () => {
 
                     const writer = textEncoder.writable.getWriter();
 
-                    await writer.write("hello");
+                    await writer.write('1');
 
                     await writer.close();
                 } catch (error) {
