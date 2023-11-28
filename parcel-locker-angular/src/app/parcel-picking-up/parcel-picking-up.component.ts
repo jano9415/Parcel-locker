@@ -3,8 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ParcelService } from '../Service/parcel.service';
 
 //Javascript függvények meghívása az assets mappából
-declare function serialWrite(pickingUpCode: string): string;
-declare function connectToArduino(): string;
+declare function serialWrite(pickingUpCode: string): void;
+declare function serialWrite2(pickingUpCode: string): void;
+declare function connectToArduino(): void;
 declare function printPort(): string;
 
 @Component({
@@ -32,6 +33,8 @@ export class ParcelPickingUpComponent {
       ]]
     });
 
+    connectToArduino();
+
   }
 
   proba1(): void {
@@ -51,7 +54,7 @@ export class ParcelPickingUpComponent {
 
     const pickingUpCode = this.parcelPickingUpForm.get("pickingUpCode")?.value;
 
-    serialWrite(pickingUpCode);
+    serialWrite2(pickingUpCode);
 
     this.parcelService.pickUpParcel(pickingUpCode).subscribe({
       next: (response) => {
