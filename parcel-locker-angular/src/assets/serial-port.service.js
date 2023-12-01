@@ -83,16 +83,22 @@ const serialRead = async () => {
 }
 
 const serialRead2 = async () => {
+
     let uId = ""
     let counter = 0;
-
 
     try {
 
         // eslint-disable-next-line no-undef
         const decoder = new TextDecoderStream();
 
-        selectedPort.readable.pipeTo(decoder.writable);
+        const readableStream = selectedPort.readable;
+        if (!readableStream.locked) {
+            readableStream.pipeTo(decoder.writable);
+        }else{
+            window.location.reload();
+        }
+        //selectedPort.readable.pipeTo(decoder.writable);
 
         const inputStream = decoder.readable;
         const reader = inputStream.getReader();
@@ -112,7 +118,7 @@ const serialRead2 = async () => {
         if (done) {
             console.log('[readLoop] DONE', done);
             reader.releaseLock();
-
+            
         }
 
         for (let i = 0; i < uId.length; i++) {
@@ -123,165 +129,14 @@ const serialRead2 = async () => {
 
 
     } catch (error) {
-        console.log("A serial nem elérhető!");
+        console.log("Hiba a soros olvasás közben: " + error);
     }
 }
 
-const serialRead3 = async () => {
-    let uId = ""
-    let counter = 0;
-
-    //Az oldal frissítése után a selectedPort értéke null lesz
-    //Ha null, akkor előbb újra kapcsolódni kell az arduino-hoz
-    if (selectedPort == null) {
-
-        //Kapcsolódás függvény meghívása
-        connectToArduino()
-            .then(async () => {
-
-                try {
-
-                    // eslint-disable-next-line no-undef
-                    const decoder = new TextDecoderStream();
-
-                    selectedPort.readable.pipeTo(decoder.writable);
-
-                    const inputStream = decoder.readable;
-                    const reader = inputStream.getReader();
-
-
-                    while (counter < 10) {
-                        const { value, done } = await reader.read();
-                        uId += value
-                        console.log("Ez az uid: " + uId)
-
-                        if (value) {
-                            console.log("Ez a value: " + value);
-                            counter++
-                            console.log("A számláló: " + counter)
-
-                        }
-                        if (done) {
-                            console.log('[readLoop] DONE', done);
-                            reader.releaseLock();
-                            break;
-                        }
-                    }
-                    for (let i = 0; i < uId.length; i++) {
-                        console.log("+" + uId[i]);
-                    }
-                    reader.close();
-                    uniqueCourierId = uId;
-                    return uId;
-
-
-                } catch (error) {
-                    console.log("A serial nem elérhető!");
-                }
-
-
-            }).catch((error) => {
-
-            })
-    }
-    //A kapcsolódás óta nem frissült az oldal, nem kell újra kapcsolódni, csak küldeni kell az adatot az arduino-nak
-    else {
-
-        try {
-
-            // eslint-disable-next-line no-undef
-            const decoder = new TextDecoderStream();
-
-            selectedPort.readable.pipeTo(decoder.writable);
-
-            const inputStream = decoder.readable;
-            const reader = inputStream.getReader();
-
-
-            while (counter < 10) {
-                const { value, done } = await reader.read();
-                uId += value
-                console.log("Ez az uid: " + uId)
-
-                if (value) {
-                    console.log("Ez a value: " + value);
-                    counter++
-                    console.log("A számláló: " + counter)
-
-                }
-                if (done) {
-                    console.log('[readLoop] DONE', done);
-                    reader.releaseLock();
-                    break;
-                }
-            }
-            for (let i = 0; i < uId.length; i++) {
-                console.log("+" + uId[i]);
-            }
-            reader.close();
-            uniqueCourierId = uId;
-            return uId;
-
-
-        } catch (error) {
-            console.log("A serial nem elérhető!");
-        }
-
-    }
-
-}
 
 //Egyedi futár azonosító lekérése. Globális változó
 const getUniqueCourierId = () => {
     return uniqueCourierId;
-}
-
-const serialWrite = async (pickingUpCode) => {
-
-    //Az oldal frissítése után a selectedPort értéke null lesz
-    //Ha null, akkor előbb újra kapcsolódni kell az arduino-hoz
-    if (selectedPort == null) {
-
-        //Kapcsolódás függvény meghívása
-        connectToArduino()
-            .then(async () => {
-                //Soros port írás
-                try {
-
-                    const textEncoder = new TextEncoderStream();
-                    const writableStreamClosed = textEncoder.readable.pipeTo(selectedPort.writable);
-
-                    const writer = textEncoder.writable.getWriter();
-
-                    await writer.write('1');
-
-                    await writer.close();
-                } catch (error) {
-                    console.log("Hiba a soros adatküldés közben: " + error);
-                }
-
-            }).catch((error) => {
-
-            })
-    }
-    //A kapcsolódás óta nem frissült az oldal, nem kell újra kapcsolódni, csak küldeni kell az adatot az arduino-nak
-    else {
-        //Soros port írás
-        try {
-
-            const textEncoder = new TextEncoderStream();
-            const writableStreamClosed = textEncoder.readable.pipeTo(selectedPort.writable);
-
-            const writer = textEncoder.writable.getWriter();
-
-            await writer.write("hello");
-
-            await writer.close();
-        } catch (error) {
-            console.log("Hiba a soros adatküldés közben: " + error);
-        }
-    }
-
 }
 
 const serialWrite2 = async (pickingUpCode) => {
