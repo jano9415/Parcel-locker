@@ -12,6 +12,8 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);
 
 //Rekeszek
 const int box1 = 2;
+const int box2 = 3;
+const int box3 = 4;
 
 
 void setup() {
@@ -20,11 +22,15 @@ void setup() {
   SPI.begin();
   mfrc522.PCD_Init();
   pinMode(box1, OUTPUT);
+  pinMode(box2, OUTPUT);
+  pinMode(box3, OUTPUT);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  digitalWrite(2, LOW);
+  digitalWrite(box1, LOW);
+  digitalWrite(box2, LOW);
+  digitalWrite(box3, LOW);
 
   //Soros port olvasás
   //Az adat az angular alkalmazásból jön
@@ -40,15 +46,19 @@ void loop() {
         digitalWrite(box1, LOW);
         break;
       case '2':
-        digitalWrite(box1, HIGH);
-        delay(2000);
-        digitalWrite(box1, LOW);
+        digitalWrite(box2, HIGH);
+        delay(500);
+        digitalWrite(box2, LOW);
+        break;
+      case '3':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
         break;
 
       default:
         Serial.print("Error");
     }
-
   }
 
   if (!mfrc522.PICC_IsNewCardPresent()) {

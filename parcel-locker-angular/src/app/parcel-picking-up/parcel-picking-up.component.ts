@@ -3,8 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ParcelService } from '../Service/parcel.service';
 
 //Javascript függvények meghívása az assets mappából
-declare function serialWrite(pickingUpCode: string): void;
-declare function serialWrite2(pickingUpCode: string): void;
+declare function serialWrite(boxNumbers: Array<any>): void;
 declare function connectToArduino(): void;
 declare function printPort(): string;
 
@@ -54,7 +53,7 @@ export class ParcelPickingUpComponent {
 
     const pickingUpCode = this.parcelPickingUpForm.get("pickingUpCode")?.value;
 
-    serialWrite2(pickingUpCode);
+    //serialWrite(pickingUpCode);
 
     this.parcelService.pickUpParcel(pickingUpCode).subscribe({
       next: (response) => {
@@ -64,14 +63,17 @@ export class ParcelPickingUpComponent {
 
         }
         //Van ilyen csomag, de már lejárt az átvételi idő
-        if(response.message === "expired"){
-          this.boxNumberMessage = "A csomagod átvételi ideje lejárt. Telefonon kérheted, " + 
-          "hogy a csomagot szállítsák vissza az automatába. Ez plusz költséggel jár. " +
-          "Az ügyfélszolgálat telefonszáma: 0630-376-1288";
+        if (response.message === "expired") {
+          this.boxNumberMessage = "A csomagod átvételi ideje lejárt. Telefonon kérheted, " +
+            "hogy a csomagot szállítsák vissza az automatába. Ez plusz költséggel jár. " +
+            "Az ügyfélszolgálat telefonszáma: 0630-376-1288";
         }
         //Csomag már ki van fizetve. Át lehet venni
         if (response.message === "pickedUp") {
           this.boxNumberMessage = "Vedd ki a csomagodat a(z) " + response.boxNumber + ". rekeszből.";
+          //Adat küldése az arduino-nak
+          //Rekesz nyitása
+          serialWrite(response.boxNumber);
 
         }
         //Csomagot még ki kell fizetni, utána lehet csak átvenni
@@ -82,6 +84,9 @@ export class ParcelPickingUpComponent {
           const paymentState = this.payParcel(response.price);
           if (paymentState) {
             this.boxNumberMessage = "Vedd ki a csomagodat a(z) " + response.boxNumber + ". rekeszből.";
+            //Adat küldése az arduino-nak
+            //Rekesz nyitása
+            serialWrite(response.boxNumber);
 
             //Csomagadatok frissítése az adatbázisban
             this.parcelService.pickUpParcelAfterPayment(pickingUpCode).subscribe({
@@ -124,7 +129,7 @@ export class ParcelPickingUpComponent {
   payParcel(price: number): boolean {
 
     //Sikeres tranzakció
-    return(true);
+    return (true);
 
     //Sikertelen tranzakció
     //return false;

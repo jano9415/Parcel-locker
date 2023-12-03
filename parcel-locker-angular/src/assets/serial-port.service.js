@@ -95,7 +95,7 @@ const serialRead2 = async () => {
         const readableStream = selectedPort.readable;
         if (!readableStream.locked) {
             readableStream.pipeTo(decoder.writable);
-        }else{
+        } else {
             window.location.reload();
         }
         //selectedPort.readable.pipeTo(decoder.writable);
@@ -118,7 +118,7 @@ const serialRead2 = async () => {
         if (done) {
             console.log('[readLoop] DONE', done);
             reader.releaseLock();
-            
+
         }
 
         for (let i = 0; i < uId.length; i++) {
@@ -150,6 +150,27 @@ const serialWrite2 = async (pickingUpCode) => {
 
         await writer.write(pickingUpCode);
 
+        await writer.close();
+    } catch (error) {
+        console.log("Hiba a soros adatküldés közben: " + error);
+    }
+}
+
+const serialWrite = async (boxNumbers) => {
+
+    try {
+
+        const textEncoder = new TextEncoderStream();
+        const writableStreamClosed = textEncoder.readable.pipeTo(selectedPort.writable);
+
+        const writer = textEncoder.writable.getWriter();
+
+        
+        for (let i = 0; i < boxNumbers.length; i++) {
+            await writer.write(boxNumbers[i]);
+        }
+        //await writer.write(boxNumbers);
+        
         await writer.close();
     } catch (error) {
         console.log("Hiba a soros adatküldés közben: " + error);
