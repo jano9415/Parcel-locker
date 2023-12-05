@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ParcelService } from '../Service/parcel.service';
 
 //Javascript függvények meghívása az assets mappából
-declare function serialWrite(boxNumbers: Array<any>): void;
+declare function serialWrite(boxNumbers: String): void;
 declare function connectToArduino(): void;
 declare function printPort(): string;
 
@@ -53,8 +53,6 @@ export class ParcelPickingUpComponent {
 
     const pickingUpCode = this.parcelPickingUpForm.get("pickingUpCode")?.value;
 
-    //serialWrite(pickingUpCode);
-
     this.parcelService.pickUpParcel(pickingUpCode).subscribe({
       next: (response) => {
         //Csomag nem található
@@ -73,7 +71,8 @@ export class ParcelPickingUpComponent {
           this.boxNumberMessage = "Vedd ki a csomagodat a(z) " + response.boxNumber + ". rekeszből.";
           //Adat küldése az arduino-nak
           //Rekesz nyitása
-          serialWrite(response.boxNumber);
+          const boxNumber = response.boxNumber + "";
+          serialWrite(boxNumber);
 
         }
         //Csomagot még ki kell fizetni, utána lehet csak átvenni
@@ -86,7 +85,8 @@ export class ParcelPickingUpComponent {
             this.boxNumberMessage = "Vedd ki a csomagodat a(z) " + response.boxNumber + ". rekeszből.";
             //Adat küldése az arduino-nak
             //Rekesz nyitása
-            serialWrite(response.boxNumber);
+            const boxNumber = response.boxNumber + "";
+            serialWrite(boxNumber);
 
             //Csomagadatok frissítése az adatbázisban
             this.parcelService.pickUpParcelAfterPayment(pickingUpCode).subscribe({

@@ -4,6 +4,10 @@ import { CookieService } from 'ngx-cookie-service';
 import { ParcelService } from '../Service/parcel.service';
 import { MatTableDataSource } from '@angular/material/table';
 
+//Javascript függvények meghívása az assets mappából
+declare function serialWrite(boxNumbers: String): void;
+declare function connectToArduino(): void;
+
 @Component({
   selector: 'app-empty-parcel-locker',
   templateUrl: './empty-parcel-locker.component.html',
@@ -32,6 +36,8 @@ export class EmptyParcelLockerComponent {
   }
 
   ngOnInit(): void {
+
+    connectToArduino();
 
     //Futár objektum kiolvasása cookie-ből és visszaalakítás
     try {
@@ -72,6 +78,9 @@ export class EmptyParcelLockerComponent {
 
     this.parcelService.emptyParcelLocker(this.currenctCourier.emailAddress).subscribe({
       next: (response) => {
+        let boxNumbers = "";
+        
+        serialWrite(response);
         this.boxNumberMessages = response;
       },
       error: (error) => {
