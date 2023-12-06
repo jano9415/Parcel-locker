@@ -34,8 +34,12 @@ const printPort = async () => {
 }
 
 
-
-const serialRead = async () => {
+//Régi soros olvasás
+//Itt még nem használtam ki a soros buffer nyújtotta előnyöket
+//A while ciklussal figyeltem a soros portot, és vártam az adatokat. Amikor a futár rákattintott a bejelentkezés menüpontra
+//Ha megvolt a 10 karakter hosszú rfid azonosító, akkor abbahagytam az olvasást. Amíg nem volt meg, addig figyeltem a soros portot,
+//és vártam az adatokat
+const oldSerialRead = async () => {
     let uId = ""
     let counter = 0;
 
@@ -82,37 +86,37 @@ const serialRead = async () => {
     }
 }
 
-const serialRead2 = async () => {
-
-    let uId = ""
-    let counter = 0;
+//Soros port olvasás
+//Ha a böngésző már kapcsolódott az arduino-hoz, akkor a böngésző a soros olvasásra már készen áll
+//Ha a futár odaérinti az rfid taget, akkor az olvasás megtörténik, és az adatok a soros bufferben tárolódnak
+//Amikor ezt a függvényt meghívom (amikor a futár megnyomja a bejelentkezés gombot), akkor kiolvasom a soros buffer tartalmát
+const serialRead = async () => {
 
     try {
 
         // eslint-disable-next-line no-undef
         const decoder = new TextDecoderStream();
 
+        //Ha olvastam a soros portot és utána újra olvasni akarom, akkor frissítenem kell az oldalt
+        //Ilyen eset, amikor a futár rfid azonosítója nem megfelelő. Ekkor újra beolvassa
+        //az rfid taget, de akkor az oldal frissíteni fog egyet
         const readableStream = selectedPort.readable;
         if (!readableStream.locked) {
             readableStream.pipeTo(decoder.writable);
         } else {
             window.location.reload();
         }
+        
         //selectedPort.readable.pipeTo(decoder.writable);
 
         const inputStream = decoder.readable;
         const reader = inputStream.getReader();
 
 
-
         const { value, done } = await reader.read();
-        uId += value
-        console.log("Ez az uid: " + uId)
+
 
         if (value) {
-            console.log("Ez a value: " + value);
-            counter++
-            console.log("A számláló: " + counter)
 
         }
         if (done) {
@@ -120,12 +124,8 @@ const serialRead2 = async () => {
             reader.releaseLock();
 
         }
-
-        for (let i = 0; i < uId.length; i++) {
-            console.log("+" + uId[i]);
-        }
-        uniqueCourierId = uId;
-        return uId;
+        //Globális változónak értékadás
+        uniqueCourierId = value;
 
 
     } catch (error) {
@@ -139,23 +139,11 @@ const getUniqueCourierId = () => {
     return uniqueCourierId;
 }
 
-const serialWrite2 = async (pickingUpCode) => {
 
-    try {
-
-        const textEncoder = new TextEncoderStream();
-        const writableStreamClosed = textEncoder.readable.pipeTo(selectedPort.writable);
-
-        const writer = textEncoder.writable.getWriter();
-
-        await writer.write(pickingUpCode);
-
-        await writer.close();
-    } catch (error) {
-        console.log("Hiba a soros adatküldés közben: " + error);
-    }
-}
-
+//Adat küldése soros porton az arudinonak
+//Csomag átvétele, automata kiürítése és automata feltöltése funkciók esetén
+//Csomag átvételekor a bejöbő string 1 darab karakterből áll, tehát egy darab rekeszt nyitok ki
+//Automata kiürítése és automata feltöltése funkciók esetén egyszerre több rekeszt nyitok ki
 const serialWrite = async (boxNumbers) => {
 
     try {
@@ -165,12 +153,19 @@ const serialWrite = async (boxNumbers) => {
 
         const writer = textEncoder.writable.getWriter();
 
-        
+        //Egyesével küldöm a bájtokat
+        /*
         for (let i = 0; i < boxNumbers.length; i++) {
             await writer.write(boxNumbers[i]);
-        }
-        //await writer.write(boxNumbers);
-        
+        }*/
+
+        //Ha egybe küldöm a stringet, akkor egyesével, azaz bájtonként fogja eküldeni
+        //Mivel a soros port egyszerre egy byte-ot tud küldeni
+        //Minden byte egy karakter
+        //Ha például kinyílik az 1-es, 2-es és 4-es rekesz, akkor azt a string-et küldöm az arduino-nak, hogy: "124"
+        //Az arudino pedig figyeli a bejövő karaktereket, és azokat a rekeszeket nyitja ki
+        await writer.write(boxNumbers);
+
         await writer.close();
     } catch (error) {
         console.log("Hiba a soros adatküldés közben: " + error);

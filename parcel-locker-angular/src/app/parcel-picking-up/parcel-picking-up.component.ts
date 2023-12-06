@@ -36,14 +36,6 @@ export class ParcelPickingUpComponent {
 
   }
 
-  proba1(): void {
-    printPort();
-  }
-
-  proba2(): void {
-    connectToArduino();
-  }
-
   //Csomag átvétele
   pickUpParcel(form: FormGroup): void {
 

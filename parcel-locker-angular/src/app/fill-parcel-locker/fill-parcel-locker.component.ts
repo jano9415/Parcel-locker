@@ -5,6 +5,9 @@ import { ParcelService } from '../Service/parcel.service';
 import { MatTableDataSource } from '@angular/material/table';
 
 
+//Javascript függvények meghívása az assets mappából
+declare function serialWrite(boxNumbers: String): void;
+declare function connectToArduino(): void;
 
 @Component({
   selector: 'app-fill-parcel-locker',
@@ -34,6 +37,9 @@ export class FillParcelLockerComponent {
   }
 
   ngOnInit(): void {
+
+    //Kapcsolódás az arduino-hoz
+    connectToArduino();
 
     //Futár objektum kiolvasása cookie-ből és visszaalakítás
     try {
@@ -72,6 +78,11 @@ export class FillParcelLockerComponent {
   fillParcelLocker(): void {
     this.parcelService.fillParcelLocker(this.currenctCourier.emailAddress).subscribe({
       next: (response) => {
+        //Rekeszek nyitása, adatok küldése soros porton az arduino-nak
+        //A válaszban lévő rekesz számokat összefűzöm egy string-be, és ezt a stringet küldöm ki soros porton az arudino-nak
+        let boxNumbers = response.map((item: { boxNumber: any; }) => item.boxNumber).join('');
+        serialWrite(boxNumbers);
+
         this.boxNumberMessages = response;
       },
       error: (error) => {

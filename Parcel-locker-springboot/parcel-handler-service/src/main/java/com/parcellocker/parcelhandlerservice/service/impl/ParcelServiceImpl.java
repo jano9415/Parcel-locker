@@ -243,6 +243,26 @@ public class ParcelServiceImpl implements ParcelService {
     @Override
     public ResponseEntity<List<EmptyParcelLockerResponse>> emptyParcelLocker(EmptyParcelLockerRequest request) {
 
+        //Arra az esetre, ha csak a rekeszeket akarom kinyitni az arduinoval
+        /*
+        List<EmptyParcelLockerResponse> response = new ArrayList<>();
+        EmptyParcelLockerResponse boxNumber1 = new EmptyParcelLockerResponse();
+        EmptyParcelLockerResponse boxNumber2 = new EmptyParcelLockerResponse();
+        EmptyParcelLockerResponse boxNumber3 = new EmptyParcelLockerResponse();
+        EmptyParcelLockerResponse boxNumber4 = new EmptyParcelLockerResponse();
+        boxNumber1.setBoxNumber(1);
+        boxNumber2.setBoxNumber(2);
+        boxNumber3.setBoxNumber(3);
+        boxNumber4.setBoxNumber(5);
+        response.add(boxNumber1);
+        response.add(boxNumber2);
+        response.add(boxNumber3);
+        response.add(boxNumber4);
+
+        return ResponseEntity.ok(response);
+
+         */
+
         Courier courier = courierService.findByUniqueCourierId(request.getUniqueCourierId());
 
         List<EmptyParcelLockerResponse> response = new ArrayList<>();
@@ -274,6 +294,7 @@ public class ParcelServiceImpl implements ParcelService {
         }
 
         return ResponseEntity.ok(response);
+
     }
 
     //Futárnál lévő csomagok lekérése. Csak olyan csomagok, amik az adott automatához tartoznak és van nekik szabad rekesz
@@ -353,6 +374,35 @@ public class ParcelServiceImpl implements ParcelService {
     //Visszatérés a csomagazonosítókkal és a rekesz számokkal
     @Override
     public ResponseEntity<List<FillParcelLockerResponse>> fillParcelLocker(Long senderParcelLockerId, String uniqueCourierId) {
+
+        //Arra az esetre, ha csak a rekeszeket akarom kinyitni az arduinoval
+        /*
+        List<FillParcelLockerResponse> response = new ArrayList<>();
+
+        FillParcelLockerResponse responseObj = new FillParcelLockerResponse();
+        responseObj.setUniqueParcelId("aaa1");
+        responseObj.setBoxNumber(1);
+        response.add(responseObj);
+
+        FillParcelLockerResponse responseObj2 = new FillParcelLockerResponse();
+        responseObj2.setUniqueParcelId("aaa2");
+        responseObj2.setBoxNumber(2);
+        response.add(responseObj2);
+
+        FillParcelLockerResponse responseObj3 = new FillParcelLockerResponse();
+        responseObj3.setUniqueParcelId("aaa3");
+        responseObj3.setBoxNumber(3);
+        response.add(responseObj3);
+
+        FillParcelLockerResponse responseObj4 = new FillParcelLockerResponse();
+        responseObj4.setUniqueParcelId("aaa4");
+        responseObj4.setBoxNumber(5);
+        response.add(responseObj4);
+
+        return ResponseEntity.ok(response);
+
+         */
+
 
         //Automata, amit fel szeretne tölteni a futár
         ParcelLocker senderParcelLocker = parcelLockerService.findById(senderParcelLockerId);
@@ -481,6 +531,16 @@ public class ParcelServiceImpl implements ParcelService {
     @Override
     public ResponseEntity<PickUpParcelResponse> pickUpParcel(String pickingUpCode, Long senderParcelLockerId) {
 
+        //Arra az esetre, ha csak a rekeszeket akarom kinyitni az arduinoval
+        /*
+        PickUpParcelResponse response = new PickUpParcelResponse();
+        response.setMessage("notPickedUp");
+        response.setBoxNumber(1);
+        response.setPrice(6800);
+        return ResponseEntity.ok(response);
+         */
+
+
         Parcel parcel = findByPickingUpCode(pickingUpCode);
         PickUpParcelResponse response = new PickUpParcelResponse();
 
@@ -530,6 +590,8 @@ public class ParcelServiceImpl implements ParcelService {
 
         //A csomagot átvétel előtt még ki kell fizetni
         response.setMessage("notPickedUp");
+
+
         return ResponseEntity.ok(response);
     }
 

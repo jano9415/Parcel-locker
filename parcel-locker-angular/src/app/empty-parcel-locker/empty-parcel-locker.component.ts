@@ -78,9 +78,11 @@ export class EmptyParcelLockerComponent {
 
     this.parcelService.emptyParcelLocker(this.currenctCourier.emailAddress).subscribe({
       next: (response) => {
-        let boxNumbers = "";
-        
-        serialWrite(response);
+        //Rekeszek nyitása, adatok küldése soros porton az arduino-nak
+        //A válaszban lévő rekesz számokat összefűzöm egy string-be, és ezt a stringet küldöm ki soros porton az arudino-nak
+        let boxNumbers = response.map((item: { boxNumber: any; }) => item.boxNumber).join('');
+        serialWrite(boxNumbers);
+
         this.boxNumberMessages = response;
       },
       error: (error) => {
