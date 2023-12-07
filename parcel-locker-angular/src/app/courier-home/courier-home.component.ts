@@ -32,4 +32,9 @@ export class CourierHomeComponent {
     this.router.navigate(["fillparcellocker"]);
   }
 
+  //Route a rekeszek nyitása manuálisan oldalra
+  openBoxesByManual(): void {
+    this.router.navigate(["openBoxes"]);
+  }
+
 }

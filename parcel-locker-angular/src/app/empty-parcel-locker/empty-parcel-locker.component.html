@@ -49,3 +49,23 @@
         <p>{{noParcelMessage}}</p>
     </div>
 </div>
+
+
+<div class="d-flex justify-content-center">
+    <mat-card class="custom-card" *ngFor="let boxNumber of boxNumbers1">
+        <mat-card-content>Rekesz</mat-card-content>
+        <mat-card-content>{{boxNumber}}</mat-card-content>
+    </mat-card>
+</div>
+<div class="d-flex justify-content-center">
+    <mat-card *ngFor="let boxNumber of boxNumbers2">
+        <mat-card-content>Rekesz</mat-card-content>
+        <mat-card-content>{{boxNumber}}</mat-card-content>
+    </mat-card>
+</div>
+<div class="d-flex justify-content-center m-2">
+    <mat-card *ngFor="let boxNumber of boxNumbers3">
+        <mat-card-content>Rekesz</mat-card-content>
+        <mat-card-content>{{boxNumber}}</mat-card-content>
+    </mat-card>
+</div>

@@ -28,6 +28,7 @@ import { CourierHomeComponent } from './courier-home/courier-home.component';
 import { EmptyParcelLockerComponent } from './empty-parcel-locker/empty-parcel-locker.component';
 import { FillParcelLockerComponent } from './fill-parcel-locker/fill-parcel-locker.component';
 import {MatTableModule} from '@angular/material/table';
+import { OpenBoxesComponent } from './open-boxes/open-boxes.component';
 
 
 @NgModule({
@@ -43,6 +44,7 @@ import {MatTableModule} from '@angular/material/table';
     CourierHomeComponent,
     EmptyParcelLockerComponent,
     FillParcelLockerComponent,
+    OpenBoxesComponent,
 
   ],
   imports: [
@@ -62,7 +64,7 @@ import {MatTableModule} from '@angular/material/table';
     MatFormFieldModule,
     ReactiveFormsModule,
     MatRadioModule,
-    MatTableModule
+    MatTableModule,
     
   ],
   providers: [],

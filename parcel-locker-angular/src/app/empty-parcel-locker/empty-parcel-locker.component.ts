@@ -30,6 +30,18 @@ export class EmptyParcelLockerComponent {
 
   sendButtonVisible: boolean = false;
 
+  boxNumbers: Array<String> = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17",
+    "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"
+  ];
+
+  boxNumbers1: Array<String> = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
+  ];
+  boxNumbers2: Array<String> = ["11", "12", "13", "14", "15", "16", "17",
+    "18", "19", "20"
+  ];
+  boxNumbers3: Array<String> = ["21", "22", "23", "24", "25", "26", "27", "28", "29", "30"
+  ];
+
   constructor(private cookieService: CookieService, private router: Router,
     private parcelService: ParcelService) {
 
