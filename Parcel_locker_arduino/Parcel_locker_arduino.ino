@@ -14,6 +14,8 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);
 const int box1 = 2;
 const int box2 = 3;
 const int box3 = 4;
+const int box11 = 6;
+const int box21 = 7;
 
 
 void setup() {
@@ -24,6 +26,8 @@ void setup() {
   pinMode(box1, OUTPUT);
   pinMode(box2, OUTPUT);
   pinMode(box3, OUTPUT);
+  pinMode(box11, OUTPUT);
+  pinMode(box21, OUTPUT);
 }
 
 void loop() {
@@ -31,6 +35,8 @@ void loop() {
   digitalWrite(box1, LOW);
   digitalWrite(box2, LOW);
   digitalWrite(box3, LOW);
+  digitalWrite(box11, LOW);
+  digitalWrite(box21, LOW);
 
   //Soros port olvasás
   //Az adat az angular alkalmazásból jön
@@ -55,6 +61,142 @@ void loop() {
         delay(500);
         digitalWrite(box3, LOW);
         break;
+      case '4':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '5':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '6':
+        digitalWrite(box1, HIGH);
+        delay(500);
+        digitalWrite(box1, LOW);
+        break;
+      case '7':
+        digitalWrite(box2, HIGH);
+        delay(500);
+        digitalWrite(box2, LOW);
+        break;
+      case '8':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '9':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '10':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '11':
+        digitalWrite(box1, HIGH);
+        delay(500);
+        digitalWrite(box1, LOW);
+        break;
+      case '12':
+        digitalWrite(box2, HIGH);
+        delay(500);
+        digitalWrite(box2, LOW);
+        break;
+      case '13':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '14':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '15':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '16':
+        digitalWrite(box1, HIGH);
+        delay(500);
+        digitalWrite(box1, LOW);
+        break;
+      case '17':
+        digitalWrite(box2, HIGH);
+        delay(500);
+        digitalWrite(box2, LOW);
+        break;
+      case '18':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '19':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '20':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '21':
+        digitalWrite(box1, HIGH);
+        delay(500);
+        digitalWrite(box1, LOW);
+        break;
+      case '22':
+        digitalWrite(box2, HIGH);
+        delay(500);
+        digitalWrite(box2, LOW);
+        break;
+      case '23':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '24':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '25':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '26':
+        digitalWrite(box1, HIGH);
+        delay(500);
+        digitalWrite(box1, LOW);
+        break;
+      case '27':
+        digitalWrite(box2, HIGH);
+        delay(500);
+        digitalWrite(box2, LOW);
+        break;
+      case '28':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '29':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+      case '30':
+        digitalWrite(box3, HIGH);
+        delay(500);
+        digitalWrite(box3, LOW);
+        break;
+
 
       default:
         Serial.print("Error");
@@ -68,7 +210,8 @@ void loop() {
     return;
   }
 
-
+  //Soros adatküldés az angular alkalmazásnak
+  //Rfid kártya olvasása
   String content = "";
   byte letter;
   for (byte i = 0; i < mfrc522.uid.size; i++) {
